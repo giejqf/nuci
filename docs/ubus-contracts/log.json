@@ -1,0 +1,68 @@
+{
+	"object": "log",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"read": {
+			"lines": "Integer",
+			"stream": "Boolean",
+			"oneshot": "Boolean"
+		},
+		"write": {
+			"event": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "read",
+			"args": {
+				"lines": 5,
+				"stream": false,
+				"oneshot": true
+			},
+			"status": 0,
+			"result": {
+				"log": [
+					{
+						"msg": "dropbear[5250]: Pubkey auth succeeded for 'root' with ssh-ed25519 key SHA256:y0FdfCUL5ASqPee3RPePibUQ7Pb+5IABYzTb8c/+rjc from 192.168.1.2:33730",
+						"id": 755,
+						"priority": 85,
+						"source": 1,
+						"time": 1791761669148
+					},
+					{
+						"msg": "dropbear[5250]: Exit (root) from <192.168.1.2:33730>: Disconnect received",
+						"id": 756,
+						"priority": 86,
+						"source": 1,
+						"time": 1791761669309
+					},
+					{
+						"msg": "dropbear[5253]: Child connection from 192.168.1.2:33734",
+						"id": 757,
+						"priority": 86,
+						"source": 1,
+						"time": 1791761669324
+					},
+					{
+						"msg": "dropbear[5253]: Pubkey auth succeeded for 'root' with ssh-ed25519 key SHA256:y0FdfCUL5ASqPee3RPePibUQ7Pb+5IABYzTb8c/+rjc from 192.168.1.2:33734",
+						"id": 758,
+						"priority": 85,
+						"source": 1,
+						"time": 1791761669533
+					},
+					{
+						"msg": "dropbear[5253]: Exit (root) from <192.168.1.2:33734>: Disconnect received",
+						"id": 759,
+						"priority": 86,
+						"source": 1,
+						"time": 1791761670827
+					}
+				]
+			}
+		}
+	]
+}

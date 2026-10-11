@@ -1,0 +1,96 @@
+{
+	"object": "system",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"board": {},
+		"info": {},
+		"reboot": {},
+		"watchdog": {
+			"frequency": "Integer",
+			"timeout": "Integer",
+			"magicclose": "Boolean",
+			"stop": "Boolean"
+		},
+		"signal": {
+			"pid": "Integer",
+			"signum": "Integer"
+		},
+		"validate_firmware_image": {
+			"path": "String"
+		},
+		"sysupgrade": {
+			"path": "String",
+			"force": "Boolean",
+			"backup": "String",
+			"prefix": "String",
+			"command": "String",
+			"options": "Table"
+		}
+	},
+	"calls": [
+		{
+			"method": "board",
+			"args": {},
+			"status": 0,
+			"result": {
+				"kernel": "6.12.71",
+				"hostname": "OpenWrt",
+				"system": "QEMU Virtual CPU version 2.5+",
+				"model": "QEMU Standard PC (Q35 + ICH9, 2009)",
+				"board_name": "qemu-standard-pc-q35-ich9-2009",
+				"rootfs_type": "squashfs",
+				"release": {
+					"distribution": "OpenWrt",
+					"version": "25.12.0",
+					"firmware_url": "https://downloads.openwrt.org/",
+					"revision": "r32713-f919e7899d",
+					"target": "x86/64",
+					"description": "OpenWrt 25.12.0 r32713-f919e7899d",
+					"builddate": "1772496855"
+				}
+			}
+		},
+		{
+			"method": "info",
+			"args": {},
+			"status": 0,
+			"result": {
+				"localtime": 1791761671,
+				"uptime": 3214,
+				"load": [
+					5856,
+					3040,
+					416
+				],
+				"memory": {
+					"total": 506314752,
+					"free": 436228096,
+					"shared": 1818624,
+					"buffered": 3301376,
+					"available": 425357312,
+					"cached": 26312704
+				},
+				"root": {
+					"total": 88517,
+					"free": 88177,
+					"used": 340,
+					"avail": 81144
+				},
+				"tmp": {
+					"total": 247224,
+					"free": 245444,
+					"used": 1780,
+					"avail": 245444
+				},
+				"swap": {
+					"total": 0,
+					"free": 0
+				}
+			}
+		}
+	]
+}

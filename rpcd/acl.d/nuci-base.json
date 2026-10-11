@@ -1,0 +1,86 @@
+{
+	"unauthenticated": {
+		"description": "NuCI: pre-login board info for the login screen",
+		"read": {
+			"ubus": {
+				"system": ["board"]
+			}
+		}
+	},
+	"nuci-base": {
+		"description": "NuCI: shell, session, installed apps, heartbeat stream",
+		"read": {
+			"ubus": {
+				"session": ["access", "destroy", "list"],
+				"system": ["board", "info"],
+				"nuci.apps": ["list"]
+			},
+			"nuci-events": ["heartbeat"]
+		}
+	},
+	"nuci-uci": {
+		"description": "NuCI: uci staging and the apply/confirm/rollback protocol (per-config access is granted by the area groups)",
+		"read": {
+			"ubus": {
+				"uci": ["configs", "get", "state", "changes"]
+			}
+		},
+		"write": {
+			"ubus": {
+				"uci": ["set", "add", "delete", "rename", "order", "revert", "apply", "confirm", "rollback"]
+			}
+		}
+	},
+	"nuci-status": {
+		"description": "NuCI: Status pages (overview, logs, processes, realtime graphs)",
+		"read": {
+			"ubus": {
+				"network.interface": ["dump"],
+				"network.interface.*": ["status"],
+				"network.device": ["status"],
+				"network.wireless": ["status"],
+				"iwinfo": ["devices", "info", "assoclist"],
+				"dhcp": ["ipv6leases"],
+				"log": ["read"],
+				"nuci.status": ["realtime", "processes", "kernel_log", "conntrack"],
+				"nuci.dhcp": ["leases", "hosts"]
+			},
+			"nuci-events": ["stats", "syslog", "kernlog", "conntrack", "wifi"],
+			"uci": ["dhcp", "network", "wireless"]
+		}
+	},
+	"nuci-system": {
+		"description": "NuCI: System pages (general settings, startup, reboot)",
+		"read": {
+			"ubus": {
+				"nuci.system": [
+					"timezones",
+					"localtime",
+					"leds",
+					"block_devices",
+					"mount_points",
+					"usb_devices"
+				],
+				"rc": ["list"]
+			},
+			"uci": ["system", "nuci"]
+		},
+		"write": {
+			"ubus": {
+				"nuci.system": ["set_localtime"],
+				"rc": ["init"],
+				"system": ["reboot"]
+			},
+			"uci": ["system", "nuci"]
+		}
+	},
+	"nuci-network": {
+		"description": "NuCI: Network pages",
+		"read": {
+			"uci": ["network", "dhcp", "wireless"]
+		},
+		"write": {
+			"uci": ["network", "dhcp", "wireless"]
+		}
+	}
+}

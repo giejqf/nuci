@@ -1,0 +1,8 @@
+{
+	"app.name": "NuCI",
+	"app.tagline": "A modern web interface for OpenWrt",
+	"theme.toggle": "Toggle theme",
+	"theme.light": "Light",
+	"theme.dark": "Dark",
+	"theme.system": "System"
+}

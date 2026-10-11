@@ -1,0 +1,25 @@
+{
+	"name": "@nuci/web",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"license": "Apache-2.0",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings"
+	},
+	"dependencies": {
+		"@lucide/svelte": "^1.55.0",
+		"@nuci/app-sdk": "workspace:*",
+		"@nuci/i18n": "workspace:*",
+		"@nuci/rpc": "workspace:*",
+		"@nuci/uci": "workspace:*",
+		"@nuci/ui": "workspace:*",
+		"@tailwindcss/vite": "^4.3.3",
+		"daisyui": "^5.7.47",
+		"svelte": "^5.57.2",
+		"tailwindcss": "^4.3.3"
+	}
+}

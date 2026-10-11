@@ -1,0 +1,9 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+@import 'tailwindcss';
+@plugin 'daisyui' {
+	themes:
+		light --default,
+		dark --prefersdark;
+}
+@source '../../../packages/ui/src';
+@import '@nuci/ui/styles.css';

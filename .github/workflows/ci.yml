@@ -1,0 +1,42 @@
+# SPDX-License-Identifier: Apache-2.0
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Cache host ucode
+        id: ucode-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.local
+          key: ucode-${{ runner.os }}-${{ hashFiles('tools/install-ucode.sh') }}
+      - name: Build host ucode (router revision)
+        if: steps.ucode-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake libjson-c-dev
+          tools/install-ucode.sh "$HOME/.local"
+      - run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - run: pnpm lint
+      - run: pnpm check
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm size

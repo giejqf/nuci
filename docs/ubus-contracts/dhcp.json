@@ -1,0 +1,34 @@
+{
+	"object": "dhcp",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"ipv6leases": {},
+		"ipv6ra": {},
+		"add_lease": {
+			"ip": "String",
+			"mac": "Array",
+			"duid": "Array",
+			"hostid": "String",
+			"leasetime": "String",
+			"name": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "ipv6leases",
+			"args": {},
+			"status": 0,
+			"result": {
+				"device": {
+					"br-lan": {
+						"leases": []
+					}
+				}
+			}
+		}
+	]
+}

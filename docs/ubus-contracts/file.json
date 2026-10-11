@@ -1,0 +1,81 @@
+{
+	"object": "file",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"read": {
+			"path": "String",
+			"base64": "Boolean",
+			"ubus_rpc_session": "String"
+		},
+		"write": {
+			"path": "String",
+			"data": "String",
+			"append": "Boolean",
+			"mode": "Integer",
+			"base64": "Boolean",
+			"ubus_rpc_session": "String"
+		},
+		"list": {
+			"path": "String",
+			"ubus_rpc_session": "String"
+		},
+		"lstat": {
+			"path": "String",
+			"ubus_rpc_session": "String"
+		},
+		"stat": {
+			"path": "String",
+			"ubus_rpc_session": "String"
+		},
+		"md5": {
+			"path": "String",
+			"ubus_rpc_session": "String"
+		},
+		"remove": {
+			"path": "String",
+			"ubus_rpc_session": "String"
+		},
+		"exec": {
+			"command": "String",
+			"params": "Array",
+			"env": "Table",
+			"ubus_rpc_session": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "stat",
+			"args": {
+				"path": "/etc/rc.local"
+			},
+			"error": {
+				"code": -32002,
+				"message": "Access denied"
+			}
+		},
+		{
+			"method": "list",
+			"args": {
+				"path": "/etc/init.d"
+			},
+			"error": {
+				"code": -32002,
+				"message": "Access denied"
+			}
+		},
+		{
+			"method": "read",
+			"args": {
+				"path": "/etc/hostname-does-not-exist"
+			},
+			"error": {
+				"code": -32002,
+				"message": "Access denied"
+			}
+		}
+	]
+}

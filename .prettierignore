@@ -1,0 +1,13 @@
+dist/
+node_modules/
+pnpm-lock.yaml
+tools/qemu/images/
+tools/qemu/run/
+tools/sdk/
+e2e/test-results/
+e2e/playwright-report/
+docs/ubus-contracts/
+feed/
+rpcd/
+server/
+*.md

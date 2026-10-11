@@ -1,0 +1,84 @@
+# SPDX-License-Identifier: Apache-2.0
+name: e2e
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  OPENWRT_VERSION: 25.12.0
+
+jobs:
+  qemu-x86-64:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils socat zstd
+
+      - name: Cache OpenWrt image
+        uses: actions/cache@v4
+        with:
+          path: tools/qemu/images
+          key: openwrt-x86-64-${{ env.OPENWRT_VERSION }}
+      - name: Cache OpenWrt SDK
+        uses: actions/cache@v4
+        with:
+          path: tools/sdk/cache
+          key: openwrt-sdk-x86-64-${{ env.OPENWRT_VERSION }}
+
+      - run: pnpm build
+      - name: Build packages with the SDK
+        run: tools/sdk/build.sh
+        env:
+          NUCI_SDK_VERSION: ${{ env.OPENWRT_VERSION }}
+
+      - name: Boot and provision the lab (TCG, D14)
+        run: |
+          tools/qemu/fetch.sh "$OPENWRT_VERSION"
+          tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION"
+          tools/qemu/provision.sh
+
+      - name: Router serves NuCI, /ubus and /nuci/events
+        run: |
+          . tools/qemu/.env
+          curl -fsS http://127.0.0.1:8080/nuci/ | grep -q '<title>NuCI</title>'
+          sid="$(curl -fsS -d '{"jsonrpc":"2.0","id":1,"method":"call","params":["00000000000000000000000000000000","session","login",{"username":"root","password":"'"$NUCI_ROOT_PASSWORD"'"}]}' http://127.0.0.1:8080/ubus | jq -r '.result[1].ubus_rpc_session')"
+          curl -fsSN -m 5 "http://127.0.0.1:8080/nuci/events?sid=$sid" | grep -m1 '^event: heartbeat'
+
+      - name: Install Playwright browser
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Playwright
+        run: pnpm e2e
+        env:
+          NUCI_E2E_SYNC: '0'
+          NUCI_E2E_DOCKER: '0'
+
+      - name: Upload report and serial log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+            tools/qemu/run/*.serial.log
+
+      - name: Stop lab
+        if: always()
+        run: tools/qemu/stop.sh

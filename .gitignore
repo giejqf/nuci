@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.vite/
+.env
+tools/qemu/.env
+tools/qemu/images/
+tools/qemu/run/
+tools/sdk/cache/
+tools/sdk/work/
+e2e/test-results/
+e2e/playwright-report/
+e2e/.auth/

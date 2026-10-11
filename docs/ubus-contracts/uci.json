@@ -1,0 +1,264 @@
+{
+	"object": "uci",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"configs": {},
+		"get": {
+			"config": "String",
+			"section": "String",
+			"option": "String",
+			"type": "String",
+			"match": "Table",
+			"ubus_rpc_session": "String"
+		},
+		"state": {
+			"config": "String",
+			"section": "String",
+			"option": "String",
+			"type": "String",
+			"match": "Table",
+			"ubus_rpc_session": "String"
+		},
+		"add": {
+			"config": "String",
+			"type": "String",
+			"name": "String",
+			"values": "Table",
+			"ubus_rpc_session": "String"
+		},
+		"set": {
+			"config": "String",
+			"section": "String",
+			"type": "String",
+			"match": "Table",
+			"values": "Table",
+			"ubus_rpc_session": "String"
+		},
+		"delete": {
+			"config": "String",
+			"section": "String",
+			"type": "String",
+			"match": "Table",
+			"option": "String",
+			"options": "Array",
+			"ubus_rpc_session": "String"
+		},
+		"rename": {
+			"config": "String",
+			"section": "String",
+			"option": "String",
+			"name": "String",
+			"ubus_rpc_session": "String"
+		},
+		"order": {
+			"config": "String",
+			"sections": "Array",
+			"ubus_rpc_session": "String"
+		},
+		"changes": {
+			"config": "String",
+			"ubus_rpc_session": "String"
+		},
+		"revert": {
+			"config": "String",
+			"ubus_rpc_session": "String"
+		},
+		"commit": {
+			"config": "String",
+			"ubus_rpc_session": "String"
+		},
+		"apply": {
+			"rollback": "Boolean",
+			"timeout": "Integer",
+			"ubus_rpc_session": "String"
+		},
+		"confirm": {
+			"ubus_rpc_session": "String"
+		},
+		"rollback": {
+			"ubus_rpc_session": "String"
+		},
+		"reload_config": {}
+	},
+	"calls": [
+		{
+			"method": "configs",
+			"args": {},
+			"status": 0,
+			"result": {
+				"configs": [
+					"attendedsysupgrade",
+					"dhcp",
+					"dropbear",
+					"firewall",
+					"luci",
+					"network",
+					"nuci",
+					"rpcd",
+					"system",
+					"uhttpd"
+				]
+			}
+		},
+		{
+			"method": "get",
+			"args": {
+				"config": "system"
+			},
+			"status": 0,
+			"result": {
+				"values": {
+					"cfg01e48a": {
+						".anonymous": true,
+						".type": "system",
+						".name": "cfg01e48a",
+						".index": 0,
+						"hostname": "OpenWrt",
+						"timezone": "GMT0",
+						"zonename": "UTC",
+						"ttylogin": "0",
+						"log_size": "128",
+						"urandom_seed": "0"
+					},
+					"ntp": {
+						".anonymous": false,
+						".type": "timeserver",
+						".name": "ntp",
+						".index": 1,
+						"enabled": "1",
+						"enable_server": "0",
+						"server": [
+							"0.openwrt.pool.ntp.org",
+							"1.openwrt.pool.ntp.org",
+							"2.openwrt.pool.ntp.org",
+							"3.openwrt.pool.ntp.org"
+						]
+					}
+				}
+			}
+		},
+		{
+			"method": "get",
+			"args": {
+				"config": "network"
+			},
+			"status": 0,
+			"result": {
+				"values": {
+					"loopback": {
+						".anonymous": false,
+						".type": "interface",
+						".name": "loopback",
+						".index": 0,
+						"device": "lo",
+						"proto": "static",
+						"ipaddr": [
+							"127.0.0.1/8"
+						]
+					},
+					"globals": {
+						".anonymous": false,
+						".type": "globals",
+						".name": "globals",
+						".index": 1,
+						"dhcp_default_duid": "0004f8bf5cd1b6a740efa30575b485f16ef3",
+						"ula_prefix": "fdf3:8d82:4392::/48"
+					},
+					"cfg030f15": {
+						".anonymous": true,
+						".type": "device",
+						".name": "cfg030f15",
+						".index": 2,
+						"name": "br-lan",
+						"type": "bridge",
+						"ports": [
+							"eth0"
+						]
+					},
+					"lan": {
+						".anonymous": false,
+						".type": "interface",
+						".name": "lan",
+						".index": 3,
+						"device": "br-lan",
+						"proto": "static",
+						"ipaddr": [
+							"192.168.1.1/24"
+						],
+						"ip6assign": "60"
+					},
+					"wan": {
+						".anonymous": false,
+						".type": "interface",
+						".name": "wan",
+						".index": 4,
+						"device": "eth1",
+						"proto": "dhcp"
+					},
+					"wan6": {
+						".anonymous": false,
+						".type": "interface",
+						".name": "wan6",
+						".index": 5,
+						"device": "eth1",
+						"proto": "dhcpv6"
+					}
+				}
+			}
+		},
+		{
+			"method": "get",
+			"args": {
+				"config": "network",
+				"section": "lan"
+			},
+			"status": 0,
+			"result": {
+				"values": {
+					".anonymous": false,
+					".type": "interface",
+					".name": "lan",
+					"device": "br-lan",
+					"proto": "static",
+					"ipaddr": [
+						"192.168.1.1/24"
+					],
+					"ip6assign": "60"
+				}
+			}
+		},
+		{
+			"method": "get",
+			"args": {
+				"config": "network",
+				"section": "lan",
+				"option": "ipaddr"
+			},
+			"status": 0,
+			"result": {
+				"value": [
+					"192.168.1.1/24"
+				]
+			}
+		},
+		{
+			"method": "get",
+			"args": {
+				"config": "nope"
+			},
+			"status": 6
+		},
+		{
+			"method": "changes",
+			"args": {},
+			"status": 0,
+			"result": {
+				"changes": {}
+			}
+		}
+	]
+}

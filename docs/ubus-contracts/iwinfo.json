@@ -1,0 +1,46 @@
+{
+	"object": "iwinfo",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"devices": {},
+		"info": {
+			"device": "String"
+		},
+		"scan": {
+			"device": "String"
+		},
+		"assoclist": {
+			"device": "String",
+			"mac": "String"
+		},
+		"freqlist": {
+			"device": "String"
+		},
+		"txpowerlist": {
+			"device": "String"
+		},
+		"countrylist": {
+			"device": "String"
+		},
+		"survey": {
+			"device": "String"
+		},
+		"phyname": {
+			"section": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "devices",
+			"args": {},
+			"status": 0,
+			"result": {
+				"devices": []
+			}
+		}
+	]
+}

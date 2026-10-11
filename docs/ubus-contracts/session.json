@@ -1,0 +1,203 @@
+{
+	"object": "session",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"create": {
+			"timeout": "Integer"
+		},
+		"list": {
+			"ubus_rpc_session": "String"
+		},
+		"grant": {
+			"ubus_rpc_session": "String",
+			"scope": "String",
+			"objects": "Array"
+		},
+		"revoke": {
+			"ubus_rpc_session": "String",
+			"scope": "String",
+			"objects": "Array"
+		},
+		"access": {
+			"ubus_rpc_session": "String",
+			"scope": "String",
+			"object": "String",
+			"function": "String"
+		},
+		"set": {
+			"ubus_rpc_session": "String",
+			"values": "Table"
+		},
+		"get": {
+			"ubus_rpc_session": "String",
+			"keys": "Array"
+		},
+		"unset": {
+			"ubus_rpc_session": "String",
+			"keys": "Array"
+		},
+		"destroy": {
+			"ubus_rpc_session": "String"
+		},
+		"login": {
+			"username": "String",
+			"password": "String",
+			"timeout": "Integer"
+		}
+	},
+	"calls": [
+		{
+			"method": "access",
+			"args": {},
+			"status": 0,
+			"result": {
+				"access-group": {
+					"nuci-base": [
+						"read"
+					],
+					"nuci-network": [
+						"read",
+						"write"
+					],
+					"nuci-status": [
+						"read"
+					],
+					"nuci-system": [
+						"read",
+						"write"
+					],
+					"nuci-uci": [
+						"read",
+						"write"
+					],
+					"unauthenticated": [
+						"read"
+					]
+				},
+				"nuci-events": {
+					"conntrack": [
+						"read"
+					],
+					"heartbeat": [
+						"read"
+					],
+					"kernlog": [
+						"read"
+					],
+					"stats": [
+						"read"
+					],
+					"syslog": [
+						"read"
+					],
+					"wifi": [
+						"read"
+					]
+				},
+				"ubus": {
+					"dhcp": [
+						"ipv6leases"
+					],
+					"iwinfo": [
+						"devices",
+						"info",
+						"assoclist"
+					],
+					"log": [
+						"read"
+					],
+					"network.device": [
+						"status"
+					],
+					"network.interface": [
+						"dump"
+					],
+					"network.interface.*": [
+						"status"
+					],
+					"network.wireless": [
+						"status"
+					],
+					"nuci.apps": [
+						"list"
+					],
+					"nuci.dhcp": [
+						"leases",
+						"hosts"
+					],
+					"nuci.status": [
+						"realtime",
+						"processes",
+						"kernel_log",
+						"conntrack"
+					],
+					"nuci.system": [
+						"timezones",
+						"localtime",
+						"leds",
+						"block_devices",
+						"mount_points",
+						"usb_devices",
+						"set_localtime"
+					],
+					"rc": [
+						"list",
+						"init"
+					],
+					"session": [
+						"access",
+						"destroy",
+						"list",
+						"login"
+					],
+					"system": [
+						"board",
+						"info",
+						"reboot"
+					],
+					"uci": [
+						"configs",
+						"get",
+						"state",
+						"changes",
+						"set",
+						"add",
+						"delete",
+						"rename",
+						"order",
+						"revert",
+						"apply",
+						"confirm",
+						"rollback"
+					]
+				},
+				"uci": {
+					"dhcp": [
+						"read",
+						"write"
+					],
+					"network": [
+						"read",
+						"write"
+					],
+					"nuci": [
+						"read",
+						"write"
+					],
+					"system": [
+						"read",
+						"write"
+					],
+					"wireless": [
+						"read",
+						"write"
+					]
+				}
+			}
+		}
+	]
+}

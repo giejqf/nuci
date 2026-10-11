@@ -1,0 +1,14 @@
+# Packages installed on the lab box by provision.sh (one per line).
+# Names verified against the OpenWrt 25.12.0 x86/64 feed on 2026-10-11.
+uhttpd
+uhttpd-mod-ubus
+uhttpd-mod-ucode
+rpcd
+rpcd-mod-ucode
+rpcd-mod-file
+rpcd-mod-iwinfo
+rpcd-mod-rpcsys
+ucode
+ucode-mod-fs
+ucode-mod-ubus
+ucode-mod-uci

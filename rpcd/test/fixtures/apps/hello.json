@@ -1,0 +1,1 @@
+{ "id": "hello", "title": "Hello", "icon": "Smile", "entry": "apps/hello/index.js", "version": "1.0.0", "menu": { "group": "services", "order": 10 }, "acls": ["nuci-app-hello"] }

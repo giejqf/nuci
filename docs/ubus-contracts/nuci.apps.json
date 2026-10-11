@@ -1,0 +1,21 @@
+{
+	"object": "nuci.apps",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"list": {}
+	},
+	"calls": [
+		{
+			"method": "list",
+			"args": {},
+			"status": 0,
+			"result": {
+				"apps": []
+			}
+		}
+	]
+}
