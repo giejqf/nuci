@@ -11,3 +11,5 @@ PKG_VERSION:=0.2.0
 PKG_RELEASE:=1
 
 include ../nuci-app.mk
+
+$(eval $(call BuildPackage,$(PKG_NAME)))

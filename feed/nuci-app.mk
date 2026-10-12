@@ -2,8 +2,8 @@
 #
 # Shared rules for first-party nuci-app-* packages (ADR-0004). An app's
 # Makefile sets NUCI_APP_ID, NUCI_APP_TITLE, PKG_VERSION, PKG_RELEASE and
-# optionally NUCI_APP_DEPENDS, then includes this file. Sources come from
-# apps/nuci-app-<id>/ in the checkout (built first with `pnpm build`):
+# optionally NUCI_APP_DEPENDS, includes this file, then calls BuildPackage.
+# Sources come from apps/nuci-app-<id>/ in the checkout (built first with `pnpm build`):
 #   manifest.json         -> /usr/share/nuci/apps/<id>.json
 #   dist/index.js         -> /www/nuci/apps/<id>/index.js
 #   rpcd/ucode/*.uc       -> /usr/share/rpcd/ucode/      (optional)
@@ -72,4 +72,5 @@ define Package/$(PKG_NAME)/postrm
 exit 0
 endef
 
-$(eval $(call BuildPackage,$(PKG_NAME)))
+# The app Makefile ends with $(eval $(call BuildPackage,$(PKG_NAME))): OpenWrt's
+# feed scanner only indexes Makefiles that contain that call themselves.

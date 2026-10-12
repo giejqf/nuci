@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- Network → Wireless: radios, wireless networks, scan + join, associated stations. -->
 <script lang="ts">
-	import { Plus, Radar, Settings2, Trash2, Pencil } from '@lucide/svelte';
+	import { Eye, Pencil, Plus, Radar, Settings2, Trash2 } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
 	import { isRpcError, type ScanResult, type WifiStation, type WirelessRadio } from '@nuci/rpc';
 	import {
@@ -265,10 +265,21 @@
 									<button
 										type="button"
 										class="btn btn-ghost btn-xs"
-										aria-label={t('ui.edit_entry', { name: String(i.ssid) })}
+										aria-label={t(
+											writable ? 'ui.edit_entry' : 'ui.view_entry',
+											{
+												name: String(i.ssid),
+											},
+										)}
 										onclick={() =>
 											(ifaceEdit = { name: i['.name'], isNew: false })}
-										><Pencil size={14} aria-hidden="true" /></button
+										>{#if writable}<Pencil
+												size={14}
+												aria-hidden="true"
+											/>{:else}<Eye
+												size={14}
+												aria-hidden="true"
+											/>{/if}</button
 									>
 									{#if writable}<button
 											type="button"
