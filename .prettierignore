@@ -4,6 +4,8 @@ pnpm-lock.yaml
 tools/qemu/images/
 tools/qemu/run/
 tools/sdk/
+tools/imagebuilder/cache/
+tools/imagebuilder/work/
 e2e/test-results/
 e2e/playwright-report/
 docs/ubus-contracts/

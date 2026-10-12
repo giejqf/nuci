@@ -15,7 +15,10 @@ async function expectTransport(page: Page) {
 test('kernel log shows the boot messages', async ({ page }) => {
 	await login(page, 'status/kernlog');
 	await expect(page.getByRole('heading', { name: 'Kernel log', level: 1 })).toBeVisible();
-	await expect(page.getByTestId('kernlog-line').first()).toContainText('Linux version');
+	// Not necessarily the first line: arm64 logs "Booting Linux on physical CPU" first.
+	await expect(
+		page.getByTestId('kernlog-line').filter({ hasText: 'Linux version' }).first(),
+	).toBeVisible();
 	await expectTransport(page);
 });
 

@@ -145,7 +145,7 @@
 								>
 								<button
 									type="button"
-									class="btn btn-xs btn-error btn-outline join-item"
+									class="btn btn-xs btn-error join-item"
 									onclick={() => ask(row, 'KILL')}
 									aria-label={t('processes.kill_pid', { pid: row.pid })}
 									>KILL</button

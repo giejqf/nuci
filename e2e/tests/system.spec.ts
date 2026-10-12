@@ -10,7 +10,11 @@ import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
-const SYSUPGRADE = join(import.meta.dirname, '../../tools/qemu/images/sysupgrade-25.12.0.img.gz');
+const SUFFIX = (process.env.NUCI_TARGET ?? 'x86/64') === 'x86/64' ? '' : '-armv8';
+const SYSUPGRADE = join(
+	import.meta.dirname,
+	`../../tools/qemu/images/sysupgrade-25.12.0${SUFFIX}.img.gz`,
+);
 
 async function api() {
 	const rpc = createRpc({ endpoint: `${base}/ubus`, storage: null });

@@ -327,6 +327,9 @@ pnpm size           # bundle budget check
 pnpm e2e            # boots QEMU lab if not running, runs Playwright
 tools/sync.sh       # scp dist/ → /www/nuci, rpcd/ → /usr/share/rpcd, restarts rpcd
 tools/sdk/build.sh  # builds .apk packages from feed/ with the 25.12 SDK
+tools/imagebuilder/build.sh   # lab image with NuCI preinstalled (Image Builder)
+NUCI_FEED_KEY=key.pem tools/release.sh   # dist/release: .apk + signed packages.adb + public key
+pnpm i18n:template de         # start/refresh a translation catalog
 ```
 
 Inner loop: keep a QEMU router running (§7), `pnpm dev` for the frontend, and
@@ -375,13 +378,27 @@ Scripts live in `tools/qemu/`. All of them are idempotent and non-interactive.
   socket for fast reset between test suites.
 - `stop.sh` — graceful `system quit` via the monitor.
 
-**CI image (Phase 6):** use the 25.12 Image Builder for x86/64 with our feed's
-`.apk` files dropped into its `packages/` dir:
-`make image PROFILE=generic PACKAGES="nuci" FILES=tools/qemu/files/`. This gives
-a ready image so e2e doesn't depend on network package installs.
+**CI image (Phase 6):** `tools/imagebuilder/build.sh` runs the 25.12 Image
+Builder with our feed's `.apk` files dropped into its `packages/` dir:
+`make image PROFILE=generic PACKAGES="nuci kmod-mac80211-hwsim wpad-basic-mbedtls iw -luci…" FILES=tools/qemu/files/`
+→ `tools/qemu/images/nuci-<version>.img`, booted with
+`start.sh --image …`. `provision.sh` then only sets credentials and
+radios, so e2e doesn't depend on network package installs. No secrets go
+into the image (rule 10).
 
-**armsr/armv8** (Phase 6): same scripts with `qemu-system-aarch64 -M virt -cpu
-cortex-a57` and the `armsr-armv8` combined image; used only in nightly CI.
+**armsr/armv8** (Phase 6): `NUCI_TARGET=armsr/armv8` switches `fetch.sh`/
+`start.sh` to `qemu-system-aarch64 -M virt` with the
+`armsr-armv8-generic-squashfs-combined-efi` image and `QEMU_EFI.fd`
+(`qemu-efi-aarch64`); `-cpu cortex-a57` under TCG, `-accel kvm -cpu host` on
+aarch64 hosts. Run a second lab next to the x86 one with
+`NUCI_LAB_NAME=arm NUCI_HTTP_PORT=8081 NUCI_SSH_PORT=2223`. Nightly CI
+(`nightly.yml`) runs it on an arm64 runner.
+
+**Release feed (Phase 6):** packages are architecture independent
+(`PKGARCH:=all`), so one feed serves every target. `tools/release.sh` writes
+the `.apk` files, an apk v3 index signed with the SDK's `apk mkndx --sign`
+and the public key; `release.yml` publishes them on `v*` tags using the
+`NUCI_FEED_KEY` repository secret.
 
 ---
 

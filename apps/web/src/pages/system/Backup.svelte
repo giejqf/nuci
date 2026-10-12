@@ -21,6 +21,8 @@
 		forceable: boolean;
 		allow_backup: boolean;
 		tests: Record<string, boolean>;
+		/** Set when the router could not run its checks at all. */
+		error?: string;
 	};
 
 	let backupBusy = $state(false);
@@ -111,7 +113,20 @@
 				fwFile,
 				(s, total) => (fwProgress = total ? s / total : 1),
 			);
-			validation = await rpc.system.validateFirmwareImage(FIRMWARE);
+			try {
+				validation = await rpc.system.validateFirmwareImage(FIRMWARE);
+			} catch (e) {
+				// Some targets' checks abort without a verdict (armsr/armv8 on a
+				// bogus file): an image that could not be verified is not valid.
+				if (!isRpcError(e)) throw e;
+				validation = {
+					valid: false,
+					forceable: false,
+					allow_backup: false,
+					tests: {},
+					error: t('flash.validation_failed', { error: t(e.messageKey) }),
+				};
+			}
 			keep = validation.allow_backup;
 		} catch (e) {
 			err(e);
@@ -234,6 +249,7 @@
 						<p class="font-semibold">
 							{validation.valid ? t('flash.valid') : t('flash.invalid')}
 						</p>
+						{#if validation.error}<p class="text-sm">{validation.error}</p>{/if}
 						<ul class="mt-1 text-sm">
 							{#each Object.entries(validation.tests ?? {}) as [test, ok] (test)}
 								<li>{ok ? '✓' : '✗'} {test}</li>

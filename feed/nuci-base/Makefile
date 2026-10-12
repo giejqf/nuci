@@ -68,6 +68,16 @@ define Package/nuci-base/install
 	$(INSTALL_BIN) ./files/root-redirect.sh $(1)/usr/libexec/nuci/root-redirect
 endef
 
+define Package/nuci-base/postinst
+#!/bin/sh
+[ -n "$${IPKG_INSTROOT}" ] && exit 0
+# default_postinst has applied uci-defaults/90-nuci-base (ucode handlers,
+# max_requests); uhttpd only reads them at start. Found by installing from
+# the release feed on a stock image (Phase 6).
+/etc/init.d/uhttpd reload 2>/dev/null
+exit 0
+endef
+
 define Package/nuci-base/postrm
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] && exit 0

@@ -45,12 +45,19 @@ tools/sdk/build.sh       # build .apk packages into dist/feed/
 
 ## Installing on a router
 
-Until signed feeds are published (Phase 6), build the packages with
-`tools/sdk/build.sh` and install them on OpenWrt 25.12:
+From a release (OpenWrt 25.12, any architecture; the packages are
+architecture independent):
 
 ```sh
-apk add --allow-untrusted ./rpcd-mod-nuci-*.apk ./nuci-base-*.apk ./nuci-*.apk
+BASE=https://github.com/<owner>/nuci/releases/download/v0.1.0
+wget -O /etc/apk/keys/nuci-feed.pem "$BASE/nuci-feed.pem"
+echo "$BASE/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
+apk update && apk add nuci
 ```
+
+From source: `pnpm build && tools/sdk/build.sh`, copy `dist/feed/*.apk` to
+the router and run `apk add --allow-untrusted ./*.apk`. To produce a signed
+feed yourself: `NUCI_FEED_KEY=key.pem tools/release.sh`.
 
 Then open `http://<router>/nuci/`.
 

@@ -11,6 +11,8 @@ export default ts.config(
 			'**/node_modules/',
 			'tools/qemu/',
 			'tools/sdk/',
+			'tools/imagebuilder/cache/',
+			'tools/imagebuilder/work/',
 			'e2e/test-results/',
 			'e2e/playwright-report/',
 		],

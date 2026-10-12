@@ -676,5 +676,6 @@
 	"firewall.proto_all_help": "No selection: all protocols.",
 	"firewall.nat_target.SNAT": "SNAT (rewrite source)",
 	"firewall.nat_target.MASQUERADE": "Masquerade",
-	"firewall.nat_target.ACCEPT": "Do not rewrite"
+	"firewall.nat_target.ACCEPT": "Do not rewrite",
+	"flash.validation_failed": "The router could not check the image ({error})."
 }
