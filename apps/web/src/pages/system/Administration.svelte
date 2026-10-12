@@ -33,6 +33,10 @@
 	let error = $state('');
 
 	const canPassword = $derived(session.acl.canCall('rpc-sys', 'password_set'));
+	const canKeys = $derived(session.acl.canFile(KEYS, 'write'));
+	const canCert = $derived(
+		session.acl.canFile('/etc/uhttpd.crt', 'write') && session.acl.canCall('rc', 'init'),
+	);
 	const pwError = $derived(pw1 && pw2 && pw1 !== pw2 ? 'admin.password_mismatch' : null);
 	const keyLines = $derived(
 		keys
@@ -186,6 +190,7 @@
 						id="ssh-keys"
 						class="textarea h-40 w-full font-mono text-xs"
 						bind:value={keys}
+						readonly={!canKeys}
 						spellcheck="false"
 						data-testid="ssh-keys"></textarea>
 				</label>
@@ -198,7 +203,7 @@
 					<button
 						type="button"
 						class="btn btn-sm"
-						disabled={keysBusy || badKeys.length > 0}
+						disabled={!canKeys || keysBusy || badKeys.length > 0}
 						onclick={saveKeys}
 						data-testid="save-keys">{t('admin.keys_save')}</button
 					>
@@ -222,7 +227,12 @@
 					/>
 				</Form>
 				<div>
-					<button type="button" class="btn btn-sm" onclick={() => (certConfirm = true)}>
+					<button
+						type="button"
+						class="btn btn-sm"
+						disabled={!canCert}
+						onclick={() => (certConfirm = true)}
+					>
 						<RefreshCw size={16} aria-hidden="true" />{t('admin.cert_regenerate')}
 					</button>
 				</div>

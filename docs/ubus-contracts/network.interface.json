@@ -40,7 +40,7 @@
 						"available": true,
 						"autostart": true,
 						"dynamic": false,
-						"uptime": 3149,
+						"uptime": 371,
 						"l3_device": "br-lan",
 						"proto": "static",
 						"device": "br-lan",
@@ -60,10 +60,10 @@
 						"ipv6-prefix": [],
 						"ipv6-prefix-assignment": [
 							{
-								"address": "fdf3:8d82:4392::",
+								"address": "fd95:d0c7:8ce9::",
 								"mask": 60,
 								"local-address": {
-									"address": "fdf3:8d82:4392::1",
+									"address": "fd95:d0c7:8ce9::1",
 									"mask": 60
 								}
 							}
@@ -89,7 +89,7 @@
 						"available": true,
 						"autostart": true,
 						"dynamic": false,
-						"uptime": 3149,
+						"uptime": 371,
 						"l3_device": "lo",
 						"proto": "static",
 						"device": "lo",
@@ -129,7 +129,7 @@
 						"available": true,
 						"autostart": true,
 						"dynamic": false,
-						"uptime": 3140,
+						"uptime": 358,
 						"l3_device": "eth1",
 						"proto": "dhcp",
 						"device": "eth1",
@@ -178,58 +178,13 @@
 					},
 					{
 						"interface": "wan6",
-						"up": true,
-						"pending": false,
+						"up": false,
+						"pending": true,
 						"available": true,
 						"autostart": true,
 						"dynamic": false,
-						"uptime": 3116,
-						"l3_device": "eth1",
 						"proto": "dhcpv6",
 						"device": "eth1",
-						"metric": 0,
-						"dns_metric": 0,
-						"delegation": true,
-						"ipv4-address": [],
-						"ipv6-address": [
-							{
-								"address": "fec0::5054:ff:fe12:3457",
-								"mask": 64,
-								"preferred": 14364,
-								"valid": 86364
-							}
-						],
-						"ipv6-prefix": [],
-						"ipv6-prefix-assignment": [],
-						"route": [
-							{
-								"target": "fec0::",
-								"mask": 64,
-								"nexthop": "::",
-								"metric": 256,
-								"valid": 86364,
-								"source": "::/0"
-							},
-							{
-								"target": "::",
-								"mask": 0,
-								"nexthop": "fe80::2",
-								"metric": 512,
-								"valid": 1764,
-								"source": "fec0::5054:ff:fe12:3457/64"
-							}
-						],
-						"dns-server": [],
-						"dns-search": [],
-						"neighbors": [],
-						"inactive": {
-							"ipv4-address": [],
-							"ipv6-address": [],
-							"route": [],
-							"dns-server": [],
-							"dns-search": [],
-							"neighbors": []
-						},
 						"data": {}
 					}
 				]

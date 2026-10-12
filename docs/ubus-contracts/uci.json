@@ -91,16 +91,15 @@
 			"status": 0,
 			"result": {
 				"configs": [
-					"attendedsysupgrade",
 					"dhcp",
 					"dropbear",
 					"firewall",
-					"luci",
 					"network",
 					"nuci",
 					"rpcd",
 					"system",
-					"uhttpd"
+					"uhttpd",
+					"wireless"
 				]
 			}
 		},
@@ -118,7 +117,7 @@
 						".name": "cfg01e48a",
 						".index": 0,
 						"hostname": "OpenWrt",
-						"timezone": "GMT0",
+						"timezone": "UTC0",
 						"zonename": "UTC",
 						"ttylogin": "0",
 						"log_size": "128",
@@ -165,8 +164,8 @@
 						".type": "globals",
 						".name": "globals",
 						".index": 1,
-						"dhcp_default_duid": "0004f8bf5cd1b6a740efa30575b485f16ef3",
-						"ula_prefix": "fdf3:8d82:4392::/48"
+						"dhcp_default_duid": "0004abea809788a341f3850c2b370ffbd93f",
+						"ula_prefix": "fd95:d0c7:8ce9::/48"
 					},
 					"cfg030f15": {
 						".anonymous": true,
@@ -186,10 +185,10 @@
 						".index": 3,
 						"device": "br-lan",
 						"proto": "static",
+						"ip6assign": "60",
 						"ipaddr": [
 							"192.168.1.1/24"
-						],
-						"ip6assign": "60"
+						]
 					},
 					"wan": {
 						".anonymous": false,
@@ -224,10 +223,10 @@
 					".name": "lan",
 					"device": "br-lan",
 					"proto": "static",
+					"ip6assign": "60",
 					"ipaddr": [
 						"192.168.1.1/24"
-					],
-					"ip6assign": "60"
+					]
 				}
 			}
 		},

@@ -62,6 +62,7 @@
 			class="toggle"
 			checked={current}
 			disabled={locked}
+			data-uci={uci}
 			data-testid={testid}
 			onchange={toggle}
 		/>

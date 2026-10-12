@@ -69,6 +69,7 @@
 		{autocomplete}
 		value={current}
 		readonly={locked}
+		data-uci={uci}
 		aria-invalid={!!error}
 		aria-describedby={error ? `${id}-error` : description ? `${id}-desc` : undefined}
 		data-testid={testid}

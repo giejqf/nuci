@@ -73,6 +73,11 @@
 					"enabled": true,
 					"running": true
 				},
+				"nuci": {
+					"start": 99,
+					"enabled": true,
+					"running": false
+				},
 				"odhcpd": {
 					"start": 35,
 					"stop": 85,
@@ -127,10 +132,11 @@
 					"enabled": true,
 					"running": true
 				},
-				"nuci": {
-					"start": 99,
+				"wpad": {
+					"start": 19,
+					"stop": 21,
 					"enabled": true,
-					"running": false
+					"running": true
 				}
 			}
 		}

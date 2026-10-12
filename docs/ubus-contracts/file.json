@@ -52,10 +52,7 @@
 			"args": {
 				"path": "/etc/rc.local"
 			},
-			"error": {
-				"code": -32002,
-				"message": "Access denied"
-			}
+			"status": 6
 		},
 		{
 			"method": "list",
@@ -72,10 +69,7 @@
 			"args": {
 				"path": "/etc/hostname-does-not-exist"
 			},
-			"error": {
-				"code": -32002,
-				"message": "Access denied"
-			}
+			"status": 6
 		}
 	]
 }

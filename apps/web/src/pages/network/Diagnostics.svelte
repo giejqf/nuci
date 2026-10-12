@@ -6,6 +6,7 @@
 	import { isRpcError, type JobStatus } from '@nuci/rpc';
 	import { Page, Section, Select, TextField, validators } from '@nuci/ui';
 	import { rpc } from '../../lib/services';
+	import { session } from '../../lib/session.svelte';
 
 	let tool = $state<'ping' | 'traceroute' | 'nslookup'>('ping');
 	let host = $state('openwrt.org');
@@ -100,7 +101,7 @@
 			<button
 				type="submit"
 				class="btn btn-primary btn-sm mb-2"
-				disabled={running || !!hostError}
+				disabled={running || !!hostError || !session.acl.canCall('nuci.diag', tool)}
 				data-testid="diag-run"
 			>
 				{#if running}<span class="loading loading-spinner loading-xs" aria-hidden="true"

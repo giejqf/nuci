@@ -51,6 +51,7 @@
 					class="checkbox checkbox-sm"
 					checked={selected.includes(o.value)}
 					disabled={locked}
+					data-uci={uci}
 					onchange={(e) => toggle(o.value, (e.currentTarget as HTMLInputElement).checked)}
 				/>
 				<span class="text-base-content">{o.label}</span>

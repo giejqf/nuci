@@ -35,16 +35,22 @@
 			"result": {
 				"packages": [
 					{
-						"name": "apk-mbedtls",
-						"version": "3.0.2-r5",
-						"description": "apk package manager (mbedtls)",
-						"installed_size": 232023
+						"name": "6in4",
+						"version": "29",
+						"description": "Provides support for 6in4 tunnels in /etc/config/network. Refer to http://wiki.openwrt.org/doc/uci/network for configuration details.",
+						"installed_size": 4449
 					},
 					{
-						"name": "attendedsysupgrade-common",
-						"version": "9",
-						"description": "Common needed files for attendedsysupgrade tool Manages dependencies and brings settings used by clients. UCI options: * attendedsysupgrade.server.url URL of compatible upgrade server [1] * attendedsysupgrade.client.upgrade_packages Client should request image also if no new release but new packages upgrade are available. * attendedsysupgrade.client.advanced_mode Offer advanced options like editing packages before request and show additional information. * attendedsysupgrade.client.auto_search Tells the cli",
-						"installed_size": 604
+						"name": "6rd",
+						"version": "13",
+						"description": "Provides support for 6rd tunnels in /etc/config/network. Refer to http://wiki.openwrt.org/doc/uci/network for configuration details.",
+						"installed_size": 14905
+					},
+					{
+						"name": "apk-mbedtls",
+						"version": "3.0.5-r3",
+						"description": "apk package manager (mbedtls)",
+						"installed_size": 232023
 					},
 					{
 						"name": "base-files",
@@ -54,7 +60,7 @@
 					},
 					{
 						"name": "bnx2-firmware",
-						"version": "20251125-r1",
+						"version": "20260221-r1",
 						"description": "Broadcom BCM5706/5708/5709/5716 firmware",
 						"installed_size": 215355
 					},
@@ -66,27 +72,27 @@
 					},
 					{
 						"name": "ca-bundle",
-						"version": "20250419-r2",
+						"version": "20260816-r1",
 						"description": "System CA certificates as a bundle",
-						"installed_size": 224502
-					},
-					{
-						"name": "cgi-io",
-						"version": "2025.12.11~658b14bd-r1",
-						"description": "This package contains an cgi utility that is useful for up/downloading files",
-						"installed_size": 24823
+						"installed_size": 181656
 					},
 					{
 						"name": "dnsmasq",
-						"version": "2.91-r2",
+						"version": "2.93-r1",
 						"description": "It is intended to provide coupled DNS and DHCP service to a LAN.",
-						"installed_size": 296539
+						"installed_size": 313051
 					},
 					{
 						"name": "dropbear",
 						"version": "2025.89-r1",
 						"description": "A small SSH2 server/client designed for small memory environments.",
 						"installed_size": 224970
+					},
+					{
+						"name": "ds-lite",
+						"version": "9",
+						"description": "Provides support for IPv4 over IPv6 (RFC2473 and DS-Lite) in /etc/config/network. Refer to http://wiki.openwrt.org/doc/uci/network for configuration details.",
+						"installed_size": 3107
 					},
 					{
 						"name": "e2fsprogs",
@@ -96,7 +102,7 @@
 					},
 					{
 						"name": "firewall4",
-						"version": "2025.03.17~b6e51575-r1",
+						"version": "2025.03.17~b6e51575-r2",
 						"description": "This package provides an nftables-based implementation of the UCI firewall sharing the same configuration format.",
 						"installed_size": 130657
 					},
@@ -119,28 +125,28 @@
 						"installed_size": 12206
 					},
 					{
-						"name": "grub2",
-						"version": "2.12-r1",
-						"description": "GRand Unified Bootloader (pc)",
-						"installed_size": 1
-					},
-					{
 						"name": "grub2-bios-setup",
 						"version": "2.12-r1",
 						"description": "Set up images to bootable.",
 						"installed_size": 769088
 					},
 					{
-						"name": "grub2-efi",
-						"version": "2.12-r1",
-						"description": "GRand Unified Bootloader (efi)",
-						"installed_size": 1
+						"name": "hostapd-common",
+						"version": "2025.08.26~ca266cc2-r5",
+						"description": "hostapd/wpa_supplicant common support files",
+						"installed_size": 2272
 					},
 					{
 						"name": "i915-firmware-dmc",
-						"version": "20251125-r1",
+						"version": "20260221-r1",
 						"description": "Intel I915 DMC firmware",
-						"installed_size": 1030816
+						"installed_size": 1049472
+					},
+					{
+						"name": "iw",
+						"version": "6.17-r1",
+						"description": "cfg80211 interface configuration utility",
+						"installed_size": 136224
 					},
 					{
 						"name": "jansson4",
@@ -150,13 +156,13 @@
 					},
 					{
 						"name": "jshn",
-						"version": "2026.02.13~1aa36ee7-r1",
+						"version": "2026.06.19~7dd12784-r1",
 						"description": "Library for parsing and generating JSON from shell scripts",
 						"installed_size": 24005
 					},
 					{
 						"name": "jsonfilter",
-						"version": "2025.10.04~f4fe702d-r1",
+						"version": "2026.03.16~b9034210-r1",
 						"description": "OpenWrt JSON filter utility",
 						"installed_size": 24823
 					},
@@ -203,16 +209,112 @@
 						"installed_size": 9837
 					},
 					{
+						"name": "kmod-cfg80211",
+						"version": "6.12.71.6.18.7-r1",
+						"description": "cfg80211 is the Linux wireless LAN (802.11) configuration API.",
+						"installed_size": 509104
+					},
+					{
+						"name": "kmod-crypto-aead",
+						"version": "6.12.71-r1",
+						"description": "CryptoAPI AEAD support",
+						"installed_size": 70
+					},
+					{
+						"name": "kmod-crypto-ccm",
+						"version": "6.12.71-r1",
+						"description": "Support for Counter with CBC MAC (CCM)",
+						"installed_size": 33
+					},
+					{
+						"name": "kmod-crypto-cmac",
+						"version": "6.12.71-r1",
+						"description": "Support for Cipher-based Message Authentication Code (CMAC)",
+						"installed_size": 6608
+					},
+					{
 						"name": "kmod-crypto-crc32c",
 						"version": "6.12.71-r1",
 						"description": "CRC32c CRC module",
 						"installed_size": 84
 					},
 					{
+						"name": "kmod-crypto-ctr",
+						"version": "6.12.71-r1",
+						"description": "Counter Mode CryptoAPI module",
+						"installed_size": 33
+					},
+					{
+						"name": "kmod-crypto-gcm",
+						"version": "6.12.71-r1",
+						"description": "GCM/GMAC CryptoAPI module",
+						"installed_size": 33
+					},
+					{
+						"name": "kmod-crypto-geniv",
+						"version": "6.12.71-r1",
+						"description": "CryptoAPI Shared IV generator",
+						"installed_size": 5707
+					},
+					{
+						"name": "kmod-crypto-gf128",
+						"version": "6.12.71-r1",
+						"description": "GF(2^128) multiplication functions CryptoAPI module",
+						"installed_size": 40
+					},
+					{
+						"name": "kmod-crypto-ghash",
+						"version": "6.12.71-r1",
+						"description": "GHASH digest CryptoAPI module",
+						"installed_size": 45
+					},
+					{
 						"name": "kmod-crypto-hash",
 						"version": "6.12.71-r1",
 						"description": "CryptoAPI hash support",
 						"installed_size": 77
+					},
+					{
+						"name": "kmod-crypto-hmac",
+						"version": "6.12.71-r1",
+						"description": "HMAC digest CryptoAPI module",
+						"installed_size": 7304
+					},
+					{
+						"name": "kmod-crypto-manager",
+						"version": "6.12.71-r1",
+						"description": "CryptoAPI algorithm manager",
+						"installed_size": 81
+					},
+					{
+						"name": "kmod-crypto-null",
+						"version": "6.12.71-r1",
+						"description": "Null CryptoAPI module",
+						"installed_size": 42
+					},
+					{
+						"name": "kmod-crypto-rng",
+						"version": "6.12.71-r1",
+						"description": "CryptoAPI random number generation",
+						"installed_size": 37707
+					},
+					{
+						"name": "kmod-crypto-seqiv",
+						"version": "6.12.71-r1",
+						"description": "CryptoAPI Sequence Number IV Generator",
+						"installed_size": 5907
+					},
+					{
+						"name": "kmod-crypto-sha3",
+						"version": "6.12.71-r1",
+						"description": "SHA3 digest CryptoAPI module",
+						"installed_size": 10456
+					},
+					{
+						"name": "kmod-crypto-sha512",
+						"version": "6.12.71-r1",
+						"description": "SHA512 digest CryptoAPI module",
+						"installed_size": 58605
 					},
 					{
 						"name": "kmod-dma-buf",
@@ -377,6 +479,30 @@
 						"installed_size": 1
 					},
 					{
+						"name": "kmod-ip6-tunnel",
+						"version": "6.12.71-r1",
+						"description": "Kernel modules for IPv6-in-IPv6 and IPv4-in-IPv6 tunnelling",
+						"installed_size": 46203
+					},
+					{
+						"name": "kmod-iptunnel",
+						"version": "6.12.71-r1",
+						"description": "Kernel module for generic IP tunnel support",
+						"installed_size": 30263
+					},
+					{
+						"name": "kmod-iptunnel4",
+						"version": "6.12.71-r1",
+						"description": "Kernel modules for IPv4 tunneling",
+						"installed_size": 9132
+					},
+					{
+						"name": "kmod-iptunnel6",
+						"version": "6.12.71-r1",
+						"description": "Kernel modules for IPv6 tunneling",
+						"installed_size": 9644
+					},
+					{
 						"name": "kmod-ixgbe",
 						"version": "6.12.71-r1",
 						"description": "Kernel modules for Intel(R) 82598/82599 PCI-Express 10 Gigabit Ethernet adapters.",
@@ -399,6 +525,18 @@
 						"version": "6.12.71-r1",
 						"description": "PHY library",
 						"installed_size": 62
+					},
+					{
+						"name": "kmod-mac80211",
+						"version": "6.12.71.6.18.7-r1",
+						"description": "Generic IEEE 802.11 Networking Stack (mac80211)",
+						"installed_size": 953113
+					},
+					{
+						"name": "kmod-mac80211-hwsim",
+						"version": "6.12.71.6.18.7-r1",
+						"description": "mac80211 HW simulation device",
+						"installed_size": 104236
 					},
 					{
 						"name": "kmod-mdio",
@@ -575,6 +713,12 @@
 						"installed_size": 147291
 					},
 					{
+						"name": "kmod-sit",
+						"version": "6.12.71-r1",
+						"description": "Kernel modules for IPv6-in-IPv4 tunnelling",
+						"installed_size": 33230
+					},
+					{
 						"name": "kmod-slhc",
 						"version": "6.12.71-r1",
 						"description": "Serial Line Header Compression",
@@ -593,14 +737,20 @@
 						"installed_size": 236561
 					},
 					{
+						"name": "kmod-veth",
+						"version": "6.12.71-r1",
+						"description": "This device is a local ethernet tunnel. Devices are created in pairs. When one end receives the packet it appears on its pair and vice versa.",
+						"installed_size": 31969
+					},
+					{
 						"name": "libblkid1",
-						"version": "2.41.3-r1",
+						"version": "2.41.5-r1",
 						"description": "The libblkid library is used to identify block devices (disks) as to their content (e.g. filesystem type, partitions) as well as extracting additional information such as filesystem labels/volume names, partitions, unique identifiers/serial numbers...",
 						"installed_size": 259011
 					},
 					{
 						"name": "libblobmsg-json20260213",
-						"version": "2026.02.13~1aa36ee7-r1",
+						"version": "2026.06.19~7dd12784-r1",
 						"description": "blobmsg <-> json conversion library",
 						"installed_size": 12323
 					},
@@ -642,13 +792,13 @@
 					},
 					{
 						"name": "libiwinfo-data",
-						"version": "2026.01.14~f5dd57a8-r1",
+						"version": "2026.05.26~66bdd1a0-r1",
 						"description": "libiwinfo Lua binding",
-						"installed_size": 17982
+						"installed_size": 18264
 					},
 					{
 						"name": "libiwinfo20230701",
-						"version": "2026.01.14~f5dd57a8-r1",
+						"version": "2026.05.26~66bdd1a0-r1",
 						"description": "Wireless information library with simplified API for nl80211 and wext driver interfaces.",
 						"installed_size": 65590
 					},
@@ -660,15 +810,15 @@
 					},
 					{
 						"name": "libjson-script20260213",
-						"version": "2026.02.13~1aa36ee7-r1",
+						"version": "2026.06.19~7dd12784-r1",
 						"description": "Minimalistic JSON based scripting engine",
 						"installed_size": 12361
 					},
 					{
 						"name": "libmbedtls21",
-						"version": "3.6.5-r1",
+						"version": "3.6.7-r1",
 						"description": "The aim of the mbedtls project is to provide a quality, open-source cryptographic library written in C and targeted at embedded systems. This package contains the mbedtls library.",
-						"installed_size": 721373
+						"installed_size": 717277
 					},
 					{
 						"name": "libmnl0",
@@ -702,7 +852,7 @@
 					},
 					{
 						"name": "libsmartcols1",
-						"version": "2.41.3-r1",
+						"version": "2.41.5-r1",
 						"description": "The smartcols library is used to print tables and trees in a pretty way.",
 						"installed_size": 135235
 					},
@@ -714,13 +864,13 @@
 					},
 					{
 						"name": "libubox20260213",
-						"version": "2026.02.13~1aa36ee7-r1",
+						"version": "2026.06.19~7dd12784-r1",
 						"description": "Basic utility library",
 						"installed_size": 57477
 					},
 					{
 						"name": "libubus20251202",
-						"version": "2025.12.02~3cc98db1-r1",
+						"version": "2026.06.28~24864e78-r2",
 						"description": "OpenWrt RPC client library",
 						"installed_size": 28899
 					},
@@ -732,13 +882,13 @@
 					},
 					{
 						"name": "libuclient20201210",
-						"version": "2026.02.20~7a0aa2e4-r1",
+						"version": "2026.06.07~daad21fa-r1",
 						"description": "HTTP/1.1 client library",
 						"installed_size": 28697
 					},
 					{
 						"name": "libucode20230711",
-						"version": "2026.01.16~85922056-r1",
+						"version": "2026.01.16~85922056-r2",
 						"description": "The libucode package provides the shared runtime library for the ucode interpreter.",
 						"installed_size": 160377
 					},
@@ -750,13 +900,13 @@
 					},
 					{
 						"name": "libustream-mbedtls20201210",
-						"version": "2025.10.03~5a81c108-r1",
+						"version": "2026.03.01~99f1c0db-r1",
 						"description": "ustream SSL Library (mbedtls)",
 						"installed_size": 16409
 					},
 					{
 						"name": "libuuid1",
-						"version": "2.41.3-r1",
+						"version": "2.41.5-r1",
 						"description": "The UUID library is used to generate unique identifiers for objects that may be accessible beyond the local system. This library generates UUIDs compatible with those created by the Open Software Foundation (OSF) Distributed Computing Environment (DCE) utility.",
 						"installed_size": 28789
 					},
@@ -780,39 +930,39 @@
 					},
 					{
 						"name": "netifd",
-						"version": "2026.02.26~cbb83a18-r1",
+						"version": "2026.02.26~cbb83a18-r2",
 						"description": "OpenWrt Network Interface Configuration Daemon",
-						"installed_size": 264821
+						"installed_size": 265414
 					},
 					{
 						"name": "nftables-json",
-						"version": "1.1.6-r1",
+						"version": "1.1.6-r2",
 						"description": "nftables userspace utility with JSON support",
 						"installed_size": 799780
 					},
 					{
 						"name": "nuci",
-						"version": "0.0.1-r1",
+						"version": "0.1.0-r1",
 						"description": "A fast, modern admin UI for OpenWrt. Installs all NuCI components.",
 						"installed_size": 33
 					},
 					{
 						"name": "nuci-base",
-						"version": "0.0.1-r1",
-						"description": "Static files of the NuCI single-page application served at /nuci/, the /nuci/events Server-Sent Events handler, rpcd ACLs and the optional / redirect.",
-						"installed_size": 255701
+						"version": "0.1.0-r1",
+						"description": "Static files of the NuCI single-page application served at /nuci/, the /nuci/events Server-Sent Events handler, the /nuci/probe apply probe, rpcd ACLs and the optional / redirect.",
+						"installed_size": 491515
 					},
 					{
 						"name": "odhcp6c",
-						"version": "2026.01.25~ee2949e3-r1",
+						"version": "2026.06.27~10a52220-r3",
 						"description": "Embedded DHCPv6-client for OpenWrt",
-						"installed_size": 89753
+						"installed_size": 91111
 					},
 					{
 						"name": "odhcpd-ipv6only",
-						"version": "2026.01.19~2e5068b9-r1",
+						"version": "2026.06.29~5d7be43f-r1",
 						"description": "odhcpd is a daemon for serving and relaying IP management protocols to configure clients and downstream routers. It tries to follow the RFC 6204 requirements for IPv6 home routers. This is a variant with support for RA and DHCPv6. It can also be used to relay RA, DHCPv6 and NDP messages between routed (non-bridged) interfaces in case no delegated prefixes are available.",
-						"installed_size": 107031
+						"installed_size": 111127
 					},
 					{
 						"name": "openwrt-keyring",
@@ -821,98 +971,86 @@
 						"installed_size": 210
 					},
 					{
-						"name": "owut",
-						"version": "2026.01.13~2526d84b-r1",
-						"description": "The OpenWrt Upgrade Tool (owut) is a command line program that checks for new packages, package build breakages, generates sysupgrade images containing installed packages and installs images. It is written in ucode for easy end-user customization. Documentation is available at https://openwrt.org/docs/guide-user/installation/sysupgrade.owut",
-						"installed_size": 86829
-					},
-					{
 						"name": "partx-utils",
-						"version": "2.41.3-r1",
+						"version": "2.41.5-r1",
 						"description": "contains partx, addpart, delpart",
 						"installed_size": 147542
 					},
 					{
 						"name": "ppp",
-						"version": "2.5.2-r2",
+						"version": "2.5.2-r4",
 						"description": "This package contains the PPP (Point-to-Point Protocol) daemon.",
-						"installed_size": 290816
+						"installed_size": 295040
 					},
 					{
 						"name": "ppp-mod-pppoe",
-						"version": "2.5.2-r2",
+						"version": "2.5.2-r4",
 						"description": "This package contains a PPPoE (PPP over Ethernet) plugin for ppp.",
 						"installed_size": 29887
 					},
 					{
 						"name": "procd",
-						"version": "2026.02.20~2881a59f-r1",
+						"version": "2026.03.13~58eb263d-r1",
 						"description": "OpenWrt system process manager",
 						"installed_size": 186539
 					},
 					{
 						"name": "procd-seccomp",
-						"version": "2026.02.20~2881a59f-r1",
+						"version": "2026.03.13~58eb263d-r1",
 						"description": "OpenWrt process seccomp helper + utrace",
 						"installed_size": 61531
 					},
 					{
 						"name": "procd-ujail",
-						"version": "2026.02.20~2881a59f-r1",
+						"version": "2026.03.13~58eb263d-r1",
 						"description": "OpenWrt process jail helper",
 						"installed_size": 91431
 					},
 					{
-						"name": "px5g-mbedtls",
-						"version": "11",
-						"description": "Px5g is a tiny standalone X.509 certificate generator. It suitable to create key files and certificates in DER and PEM format for use with stunnel, uhttpd and others.",
-						"installed_size": 15946
+						"name": "r8169-firmware",
+						"version": "20260221-r1",
+						"description": "RealTek RTL8169 firmware",
+						"installed_size": 149528
 					},
 					{
-						"name": "r8169-firmware",
-						"version": "20251125-r1",
-						"description": "RealTek RTL8169 firmware",
-						"installed_size": 147763
+						"name": "resolveip",
+						"version": "2",
+						"description": "This package contains the small resolveip utility which can be used by scripts to turn host names into numeric IP addresses. It supports IPv4 and IPv6 resolving and has a configurable timeout to guarantee a certain maximum runtime in case of slow or defunct DNS servers.",
+						"installed_size": 12190
 					},
 					{
 						"name": "rpcd",
-						"version": "2025.12.03~ffb9961c-r1",
+						"version": "2026.10.04~d99f703e-r1",
 						"description": "This package provides the UBUS RPC backend server to expose various functionality to frontend programs via JSON-RPC.",
 						"installed_size": 59129
 					},
 					{
 						"name": "rpcd-mod-file",
-						"version": "2025.12.03~ffb9961c-r1",
+						"version": "2026.10.04~d99f703e-r1",
 						"description": "Provides ubus calls for file and directory operations.",
-						"installed_size": 20712
+						"installed_size": 24808
 					},
 					{
 						"name": "rpcd-mod-iwinfo",
-						"version": "2025.12.03~ffb9961c-r1",
+						"version": "2026.10.04~d99f703e-r1",
 						"description": "Provides ubus calls for accessing iwinfo data.",
 						"installed_size": 24810
 					},
 					{
 						"name": "rpcd-mod-nuci",
-						"version": "0.0.1-r1",
+						"version": "0.1.0-r1",
 						"description": "ucode plugins for rpcd exposing the nuci.* ubus objects used by NuCI.",
-						"installed_size": 35961
+						"installed_size": 61043
 					},
 					{
 						"name": "rpcd-mod-rpcsys",
-						"version": "2025.12.03~ffb9961c-r1",
+						"version": "2026.10.04~d99f703e-r1",
 						"description": "Provides ubus calls for sysupgrade and password changing.",
 						"installed_size": 12522
 					},
 					{
-						"name": "rpcd-mod-rrdns",
-						"version": "20170710",
-						"description": "Provides rapid mass reverse DNS lookup functionality.",
-						"installed_size": 12521
-					},
-					{
 						"name": "rpcd-mod-ucode",
-						"version": "2025.12.03~ffb9961c-r1",
+						"version": "2026.10.04~d99f703e-r1",
 						"description": "Allows implementing plugins using ucode scripts.",
 						"installed_size": 24737
 					},
@@ -924,15 +1062,15 @@
 					},
 					{
 						"name": "ubus",
-						"version": "2025.12.02~3cc98db1-r1",
+						"version": "2026.06.28~24864e78-r2",
 						"description": "OpenWrt RPC client utility",
 						"installed_size": 20503
 					},
 					{
 						"name": "ubusd",
-						"version": "2025.12.02~3cc98db1-r1",
+						"version": "2026.06.28~24864e78-r2",
 						"description": "OpenWrt RPC daemon",
-						"installed_size": 33029
+						"installed_size": 33045
 					},
 					{
 						"name": "uci",
@@ -942,73 +1080,67 @@
 					},
 					{
 						"name": "uclient-fetch",
-						"version": "2026.02.20~7a0aa2e4-r1",
+						"version": "2026.06.07~daad21fa-r1",
 						"description": "Tiny wget replacement using libuclient",
 						"installed_size": 24720
 					},
 					{
 						"name": "ucode",
-						"version": "2026.01.16~85922056-r1",
+						"version": "2026.01.16~85922056-r2",
 						"description": "ucode is a tiny script interpreter featuring an ECMAScript oriented script language and Jinja-inspired templating.",
 						"installed_size": 24085
 					},
 					{
+						"name": "ucode-mod-digest",
+						"version": "2026.01.16~85922056-r2",
+						"description": "The digest module allows ucode scripts to use libmd digests.",
+						"installed_size": 41018
+					},
+					{
 						"name": "ucode-mod-fs",
-						"version": "2026.01.16~85922056-r1",
+						"version": "2026.01.16~85922056-r2",
 						"description": "The filesystem plugin module allows interaction with the local file system.",
 						"installed_size": 36887
 					},
 					{
-						"name": "ucode-mod-html",
-						"version": "1",
-						"description": "ucode HTML utility library",
-						"installed_size": 65562
+						"name": "ucode-mod-nl80211",
+						"version": "2026.01.16~85922056-r2",
+						"description": "The nl80211 plugin provides access to the Linux wireless 802.11 netlink API.",
+						"installed_size": 61469
 					},
 					{
-						"name": "ucode-mod-log",
-						"version": "2026.01.16~85922056-r1",
-						"description": "The log plugin module provides access to the syslog and libubox ulog APIs.",
-						"installed_size": 12312
-					},
-					{
-						"name": "ucode-mod-math",
-						"version": "2026.01.16~85922056-r1",
-						"description": "The math plugin provides access to various <math.h> procedures.",
-						"installed_size": 12313
+						"name": "ucode-mod-rtnl",
+						"version": "2026.01.16~85922056-r2",
+						"description": "The rtnl plugin provides access to the Linux routing netlink API.",
+						"installed_size": 73754
 					},
 					{
 						"name": "ucode-mod-ubus",
-						"version": "2026.01.16~85922056-r1",
+						"version": "2026.01.16~85922056-r2",
 						"description": "The ubus module allows ucode template scripts to enumerate and invoke ubus procedures.",
 						"installed_size": 45081
 					},
 					{
 						"name": "ucode-mod-uci",
-						"version": "2026.01.16~85922056-r1",
+						"version": "2026.01.16~85922056-r2",
 						"description": "The uci module allows templates to read and modify uci configuration.",
 						"installed_size": 24680
 					},
 					{
-						"name": "ucode-mod-uclient",
-						"version": "2026.02.20~7a0aa2e4-r1",
-						"description": "ucode uclient module",
-						"installed_size": 16412
-					},
-					{
 						"name": "ucode-mod-uloop",
-						"version": "2026.01.16~85922056-r1",
+						"version": "2026.01.16~85922056-r2",
 						"description": "The uloop module allows ucode scripts to interact with OpenWrt uloop event loop implementation.",
 						"installed_size": 24602
 					},
 					{
 						"name": "uhttpd",
-						"version": "2025.10.03~ebb92e6b-r1",
+						"version": "2026.08.24~373145f7-r1",
 						"description": "uHTTPd is a tiny single threaded HTTP server with TLS, CGI and Lua support. It is intended as a drop-in replacement for the Busybox HTTP daemon.",
-						"installed_size": 70289
+						"installed_size": 74641
 					},
 					{
 						"name": "uhttpd-mod-ubus",
-						"version": "2025.10.03~ebb92e6b-r1",
+						"version": "2026.08.24~373145f7-r1",
 						"description": "The ubus plugin adds a HTTP/JSON RPC proxy for ubus and publishes the session.* namespace and procedures.",
 						"installed_size": 25006
 					},
@@ -1037,6 +1169,24 @@
 						"installed_size": 24347
 					},
 					{
+						"name": "wifi-scripts",
+						"version": "1.0-r1",
+						"description": "A set of scripts that handle setup and configuration of Wi-Fi devices.",
+						"installed_size": 282188
+					},
+					{
+						"name": "wireless-regdb",
+						"version": "2026.09.03-r1",
+						"description": "Wireless Regulatory Database",
+						"installed_size": 6360
+					},
+					{
+						"name": "wpad-basic-mbedtls",
+						"version": "2025.08.26~ca266cc2-r5",
+						"description": "This package contains a basic IEEE 802.1x/WPA Authenticator and Supplicant with WPA-PSK, SAE (WPA3-Personal), 802.11r and 802.11w support.",
+						"installed_size": 1126933
+					},
+					{
 						"name": "zlib",
 						"version": "1.3.1-r1",
 						"description": "zlib is a lossless data-compression library. This package includes the shared library.",
@@ -1054,30 +1204,9 @@
 			},
 			"status": 0,
 			"result": {
-				"total": 11185,
+				"total": 0,
 				"offset": 0,
-				"packages": [
-					{
-						"name": "464xlat",
-						"version": "13"
-					},
-					{
-						"name": "6in4",
-						"version": "29"
-					},
-					{
-						"name": "6rd",
-						"version": "13"
-					},
-					{
-						"name": "6to4",
-						"version": "13"
-					},
-					{
-						"name": "aardvark-dns",
-						"version": "1.12.2-r1"
-					}
-				]
+				"packages": []
 			}
 		},
 		{
@@ -1087,118 +1216,7 @@
 			},
 			"status": 0,
 			"result": {
-				"packages": [
-					{
-						"name": "tree",
-						"version": "2.2.1-r2",
-						"description": "List contents of directories in a tree-like format"
-					},
-					{
-						"name": "freeradius3-mod-cache-rbtree",
-						"version": "3.2.10-r2",
-						"description": "DATASTORE CACHE RBTREE"
-					},
-					{
-						"name": "kamailio-mod-mtree",
-						"version": "6.0.1-r2",
-						"description": "Memory caching system for Kamailio"
-					},
-					{
-						"name": "perl-html-tree",
-						"version": "5.07.5.40-r1",
-						"description": "HTML-Tree is a suite of Perl modules for making parse trees out of HTML source."
-					},
-					{
-						"name": "augeas",
-						"version": "1.14.1-r1",
-						"description": "Augeas is a configuration editing tool. It parses configuration files in their native formats and transforms them into a tree. Configuration changes are made by manipulating this tree and saving it back into native config files."
-					},
-					{
-						"name": "bsdtar",
-						"version": "3.8.1-r2",
-						"description": "Reads a variety of formats including tar, pax, zip, xar, lha, ar, cab, mtree, rar, warc, 7z and ISO images. Writes tar, pax, zip, xar, ar, ISO, mtree and shar archives. Automatically handles archives compressed with gzip, bzip2, lzip, xz, lzma or compress."
-					},
-					{
-						"name": "dtc",
-						"version": "1.7.2-r1",
-						"description": "Device Tree Compiler for Flat Device Trees Device Tree Compiler, dtc, takes as input a device-tree in a given format and outputs a device-tree in another format for booting kernels on embedded systems."
-					},
-					{
-						"name": "erlang-syntax-tools",
-						"version": "28.0.3-r1",
-						"description": "Erlang/OTP is a general-purpose programming language and runtime environment. This package provides support for handling abstract Erlang syntax trees."
-					},
-					{
-						"name": "fdt-utils",
-						"version": "1.7.2-r1",
-						"description": "Flat Device Tree Utilities"
-					},
-					{
-						"name": "libfdt",
-						"version": "1.7.2-r1",
-						"description": "This is a library containing functions for manipulating Flat Device Trees."
-					},
-					{
-						"name": "libredblack",
-						"version": "1.3-r4",
-						"description": "RedBlack Balanced Tree Searching and Sorting Library."
-					},
-					{
-						"name": "libsmartcols1",
-						"version": "2.41.5-r1",
-						"description": "The smartcols library is used to print tables and trees in a pretty way."
-					},
-					{
-						"name": "libuci2",
-						"version": "2.0.0-r1",
-						"description": "UCI2 is a C library that provides an alternative UCI parser with an Abstract Syntax Tree (AST) representation of configuration files."
-					},
-					{
-						"name": "lsd",
-						"version": "1.1.5-r1",
-						"description": "This project is a rewrite of GNU ls with lots of added features like colors, icons, tree-view, more formatting options etc. The project is heavily inspired by the super colorls project."
-					},
-					{
-						"name": "mc",
-						"version": "4.8.33-r1",
-						"description": "GNU Midnight Commander is a visual file manager. It's a feature rich full-screen text mode application that allows you to copy, move and delete files and whole directory trees, search for files and run commands in the subshell. Internal viewer and editor are included as well."
-					},
-					{
-						"name": "procs",
-						"version": "0.14.3-r1",
-						"description": "Procs is a 'ps' command replacement written in Rust, offering enhanced usability and information display. Features include color-coded output, theme auto-detection, advanced search, and extended process details (TCP/UDP ports, Docker names, I/O throughput). It also supports pager functionality, a 'top'-like watch mode, and a process tree view​​."
-					},
-					{
-						"name": "psmisc",
-						"version": "23.7-r1",
-						"description": "psmisc is a set of additional small useful utilities that use the proc filesystem like fuser, killall, prtstat, pstree."
-					},
-					{
-						"name": "python3-jsonpath-ng",
-						"version": "1.5.3-r1",
-						"description": "A final implementation of JSONPath for Python that aims to be standard compliant, including arithmetic and binary comparison operators, as defined in the original JSONPath proposal. This packages merges both jsonpath-rw and jsonpath-rw-ext and provides several AST API enhancements, such as the ability to update or removes nodes in the tree."
-					},
-					{
-						"name": "python3-jsonpath-ng-src",
-						"version": "1.5.3-r1",
-						"description": "A final implementation of JSONPath for Python that aims to be standard compliant, including arithmetic and binary comparison operators, as defined in the original JSONPath proposal. This packages merges both jsonpath-rw and jsonpath-rw-ext and provides several AST API enhancements, such as the ability to update or removes nodes in the tree. This package contains the Python source files for python3-jsonpath-ng."
-					},
-					{
-						"name": "python3-lxml",
-						"version": "6.0.2-r1",
-						"description": "lxml is a Pythonic, mature binding for the libxml2 and libxslt libraries. It provides safe and convenient access to these libraries using the ElementTree API. It extends the ElementTree API significantly to offer support for XPath, RelaxNG, XML Schema, XSLT, C14N and much more."
-					},
-					{
-						"name": "python3-lxml-src",
-						"version": "6.0.2-r1",
-						"description": "lxml is a Pythonic, mature binding for the libxml2 and libxslt libraries. It provides safe and convenient access to these libraries using the ElementTree API. It extends the ElementTree API significantly to offer support for XPath, RelaxNG, XML Schema, XSLT, C14N and much more. This package contains the Python source files for python3-lxml."
-					},
-					{
-						"name": "samba4-utils",
-						"version": "4.22.7-r3",
-						"description": "installs: smbstatus smbtree mvxattr smbtar (smbcquotas) Utilities collection"
-					}
-				]
+				"packages": []
 			}
 		},
 		{
@@ -1216,9 +1234,9 @@
 			"status": 0,
 			"result": {
 				"name": "dnsmasq",
-				"version": "2.91-r2",
+				"version": "2.93-r1",
 				"description": "It is intended to provide coupled DNS and DHCP service to a LAN.",
-				"installed_size": 296539,
+				"installed_size": 313051,
 				"license": "GPL-2.0",
 				"url": "http://www.thekelleys.org.uk/dnsmasq/",
 				"depends": [

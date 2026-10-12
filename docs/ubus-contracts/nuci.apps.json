@@ -14,7 +14,22 @@
 			"args": {},
 			"status": 0,
 			"result": {
-				"apps": []
+				"apps": [
+					{
+						"id": "hello",
+						"title": "Hello",
+						"icon": "Smile",
+						"entry": "apps/hello/index.js",
+						"version": "0.0.1",
+						"menu": {
+							"group": "services",
+							"order": 50
+						},
+						"acls": [
+							"nuci-base"
+						]
+					}
+				]
 			}
 		}
 	]

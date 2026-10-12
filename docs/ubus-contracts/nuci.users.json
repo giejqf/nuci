@@ -1,0 +1,72 @@
+{
+	"object": "nuci.users",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"list": {},
+		"groups": {},
+		"create": {
+			"username": "String",
+			"password": "String",
+			"read": "Array",
+			"write": "Array"
+		},
+		"update": {
+			"username": "String",
+			"read": "Array",
+			"write": "Array"
+		},
+		"set_password": {
+			"username": "String",
+			"password": "String"
+		},
+		"delete": {
+			"username": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "list",
+			"args": {},
+			"status": 0,
+			"result": {
+				"users": [
+					{
+						"username": "root",
+						"read": [
+							"*"
+						],
+						"write": [
+							"*"
+						],
+						"builtin": true,
+						"managed": false
+					}
+				]
+			}
+		},
+		{
+			"method": "groups",
+			"args": {},
+			"status": 0,
+			"result": {
+				"groups": {
+					"nuci-admin": "NuCI: Administration (root password, SSH, web server)",
+					"nuci-backup": "NuCI: Backup, restore and firmware upgrade",
+					"nuci-base": "NuCI: shell, session, installed apps, heartbeat stream",
+					"nuci-firewall": "NuCI: Firewall pages (zones, forwards, rules, NAT, ruleset preview)",
+					"nuci-network": "NuCI: Network pages (interfaces, devices, wireless, DHCP/DNS, routes, diagnostics)",
+					"nuci-software": "NuCI: Software (apk packages)",
+					"nuci-status": "NuCI: Status pages (overview, logs, processes, realtime graphs)",
+					"nuci-system": "NuCI: System pages (general settings, startup, reboot)",
+					"nuci-uci": "NuCI: uci staging and the apply/confirm/rollback protocol (per-config access is granted by the area groups)",
+					"nuci-users": "NuCI: User management",
+					"unauthenticated": "Access controls for unauthenticated requests"
+				}
+			}
+		}
+	]
+}

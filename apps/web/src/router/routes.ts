@@ -87,6 +87,14 @@ export const routes: PageRoute[] = [
 		load: () => import('../pages/system/Administration.svelte'),
 	},
 	{
+		path: 'system/users',
+		title: 'nav.system.users',
+		group: 'system',
+		order: 25,
+		acl: 'nuci-users',
+		load: () => import('../pages/system/Users.svelte'),
+	},
+	{
 		path: 'system/software',
 		title: 'nav.system.software',
 		group: 'system',

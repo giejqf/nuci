@@ -56,15 +56,32 @@
 			"status": 0,
 			"result": {
 				"access-group": {
+					"nuci-admin": [
+						"read",
+						"write"
+					],
+					"nuci-backup": [
+						"read",
+						"write"
+					],
 					"nuci-base": [
 						"read"
+					],
+					"nuci-firewall": [
+						"read",
+						"write"
 					],
 					"nuci-network": [
 						"read",
 						"write"
 					],
+					"nuci-software": [
+						"read",
+						"write"
+					],
 					"nuci-status": [
-						"read"
+						"read",
+						"write"
 					],
 					"nuci-system": [
 						"read",
@@ -74,8 +91,28 @@
 						"read",
 						"write"
 					],
+					"nuci-users": [
+						"read",
+						"write"
+					],
 					"unauthenticated": [
 						"read"
+					]
+				},
+				"file": {
+					"/etc/dropbear/authorized_keys": [
+						"read",
+						"write"
+					],
+					"/etc/rc.local": [
+						"read",
+						"write"
+					],
+					"/etc/uhttpd.crt": [
+						"write"
+					],
+					"/etc/uhttpd.key": [
+						"write"
 					]
 				},
 				"nuci-events": {
@@ -98,17 +135,41 @@
 						"read"
 					]
 				},
+				"nuci-transfer": {
+					"backup": [
+						"read"
+					],
+					"firmware": [
+						"write"
+					],
+					"restore": [
+						"write"
+					]
+				},
 				"ubus": {
 					"dhcp": [
 						"ipv6leases"
 					],
+					"file": [
+						"read",
+						"stat",
+						"write",
+						"remove"
+					],
 					"iwinfo": [
 						"devices",
 						"info",
-						"assoclist"
+						"assoclist",
+						"freqlist",
+						"txpowerlist",
+						"countrylist",
+						"phyname"
 					],
 					"log": [
 						"read"
+					],
+					"network": [
+						"get_proto_handlers"
 					],
 					"network.device": [
 						"status"
@@ -117,10 +178,10 @@
 						"dump"
 					],
 					"network.interface.*": [
-						"status"
-					],
-					"network.wireless": [
-						"status"
+						"status",
+						"up",
+						"down",
+						"renew"
 					],
 					"nuci.apps": [
 						"list"
@@ -129,11 +190,33 @@
 						"leases",
 						"hosts"
 					],
+					"nuci.diag": [
+						"status",
+						"ping",
+						"traceroute",
+						"nslookup"
+					],
+					"nuci.firewall": [
+						"preview",
+						"ruleset"
+					],
+					"nuci.pkg": [
+						"list_installed",
+						"list_available",
+						"search",
+						"info",
+						"job_status",
+						"update",
+						"add",
+						"del"
+					],
 					"nuci.status": [
 						"realtime",
 						"processes",
 						"kernel_log",
-						"conntrack"
+						"conntrack",
+						"conntrack_summary",
+						"signal"
 					],
 					"nuci.system": [
 						"timezones",
@@ -142,11 +225,30 @@
 						"block_devices",
 						"mount_points",
 						"usb_devices",
-						"set_localtime"
+						"set_localtime",
+						"backup_status",
+						"backup_create",
+						"backup_restore"
+					],
+					"nuci.users": [
+						"list",
+						"groups",
+						"create",
+						"update",
+						"set_password",
+						"delete"
+					],
+					"nuci.wifi": [
+						"status",
+						"assoc_list_enriched",
+						"scan"
 					],
 					"rc": [
 						"list",
 						"init"
+					],
+					"rpc-sys": [
+						"password_set"
 					],
 					"session": [
 						"access",
@@ -157,7 +259,9 @@
 					"system": [
 						"board",
 						"info",
-						"reboot"
+						"reboot",
+						"validate_firmware_image",
+						"sysupgrade"
 					],
 					"uci": [
 						"configs",
@@ -180,6 +284,14 @@
 						"read",
 						"write"
 					],
+					"dropbear": [
+						"read",
+						"write"
+					],
+					"firewall": [
+						"read",
+						"write"
+					],
 					"network": [
 						"read",
 						"write"
@@ -189,6 +301,10 @@
 						"write"
 					],
 					"system": [
+						"read",
+						"write"
+					],
+					"uhttpd": [
 						"read",
 						"write"
 					],

@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { Pencil, Plus, Trash2 } from '@lucide/svelte';
+	import { Eye, Pencil, Plus, Trash2 } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
 	import type { UciValue } from '@nuci/uci';
 	import { asString } from './binding.svelte';
@@ -105,12 +105,15 @@
 							<button
 								type="button"
 								class="btn btn-ghost btn-xs"
-								aria-label={t('ui.edit_entry', {
+								aria-label={t(writable ? 'ui.edit_entry' : 'ui.view_entry', {
 									name: cell(columns[0]!, s['.name']),
 								})}
 								onclick={() => edit(s['.name'])}
 							>
-								<Pencil size={14} aria-hidden="true" />
+								{#if writable}<Pencil size={14} aria-hidden="true" />{:else}<Eye
+										size={14}
+										aria-hidden="true"
+									/>{/if}
 							</button>
 							{#if writable}
 								<button

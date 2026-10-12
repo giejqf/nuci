@@ -51,6 +51,7 @@
 		class="select w-full"
 		value={current}
 		disabled={locked}
+		data-uci={uci}
 		data-testid={testid}
 		onchange={change}
 	>

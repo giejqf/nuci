@@ -68,6 +68,7 @@
 					class:input-error={!!itemErrors[i]}
 					value={item}
 					readonly={locked}
+					data-uci={uci}
 					aria-label="{label} {i + 1}"
 					onchange={(e) =>
 						write(

@@ -453,9 +453,9 @@
 			"args": {},
 			"status": 0,
 			"result": {
-				"localtime": 1791768239,
+				"localtime": 1791793670,
 				"zonename": "UTC",
-				"timezone": "GMT0"
+				"timezone": "UTC0"
 			}
 		},
 		{
@@ -478,12 +478,16 @@
 					},
 					{
 						"device": "/dev/vda",
-						"size": 126353408
+						"size": 126123520
 					},
 					{
 						"device": "/dev/vda1",
 						"size": 16777216,
 						"mount": "/boot"
+					},
+					{
+						"device": "/dev/vda128",
+						"size": 244736
 					},
 					{
 						"device": "/dev/vda2",
@@ -500,8 +504,8 @@
 				"mounts": [
 					{
 						"device": "/dev/root",
-						"size": 6144,
-						"used": 6144,
+						"size": 6912,
+						"used": 6912,
 						"avail": 0,
 						"mount": "/rom",
 						"type": "squashfs",
@@ -514,8 +518,8 @@
 					{
 						"device": "tmpfs",
 						"size": 247224,
-						"used": 1988,
-						"avail": 245236,
+						"used": 12736,
+						"avail": 234488,
 						"mount": "/tmp",
 						"type": "tmpfs",
 						"options": [
@@ -527,9 +531,9 @@
 					},
 					{
 						"device": "/dev/loop0",
-						"size": 88517,
-						"used": 701,
-						"avail": 80783,
+						"size": 87737,
+						"used": 1243,
+						"avail": 79520,
 						"mount": "/overlay",
 						"type": "ext4",
 						"options": [
@@ -539,9 +543,9 @@
 					},
 					{
 						"device": "overlayfs:/overlay",
-						"size": 88517,
-						"used": 701,
-						"avail": 80783,
+						"size": 87737,
+						"used": 1243,
+						"avail": 79520,
 						"mount": "/",
 						"type": "overlay",
 						"options": [
@@ -550,32 +554,43 @@
 							"lowerdir=/",
 							"upperdir=/overlay/upper",
 							"workdir=/overlay/work",
-							"uuid=on",
 							"xino=off"
 						]
 					},
 					{
 						"device": "/dev/vda1",
-						"size": 16084,
-						"used": 5724,
-						"avail": 10036,
+						"size": 16334,
+						"used": 6330,
+						"avail": 10004,
 						"mount": "/boot",
-						"type": "ext4",
+						"type": "vfat",
 						"options": [
 							"rw",
-							"noatime"
+							"noatime",
+							"fmask=0022",
+							"dmask=0022",
+							"codepage=437",
+							"iocharset=iso8859-1",
+							"shortname=mixed",
+							"errors=remount-ro"
 						]
 					},
 					{
 						"device": "/dev/vda1",
-						"size": 16084,
-						"used": 5724,
-						"avail": 10036,
+						"size": 16334,
+						"used": 6330,
+						"avail": 10004,
 						"mount": "/boot",
-						"type": "ext4",
+						"type": "vfat",
 						"options": [
 							"rw",
-							"noatime"
+							"noatime",
+							"fmask=0022",
+							"dmask=0022",
+							"codepage=437",
+							"iocharset=iso8859-1",
+							"shortname=mixed",
+							"errors=remount-ro"
 						]
 					},
 					{
@@ -613,12 +628,12 @@
 				"name": "backup",
 				"running": false,
 				"command": "/sbin/sysupgrade -b /tmp/nuci-backup.tar.gz",
-				"started": 1791768175,
-				"log": "Mon Oct 12 01:22:58 GMT 2026 upgrade: Saving config files...\n",
-				"finished": 1791768187,
+				"started": 1791793317,
+				"log": "Mon Oct 12 08:22:06 UTC 2026 upgrade: Saving config files...\n",
+				"finished": 1791793342,
 				"rc": 0,
 				"path": "/tmp/nuci-backup.tar.gz",
-				"size": 8898
+				"size": 488629
 			}
 		}
 	]

@@ -46,6 +46,11 @@ export class Acl {
 		return this.allows('uci', config, perm);
 	}
 
+	/** May read or write a file through rpcd's `file` object (path ACLs). */
+	canFile(path: string, perm: 'read' | 'write' = 'read'): boolean {
+		return this.allows('file', path, perm) && this.canCall('file', perm);
+	}
+
 	/** Holds the ACL group (e.g. `nuci-status`) with `perm`. */
 	hasGroup(group: string, perm: 'read' | 'write' = 'read'): boolean {
 		return this.allows('access-group', group, perm);
