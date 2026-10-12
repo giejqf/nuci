@@ -86,7 +86,7 @@ jobs:
       - name: Install QEMU
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64 qemu-utils socat zstd
+          sudo apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64 ipxe-qemu qemu-utils socat zstd
           if [ -e /dev/kvm ]; then
             sudo chmod 666 /dev/kvm
             echo "KVM available"
