@@ -2,7 +2,11 @@
 // Phase 1: login, ACL-aware shell, live Overview, extension path, logout.
 
 import { expect, test } from '@playwright/test';
+import { createRpc } from '../../packages/rpc/src/index.ts';
+import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
+
+const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 
 test('wrong password shows an error', async ({ page }) => {
 	await page.goto('/nuci/');
@@ -63,5 +67,37 @@ test('an installed nuci-app registers a page through @nuci/app-sdk', async ({ pa
 	await link.click();
 	await expect(page).toHaveURL(/#\/services\/hello$/);
 	await expect(page.getByTestId('hello-greeting')).toHaveText(/^Hello from \S+/);
-	await expect(page.getByTestId('hello-sdk')).toHaveText('sdk 0.1.0');
+	await expect(page.getByTestId('hello-sdk')).toHaveText('sdk 0.2.0');
+});
+
+test('a nuci-app edits uci through the host: change review and apply with rollback', async ({
+	page,
+}) => {
+	test.setTimeout(180_000);
+	await login(page, 'services/hello');
+	const field = page.getByTestId('hello-description');
+	await expect(field).toBeEditable();
+	const value = `e2e app ${Date.now()}`;
+	await field.fill(value);
+	// Staged in the host model: the host's apply bar counts it and lists it.
+	await expect(page.getByTestId('apply-review')).toContainText('1 unsaved');
+	await page.getByTestId('apply-review').click();
+	await expect(page.getByTestId('change-list')).toContainText(`.description = '${value}'`);
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('apply-review-modal')).toBeHidden();
+	await page.getByTestId('apply-apply').click();
+	await expect(page.getByTestId('apply-status')).toContainText('roll back in', {
+		timeout: 30_000,
+	});
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 120_000 });
+
+	const rpc = createRpc({ endpoint: `${base}/ubus`, storage: null });
+	await rpc.session.login('root', rootPassword());
+	const sys = Object.values(await rpc.uci.getAll('system')).find((s) => s['.type'] === 'system');
+	expect(sys?.description).toBe(value);
+
+	// Clean up through the app as well.
+	await field.fill('');
+	await page.getByTestId('apply-apply').click();
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 120_000 });
 });

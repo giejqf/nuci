@@ -1,0 +1,5 @@
+{
+	"hello.section": "Hello",
+	"hello.greeting": "Hello from {name}",
+	"hello.description": "Device description"
+}

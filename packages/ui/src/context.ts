@@ -4,10 +4,11 @@
 // the apply settings. Set once by the app shell.
 
 import { getContext, setContext } from 'svelte';
-import type { UciStore, ApplyOptions } from '@nuci/uci';
+import type { ApplyOptions, UciStore, UciView } from '@nuci/uci';
 
 export interface NuciContext {
-	uci: UciStore;
+	/** The host shell passes its UciStore; nuci-apps pass a HostUciStore. */
+	uci: UciView;
 	/** Whether the session may write `config` (ACL `uci` scope). */
 	canWrite?: (config: string) => boolean;
 	/** Connectivity probe and defaults for the apply protocol. */
@@ -33,4 +34,15 @@ export function getNuciContext(): NuciContext {
 
 export function tryNuciContext(): NuciContext | undefined {
 	return getContext<NuciContext | undefined>(KEY);
+}
+
+/** Context map for `mount(Component, { context })` outside a component tree (apps). */
+export function nuciContextMap(ctx: NuciContext): Map<unknown, unknown> {
+	return new Map<unknown, unknown>([[KEY, ctx]]);
+}
+
+/** The full store; only the host shell's components (ApplyBar) need it. */
+export function hostStore(ctx: NuciContext): UciStore {
+	if (!('applyAll' in ctx.uci)) throw new Error('ApplyBar needs the host UciStore');
+	return ctx.uci as UciStore;
 }

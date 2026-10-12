@@ -27,7 +27,14 @@ export { default as ThemeToggle } from './ThemeToggle.svelte';
 export { default as Toaster } from './Toaster.svelte';
 export { default as Toggle } from './Toggle.svelte';
 export { asList, asString, bindUci, type UciBinding } from './binding.svelte';
-export { getNuciContext, setNuciContext, tryNuciContext, type NuciContext } from './context';
+export {
+	getNuciContext,
+	hostStore,
+	nuciContextMap,
+	setNuciContext,
+	tryNuciContext,
+	type NuciContext,
+} from './context';
 export { FormState, forms, getFormContext, uid } from './form.svelte';
 export * from './format';
 export { applyTheme, theme, THEME_STORAGE_KEY } from './theme.svelte';

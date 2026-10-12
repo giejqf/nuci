@@ -36,7 +36,7 @@ export function bindUci(ref: () => string | undefined): UciBinding | null {
 		},
 		get baseValue() {
 			if (!parsed?.option || !resolved) return undefined;
-			return ctx.uci.model.getBase(resolved.config, resolved.section, parsed.option);
+			return ctx.uci.getBase(resolved.config, resolved.section, parsed.option);
 		},
 		get writable() {
 			return !!parsed && (ctx.canWrite?.(parsed.config) ?? true) && !ctx.uci.busy;

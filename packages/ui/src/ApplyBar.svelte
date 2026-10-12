@@ -7,13 +7,13 @@
 	import { CircleCheck, Undo2, ListChecks, Save, LoaderCircle } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
 	import ChangeList from './ChangeList.svelte';
-	import { getNuciContext } from './context';
+	import { getNuciContext, hostStore } from './context';
 	import { forms } from './form.svelte';
 	import Modal from './Modal.svelte';
 	import { toasts } from './toast.svelte';
 
 	const ctx = getNuciContext();
-	const uci = ctx.uci;
+	const uci = hostStore(ctx);
 	let reviewing = $state(false);
 	let saving = $state(false);
 

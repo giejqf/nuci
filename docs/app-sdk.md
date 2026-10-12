@@ -22,7 +22,84 @@ running example; the e2e suite installs it and checks that it works.
 
 Pages are islands: an app bundles its own UI runtime and never shares the
 host's component instances, so host upgrades cannot break apps through
-internals. Everything an app may use from the host is on `HostContext`.
+internals. Everything an app may use from the host is on `HostContext`,
+including the host's uci staging model (since 0.2, ADR-0004).
+
+The recommended way to build an app is Svelte 5 with the NuCI component
+library through `@nuci/app-kit` (next section). Plain DOM or any other
+framework works too, using `registerPage()` and `HostContext` directly.
+
+## Building with Svelte and @nuci/app-kit
+
+```ts
+// src/index.ts
+// SPDX-License-Identifier: Apache-2.0
+import { registerSveltePage } from '@nuci/app-kit';
+import css from './app.css?inline';
+import Hello from './Hello.svelte';
+import en from './en.json';
+
+registerSveltePage({
+	id: 'hello',
+	path: 'services/hello',
+	title: 'Hello',
+	component: Hello,
+	css,
+	messages: { en },
+});
+```
+
+```svelte
+<!-- src/Hello.svelte -->
+<script lang="ts">
+	import type { HostContext } from '@nuci/app-sdk';
+	import { t } from '@nuci/i18n';
+	import { Section, TextField } from '@nuci/ui';
+	import { onMount } from 'svelte';
+
+	let { host }: { host: HostContext } = $props();
+	onMount(() => void host.uci.load('system'));
+</script>
+
+<Section title={t('hello.section')}>
+	<TextField label={t('hello.description')} uci="system.@system[0].description" />
+</Section>
+```
+
+```css
+/* src/app.css */
+@import '@nuci/app-kit/app.css';
+@source '.';
+```
+
+```ts
+// vite.config.ts
+import { nuciApp } from '@nuci/app-kit/vite';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vite';
+
+export default defineConfig(nuciApp({ root: fileURLToPath(new URL('.', import.meta.url)) }));
+```
+
+What `@nuci/app-kit` does for you:
+
+- **Configuration:** `@nuci/ui` fields (`uci="config.section.option"`),
+  `<SectionList>` and friends bind to `host.uci` through a `HostUciStore`.
+  Edits are staged in the host: they appear in the host's "unsaved changes"
+  and the user applies them from the host's apply bar, with the rollback
+  protocol. Your page never saves or applies.
+- **Translations:** the build routes `@nuci/i18n` to the host, so `t()` in
+  your components and in `@nuci/ui` uses the host's catalogs and active
+  language. Ship your own keys (prefixed with your app id) in `messages`.
+- **Toasts** from `@nuci/ui` appear in the host's toaster.
+- **Styles:** your CSS is injected once; it contains only the utilities and
+  DaisyUI components you use, without preflight or themes, so the host's
+  light/dark theme applies.
+- The host renders the page heading: compose `<Section>`s, not `<Page>`.
+
+Budget: the built `dist/index.js` must stay ≤ 60 KB gzipped (`pnpm size`
+checks first-party apps). The Svelte runtime and a few fields are about
+35 KB.
 
 ## The manifest
 
@@ -94,11 +171,14 @@ The host rejects paths outside the group and duplicate paths.
 | `navigate(path)` | Go to a host route |
 | `theme` | `'light'` or `'dark'`; style with DaisyUI classes or your own CSS |
 | `sdkVersion` | The host's SDK version |
+| `uci` (0.2) | The host's staging model: `load`, `isLoaded`, `get`, `getBase`, `getSection`, `sections`, `resolve`, `set`, `add`, `remove`, `order`, `canWrite`, `busy`, `subscribe` |
+| `notify(kind, message)` (0.2) | Toast in the host's toaster |
+| `locale` (0.2) | Active UI language, e.g. `en` |
 
-Apps must not write uci directly with `uci.commit`. If an app edits
-configuration, stage it with `uci set/add/delete` through `call()` and let the
-user apply it from the host's apply bar, which runs the rollback protocol
-(see ADR-0002).
+Apps must never call `uci.commit`, `uci.apply` or `uci.set` through `call()`.
+Edit configuration through `host.uci`: the edit is staged in the host, and
+the user applies it from the host's apply bar, which runs the rollback
+protocol (ADR-0002). `@nuci/ui` fields do this for you.
 
 ## Server side
 
@@ -137,17 +217,19 @@ endef
 define Build/Compile
 endef
 
+# dist/index.js is built beforehand (pnpm build); NUCI_SRC points at the checkout.
 define Package/nuci-app-hello/install
 	$(INSTALL_DIR) $(1)/usr/share/nuci/apps $(1)/www/nuci/apps/hello
-	$(INSTALL_DATA) ./files/hello.json $(1)/usr/share/nuci/apps/hello.json
-	$(INSTALL_DATA) ./files/index.js $(1)/www/nuci/apps/hello/index.js
+	$(INSTALL_DATA) $(NUCI_SRC)/apps/nuci-app-hello/manifest.json $(1)/usr/share/nuci/apps/hello.json
+	$(INSTALL_DATA) $(NUCI_SRC)/apps/nuci-app-hello/dist/index.js $(1)/www/nuci/apps/hello/index.js
 endef
 
 $(eval $(call BuildPackage,nuci-app-hello))
 ```
 
-Build the entry module as a single ES module (Vite library mode works; see
-`e2e/fixtures/nuci-app-hello/vite.config.ts`). `PKG_RELEASE` must be a plain
+Build the entry module as a single ES module (`@nuci/app-kit/vite` does
+this; see `e2e/fixtures/nuci-app-hello/` and the first-party apps in
+`apps/nuci-app-*/`). `PKG_RELEASE` must be a plain
 integer (apk version rules).
 
 ## Testing
@@ -160,4 +242,6 @@ integer (apk version rules).
 
 `@nuci/app-sdk` follows semver from 0.1: new optional fields and HostContext
 members are minor releases; removals or behavior changes are major releases.
-Check `host.sdkVersion` if you depend on newer members.
+Check `host.sdkVersion` if you depend on newer members: 0.2.0 added `uci`,
+`notify` and `locale`. An app that needs them should declare a dependency
+on `nuci-base (>= 0.2.0)` in its package.

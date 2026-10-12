@@ -15,8 +15,10 @@ TARGET="${NUCI_SDK_TARGET:-x86/64}"
 CACHE="$REPO/tools/sdk/cache"
 WORK="$REPO/tools/sdk/work"
 OUT="$REPO/dist/feed"
-PACKAGES=(rpcd-mod-nuci nuci-base nuci)
 SRC="$(cd "${NUCI_SRC:-$REPO}" && pwd)"
+# Core packages plus every first-party app in feed/nuci-app-*.
+PACKAGES=(rpcd-mod-nuci nuci-base nuci)
+for d in "$SRC"/feed/nuci-app-*/; do [ -f "$d/Makefile" ] && PACKAGES+=("$(basename "$d")"); done
 
 log() { printf '[sdk] %s\n' "$*" >&2; }
 die() { printf '[sdk] error: %s\n' "$*" >&2; exit 1; }

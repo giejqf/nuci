@@ -12,3 +12,4 @@ export {
 export { UciModel, type Change, type Section, type UciApi, type UciValue } from './model';
 export { isValidName, isValidType, parseRef, parseSelector, type UciRef } from './path';
 export { UciStore } from './store.svelte';
+export { HostUciStore, type HostUciLike, type ResolvedRef, type UciView } from './view.svelte';

@@ -222,9 +222,10 @@ export class UciModel {
 		return typeof v === 'string' || Array.isArray(v) ? v : undefined;
 	}
 
-	/** The value from rpcd, ignoring local edits. */
+	/** The value from rpcd, ignoring local edits (accepts `@type[n]` selectors). */
 	getBase(config: string, section: string, option: string): UciValue | undefined {
-		const v = this.#base.get(config)?.[section]?.[option];
+		const name = this.resolveSection(config, section) ?? section;
+		const v = this.#base.get(config)?.[name]?.[option];
 		return typeof v === 'string' || Array.isArray(v) ? v : undefined;
 	}
 

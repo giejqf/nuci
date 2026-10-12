@@ -5,8 +5,9 @@
 
 import { applyChanges, type ApplyOptions, type ApplyState } from './apply';
 import type { Change, Section, UciModel, UciValue } from './model';
+import type { UciView } from './view.svelte';
 
-export class UciStore {
+export class UciStore implements UciView {
 	readonly model: UciModel;
 	#version = $state(0);
 	apply = $state<ApplyState>({ phase: 'idle' });
@@ -32,6 +33,11 @@ export class UciStore {
 	get(config: string, section: string, option: string): UciValue | undefined {
 		this.#track();
 		return this.model.get(config, section, option);
+	}
+
+	getBase(config: string, section: string, option: string): UciValue | undefined {
+		this.#track();
+		return this.model.getBase(config, section, option);
 	}
 
 	getSection(config: string, section: string): Section | undefined {

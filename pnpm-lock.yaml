@@ -253,21 +253,70 @@ importers:
       '@axe-core/playwright':
         specifier: ^4.13.0
         version: 4.13.0(playwright-core@1.64.0)
+      '@nuci/app-kit':
+        specifier: workspace:*
+        version: link:../packages/app-kit
       '@nuci/app-sdk':
         specifier: workspace:*
         version: link:../packages/app-sdk
+      '@nuci/i18n':
+        specifier: workspace:*
+        version: link:../packages/i18n
       '@nuci/rpc':
         specifier: workspace:*
         version: link:../packages/rpc
       '@nuci/uci':
         specifier: workspace:*
         version: link:../packages/uci
+      '@nuci/ui':
+        specifier: workspace:*
+        version: link:../packages/ui
       '@playwright/test':
         specifier: ^1.64.0
         version: 1.64.0
       '@types/node':
         specifier: ^24.19.2
         version: 24.19.2
+      svelte:
+        specifier: ^5.57.2
+        version: 5.57.2(@typescript-eslint/types@8.71.1)
+      vite:
+        specifier: ^8.3.4
+        version: 8.3.4(@types/node@24.19.2)(jiti@2.7.0)
+
+  packages/app-kit:
+    dependencies:
+      '@lucide/svelte':
+        specifier: ^1.55.0
+        version: 1.55.0(svelte@5.57.2(@typescript-eslint/types@8.71.1))
+      '@nuci/app-sdk':
+        specifier: workspace:*
+        version: link:../app-sdk
+      '@nuci/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@nuci/uci':
+        specifier: workspace:*
+        version: link:../uci
+      '@nuci/ui':
+        specifier: workspace:*
+        version: link:../ui
+      svelte:
+        specifier: ^5.57.2
+        version: 5.57.2(@typescript-eslint/types@8.71.1)
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.3.1
+        version: 7.3.1(svelte@5.57.2(@typescript-eslint/types@8.71.1))(vite@8.3.4(@types/node@24.19.2)(jiti@2.7.0))
+      '@tailwindcss/vite':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@8.3.4(@types/node@24.19.2)(jiti@2.7.0))
+      daisyui:
+        specifier: ^5.7.47
+        version: 5.7.47
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
       vite:
         specifier: ^8.3.4
         version: 8.3.4(@types/node@24.19.2)(jiti@2.7.0)

@@ -13,8 +13,14 @@ export interface Toast {
 class Toasts {
 	items = $state<Toast[]>([]);
 	#next = 1;
+	/** When set (inside nuci-apps), toasts go to the host's toaster instead. */
+	forward: ((kind: ToastKind, message: string) => void) | null = null;
 
 	push(kind: ToastKind, message: string, timeoutMs = kind === 'error' ? 8000 : 4000): number {
+		if (this.forward) {
+			this.forward(kind, message);
+			return 0;
+		}
 		const id = this.#next++;
 		this.items.push({ id, kind, message });
 		if (timeoutMs > 0) setTimeout(() => this.dismiss(id), timeoutMs);

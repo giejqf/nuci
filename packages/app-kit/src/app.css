@@ -1,0 +1,14 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Base stylesheet for nuci-apps (ADR-0004). No preflight and no DaisyUI
+ * themes: the host already provides both, and its data-theme variables
+ * style the app's components. Import from the app's own CSS and add
+ * `@source` lines for the app's sources.
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@plugin 'daisyui' {
+	themes: false;
+}
+@source '../../ui/src';
+@import '@nuci/ui/styles.css';

@@ -2,8 +2,10 @@
 //
 // Bundle budget (AGENTS.md §3.3, ADR-0003): shell + login + Status overview
 // ≤ 120 KB gzip, every lazily loaded chunk ≤ 20 KB gzip. Reads Vite's manifest.
+// First-party nuci-apps (apps/nuci-app-*/dist/index.js, own Svelte runtime
+// included) ≤ 60 KB gzip each (ADR-0004).
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
@@ -13,7 +15,8 @@ const DIST = join(ROOT, 'apps/web/dist');
 const MANIFEST = join(DIST, '.vite/manifest.json');
 const INITIAL_BUDGET = 120 * 1024;
 const CHUNK_BUDGET = 20 * 1024;
-// Lazy chunks that are part of the initial experience and count toward the 250 KB budget.
+const APP_BUDGET = 60 * 1024;
+// Lazy chunks that are part of the initial experience and count toward the initial budget.
 const INITIAL_LAZY = [/pages\/status\/Overview\.svelte$/, /shell\/Login\.svelte$/];
 
 if (!existsSync(MANIFEST)) {
@@ -62,6 +65,19 @@ for (const [key, chunk] of Object.entries(manifest)) {
 	const ok = own <= CHUNK_BUDGET;
 	failed ||= !ok;
 	console.log(`${ok ? 'ok  ' : 'FAIL'} chunk ${key}: ${kb(own)} / ${kb(CHUNK_BUDGET)}`);
+}
+
+for (const dir of readdirSync(join(ROOT, 'apps')).filter((d) => d.startsWith('nuci-app-'))) {
+	const entry = join(ROOT, 'apps', dir, 'dist/index.js');
+	if (!existsSync(entry)) {
+		failed = true;
+		console.log(`FAIL app ${dir}: not built (pnpm build)`);
+		continue;
+	}
+	const size = gzipSync(readFileSync(entry), { level: 9 }).length;
+	const ok = size <= APP_BUDGET;
+	failed ||= !ok;
+	console.log(`${ok ? 'ok  ' : 'FAIL'} app ${dir}: ${kb(size)} / ${kb(APP_BUDGET)}`);
 }
 
 process.exit(failed ? 1 : 0);

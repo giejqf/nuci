@@ -10,7 +10,7 @@
 	},
 	"scripts": {
 		"dev": "pnpm --filter @nuci/web dev",
-		"build": "pnpm --filter @nuci/web build",
+		"build": "pnpm --filter @nuci/web --filter './apps/nuci-app-*' build",
 		"test": "pnpm test:unit && pnpm test:ucode",
 		"test:unit": "vitest run",
 		"test:ucode": "sh rpcd/test/run.sh",

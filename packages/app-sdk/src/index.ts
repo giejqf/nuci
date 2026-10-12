@@ -9,7 +9,7 @@
 // Pages mount into a host-provided element, so an app may bundle any UI
 // runtime without touching the host's.
 
-export const SDK_VERSION = '0.1.0';
+export const SDK_VERSION = '0.2.0';
 
 export type MenuGroup = 'status' | 'system' | 'network' | 'firewall' | 'services';
 
@@ -27,6 +27,46 @@ export interface AppManifest {
 	acls?: string[];
 }
 
+export type UciValue = string | string[];
+
+export interface UciSection {
+	'.name': string;
+	'.type': string;
+	'.anonymous': boolean;
+	'.index'?: number;
+	[option: string]: UciValue | string | number | boolean | undefined;
+}
+
+/**
+ * The host's uci staging model (since 0.2.0, ADR-0004). Edits are staged
+ * locally and appear in the host's change review; the user applies them from
+ * the host's apply bar with the rollback protocol. Apps never commit.
+ */
+export interface HostUci {
+	/** Load configs into the host's mirror (no-op if already loaded). */
+	load(...configs: string[]): Promise<void>;
+	isLoaded(config: string): boolean;
+	/** Staged value of an option. */
+	get(config: string, section: string, option: string): UciValue | undefined;
+	/** Value as loaded from the router, before staged edits. */
+	getBase(config: string, section: string, option: string): UciValue | undefined;
+	getSection(config: string, section: string): UciSection | undefined;
+	sections(config: string, type?: string): UciSection[];
+	/** Resolve "config.section" incl. "@type[n]" selectors. */
+	resolve(ref: string): { config: string; section: string; option?: string } | undefined;
+	set(config: string, section: string, option: string, value: UciValue | null | undefined): void;
+	/** Stage a new section; returns its (temporary) name. */
+	add(config: string, type: string, name?: string, values?: Record<string, UciValue>): string;
+	remove(config: string, section: string): void;
+	order(config: string, sections: string[]): void;
+	/** Whether the session may write this config. */
+	canWrite(config: string): boolean;
+	/** True while the host applies changes (lock inputs). */
+	readonly busy: boolean;
+	/** Notified after every change (load, edit, apply state). Returns unsubscribe. */
+	subscribe(listener: () => void): () => void;
+}
+
 /** Host services available to a mounted page. */
 export interface HostContext {
 	readonly sdkVersion: string;
@@ -42,6 +82,12 @@ export interface HostContext {
 	/** Navigate to a host route, e.g. "status/overview". */
 	navigate(path: string): void;
 	readonly theme: 'light' | 'dark';
+	/** Show a toast in the host's toaster (since 0.2.0). */
+	notify(kind: 'info' | 'success' | 'warning' | 'error', message: string): void;
+	/** Active UI locale, e.g. "en" (since 0.2.0). */
+	readonly locale: string;
+	/** Configuration access through the host's staging model (since 0.2.0). */
+	readonly uci: HostUci;
 }
 
 export type Unmount = () => void;

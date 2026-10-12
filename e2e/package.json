@@ -10,11 +10,15 @@
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.13.0",
+		"@nuci/app-kit": "workspace:*",
 		"@nuci/app-sdk": "workspace:*",
+		"@nuci/i18n": "workspace:*",
 		"@nuci/rpc": "workspace:*",
 		"@nuci/uci": "workspace:*",
+		"@nuci/ui": "workspace:*",
 		"@playwright/test": "^1.64.0",
 		"@types/node": "^24.19.2",
+		"svelte": "^5.57.2",
 		"vite": "^8.3.4"
 	}
 }

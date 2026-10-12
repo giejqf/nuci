@@ -1,0 +1,34 @@
+{
+	"name": "@nuci/app-kit",
+	"version": "0.2.0",
+	"private": true,
+	"type": "module",
+	"license": "Apache-2.0",
+	"svelte": "./src/index.ts",
+	"exports": {
+		".": {
+			"svelte": "./src/index.ts",
+			"default": "./src/index.ts"
+		},
+		"./vite": "./src/vite.ts",
+		"./app.css": "./src/app.css"
+	},
+	"scripts": {
+		"check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings"
+	},
+	"dependencies": {
+		"@nuci/app-sdk": "workspace:*",
+		"@nuci/i18n": "workspace:*",
+		"@nuci/uci": "workspace:*",
+		"@nuci/ui": "workspace:*",
+		"svelte": "^5.57.2",
+		"@lucide/svelte": "^1.55.0"
+	},
+	"devDependencies": {
+		"@sveltejs/vite-plugin-svelte": "^7.3.1",
+		"@tailwindcss/vite": "^4.3.3",
+		"daisyui": "^5.7.47",
+		"tailwindcss": "^4.3.3",
+		"vite": "^8.3.4"
+	}
+}
