@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { defineConfig, devices } from '@playwright/test';
+import { slow } from './lib/timing';
 
 const port = process.env.NUCI_HTTP_PORT ?? '8080';
 
 export default defineConfig({
 	testDir: './tests',
-	timeout: 60_000,
-	expect: { timeout: 15_000 },
+	timeout: slow(60_000),
+	expect: { timeout: slow(15_000) },
 	// One router: tests share state, so run them serially.
 	workers: 1,
 	fullyParallel: false,

@@ -7,6 +7,7 @@ import { createRpc } from '../../packages/rpc/src/index.ts';
 import { applyChanges } from '../../packages/uci/src/apply.ts';
 import { UciModel } from '../../packages/uci/src/model.ts';
 import { rootPassword } from '../lib/router';
+import { slow } from '../lib/timing';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 
@@ -30,7 +31,7 @@ async function setup() {
 test.describe.configure({ mode: 'serial' });
 
 test('hostname change round-trips with apply + confirm', async () => {
-	test.setTimeout(120_000);
+	test.setTimeout(slow(120_000));
 	const { rpc, model, probe } = await setup();
 	await model.load('system');
 	const original = model.get('system', '@system[0]', 'hostname');
@@ -40,7 +41,7 @@ test('hostname change round-trips with apply + confirm', async () => {
 	const phases: string[] = [];
 	const result = await applyChanges(model, {
 		probe,
-		timeout: 60,
+		timeout: slow(60),
 		holdoffMs: 3000,
 		onState: (s) => phases.push(s.phase),
 	});
@@ -53,19 +54,19 @@ test('hostname change round-trips with apply + confirm', async () => {
 		await rpc.uci.get('system', model.resolveSection('system', '@system[0]')!, 'hostname'),
 	).toBe(name);
 	await expect
-		.poll(async () => (await rpc.system.board()).hostname, { timeout: 30_000 })
+		.poll(async () => (await rpc.system.board()).hostname, { timeout: slow(30_000) })
 		.toBe(name);
 
 	// restore
 	model.set('system', '@system[0]', 'hostname', original ?? 'OpenWrt');
-	expect((await applyChanges(model, { probe, timeout: 60, holdoffMs: 3000 })).phase).toBe(
+	expect((await applyChanges(model, { probe, timeout: slow(60), holdoffMs: 3000 })).phase).toBe(
 		'confirmed',
 	);
 	await rpc.session.logout();
 });
 
 test('LAN address change without confirm rolls back', async () => {
-	test.setTimeout(240_000);
+	test.setTimeout(slow(240_000));
 	const { rpc, model, probe } = await setup();
 	await model.load('network');
 	const original = model.get('network', 'lan', 'ipaddr');
@@ -81,7 +82,7 @@ test('LAN address change without confirm rolls back', async () => {
 		},
 		// The user never confirms: the router must restore the old address by itself.
 		shouldConfirm: () => false,
-		timeout: 30,
+		timeout: slow(30),
 		holdoffMs: 2000,
 		recoveryMs: 120_000,
 	});
@@ -89,7 +90,7 @@ test('LAN address change without confirm rolls back', async () => {
 	expect(unreachableSeen).toBe(true);
 
 	// Reachable on the old address with the old config, nothing pending.
-	await expect.poll(probe, { timeout: 60_000 }).toBe(true);
+	await expect.poll(probe, { timeout: slow(60_000) }).toBe(true);
 	const fresh = createRpc({ endpoint: `${base}/ubus`, storage: null });
 	await fresh.session.login('root', rootPassword());
 	expect(await fresh.uci.get('network', 'lan', 'ipaddr')).toEqual(original);
@@ -100,7 +101,7 @@ test('LAN address change without confirm rolls back', async () => {
 });
 
 test('a LAN change that locks the browser out is never confirmed, even by an eager UI', async () => {
-	test.setTimeout(240_000);
+	test.setTimeout(slow(240_000));
 	const { model, probe } = await setup();
 	await model.load('network');
 	const original = model.get('network', 'lan', 'ipaddr');
@@ -110,7 +111,7 @@ test('a LAN change that locks the browser out is never confirmed, even by an eag
 	model.set('network', 'lan', 'ipaddr', ['192.168.1.20/24']);
 	const result = await applyChanges(model, {
 		probe,
-		timeout: 30,
+		timeout: slow(30),
 		holdoffMs: 2000,
 		recoveryMs: 120_000,
 	});

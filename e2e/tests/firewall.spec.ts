@@ -6,6 +6,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { createRpc } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 
@@ -18,9 +19,9 @@ async function api() {
 async function applyWithRollback(page: Page) {
 	await page.getByTestId('apply-apply').click();
 	await expect(page.getByTestId('apply-status')).toContainText('roll back in', {
-		timeout: 30_000,
+		timeout: slow(30_000),
 	});
-	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: slow(120_000) });
 }
 
 const liveRuleset = async () => (await (await api()).nuci.firewall.ruleset()).text;
@@ -34,12 +35,12 @@ test.describe.configure({ mode: 'serial' });
 test('general: forward policy change applies; preview shows the generated ruleset', async ({
 	page,
 }) => {
-	test.setTimeout(240_000);
+	test.setTimeout(slow(240_000));
 	await login(page, 'firewall/general');
 	await expect(page.getByTestId('fw-forward')).toHaveValue('REJECT');
 	await page.getByTestId('fw-forward').selectOption('DROP');
 	await applyWithRollback(page);
-	await expect.poll(forwardChain, { timeout: 30_000 }).not.toContain('jump handle_reject');
+	await expect.poll(forwardChain, { timeout: slow(30_000) }).not.toContain('jump handle_reject');
 
 	await page.getByTestId('fw-preview').click();
 	await expect(page.getByTestId('fw-preview-text')).toContainText('table inet fw4');
@@ -47,13 +48,13 @@ test('general: forward policy change applies; preview shows the generated rulese
 
 	await page.getByTestId('fw-forward').selectOption('REJECT');
 	await applyWithRollback(page);
-	await expect.poll(forwardChain, { timeout: 30_000 }).toContain('jump handle_reject');
+	await expect.poll(forwardChain, { timeout: slow(30_000) }).toContain('jump handle_reject');
 });
 
 test('port forward, traffic rule and NAT rule land in the live nftables ruleset', async ({
 	page,
 }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'firewall/forwards');
 	await page.getByTestId('forwards-add').click();
 	await page.getByTestId('fwd-name').fill('e2e-fwd');
@@ -80,7 +81,7 @@ test('port forward, traffic rule and NAT rule land in the live nftables ruleset'
 	await expect(page.getByTestId('apply-review')).toContainText('3 unsaved');
 	await applyWithRollback(page);
 
-	await expect.poll(liveRuleset, { timeout: 30_000 }).toContain('e2e-fwd');
+	await expect.poll(liveRuleset, { timeout: slow(30_000) }).toContain('e2e-fwd');
 	const rules = await liveRuleset();
 	expect(rules).toMatch(/dnat ip to 192\.168\.1\.50:22 comment "!fw4: e2e-fwd"/);
 	expect(rules).toMatch(/dport 9999 .*drop comment "!fw4: e2e-block"/);
@@ -93,11 +94,11 @@ test('port forward, traffic rule and NAT rule land in the live nftables ruleset'
 	await page.goto('/nuci/#/firewall/forwards');
 	await page.getByTestId('forwards').getByRole('button', { name: 'Delete e2e-fwd' }).click();
 	await applyWithRollback(page);
-	await expect.poll(liveRuleset, { timeout: 30_000 }).not.toContain('e2e-');
+	await expect.poll(liveRuleset, { timeout: slow(30_000) }).not.toContain('e2e-');
 });
 
 test('zones: a new zone with a forwarding gets its chains', async ({ page }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'firewall/zones');
 	await expect(page.getByTestId('zones').getByRole('row', { name: /^lan\b/ })).toContainText(
 		'wan',
@@ -129,6 +130,8 @@ test('zones: a new zone with a forwarding gets its chains', async ({ page }) => 
 	await applyWithRollback(page);
 	await rpc.uci.apply(false).catch(() => {});
 	await expect
-		.poll(async () => (await (await api()).nuci.firewall.preview()).text, { timeout: 60_000 })
+		.poll(async () => (await (await api()).nuci.firewall.preview()).text, {
+			timeout: slow(60_000),
+		})
 		.not.toContain('e2ezone');
 });

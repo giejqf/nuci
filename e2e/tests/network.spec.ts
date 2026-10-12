@@ -6,6 +6,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { createRpc } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 
@@ -19,9 +20,9 @@ async function api() {
 async function applyWithRollback(page: Page) {
 	await page.getByTestId('apply-apply').click();
 	await expect(page.getByTestId('apply-status')).toContainText('roll back in', {
-		timeout: 30_000,
+		timeout: slow(30_000),
 	});
-	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: slow(120_000) });
 }
 
 test.describe.configure({ mode: 'serial' });
@@ -29,7 +30,7 @@ test.describe.configure({ mode: 'serial' });
 test('interfaces: list, and an address change applies with rollback protection', async ({
 	page,
 }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'network/interfaces');
 	await expect(page.getByTestId('iface-lan-addrs')).toContainText('192.168.1.1/24');
 	await expect(page.getByTestId('iface-wan')).toBeVisible();
@@ -48,7 +49,7 @@ test('interfaces: list, and an address change applies with rollback protection',
 		.poll(
 			async () =>
 				((await rpc.network.interface('lan'))['ipv4-address'] ?? []).map((a) => a.address),
-			{ timeout: 30_000 },
+			{ timeout: slow(30_000) },
 		)
 		.toContain('192.168.1.250');
 
@@ -58,7 +59,7 @@ test('interfaces: list, and an address change applies with rollback protection',
 		.poll(
 			async () =>
 				((await rpc.network.interface('lan'))['ipv4-address'] ?? []).map((a) => a.address),
-			{ timeout: 30_000 },
+			{ timeout: slow(30_000) },
 		)
 		.not.toContain('192.168.1.250');
 });
@@ -79,7 +80,7 @@ test('interfaces: protocol forms are table-driven and switching drops old option
 });
 
 test('interfaces: create and delete an interface in a firewall zone', async ({ page }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'network/interfaces');
 	await page.getByTestId('iface-add').click();
 	await page.getByTestId('new-iface-name').fill('lan');
@@ -116,7 +117,7 @@ test('interfaces: create and delete an interface in a firewall zone', async ({ p
 test('interfaces: a 6in4 tunnel is offered when installed and netifd brings it up', async ({
 	page,
 }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'network/interfaces');
 	await page.getByTestId('iface-add').click();
 	await page.getByTestId('new-iface-name').fill('e2e6in4');
@@ -137,7 +138,7 @@ test('interfaces: a 6in4 tunnel is offered when installed and netifd brings it u
 	const rpc = await api();
 	await expect
 		.poll(async () => (await rpc.network.interface('e2e6in4').catch(() => null))?.up, {
-			timeout: 30_000,
+			timeout: slow(30_000),
 		})
 		.toBe(true);
 	const st = await rpc.network.interface('e2e6in4');
@@ -166,7 +167,7 @@ test('devices: status lists physical devices and the LAN bridge', async ({ page 
 test('dhcp & dns + hostnames + diagnostics: a hostname resolves through dnsmasq', async ({
 	page,
 }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'network/dhcp');
 	await page.getByRole('tab', { name: 'Static leases' }).click();
 	await page.getByTestId('static-leases-add').click();
@@ -192,7 +193,7 @@ test('dhcp & dns + hostnames + diagnostics: a hostname resolves through dnsmasq'
 	await page.getByTestId('diag-host').fill('e2e-nas');
 	await page.getByTestId('diag-run').click();
 	await expect(page.getByTestId('diag-output')).toContainText('192.168.1.88', {
-		timeout: 60_000,
+		timeout: slow(60_000),
 	});
 
 	// cleanup through the API (staged + apply, like the UI)
@@ -203,7 +204,7 @@ test('dhcp & dns + hostnames + diagnostics: a hostname resolves through dnsmasq'
 });
 
 test('routes: a static route is installed on the interface', async ({ page }) => {
-	test.setTimeout(240_000);
+	test.setTimeout(slow(240_000));
 	await login(page, 'network/routes');
 	await page.getByTestId('routes4-add').click();
 	await page.getByTestId('route-target').fill('10.200.0.0/16');
@@ -217,7 +218,7 @@ test('routes: a static route is installed on the interface', async ({ page }) =>
 				((await rpc.network.interface('lan')).route ?? []).map(
 					(r) => `${r.target}/${r.mask}`,
 				),
-			{ timeout: 30_000 },
+			{ timeout: slow(30_000) },
 		)
 		.toContain('10.200.0.0/16');
 	await page.getByTestId('routes4').getByRole('button', { name: 'Delete 10.200.0.0/16' }).click();
@@ -229,7 +230,7 @@ test('diagnostics: ping the router itself', async ({ page }) => {
 	await page.getByTestId('diag-host').fill('127.0.0.1');
 	await page.getByTestId('diag-run').click();
 	await expect(page.getByTestId('diag-output')).toContainText('4 packets transmitted', {
-		timeout: 60_000,
+		timeout: slow(60_000),
 	});
 	await page.getByTestId('diag-host').fill('-f');
 	await expect(page.getByTestId('diag-run')).toBeDisabled();
@@ -282,13 +283,13 @@ async function ensureClean() {
 				await cleanupWireless();
 				return leftovers();
 			},
-			{ timeout: 120_000, intervals: [2000, 5000, 10_000] },
+			{ timeout: slow(120_000), intervals: [2000, 5000, 10_000] },
 		)
 		.toBe(0);
 }
 
 test('wireless: AP on radio0, scan from radio1, join, station associates', async ({ page }) => {
-	test.setTimeout(420_000);
+	test.setTimeout(slow(420_000));
 	const rpc = await api();
 	const radios = Object.values(await rpc.uci.getAll('wireless').catch(() => ({}))).filter(
 		(s) => s['.type'] === 'wifi-device',
@@ -309,13 +310,13 @@ test('wireless: AP on radio0, scan from radio1, join, station associates', async
 		await applyWithRollback(page);
 		await expect(
 			page.getByTestId('radio-radio0-ifaces').getByRole('row', { name: /nuci-e2e/ }),
-		).toContainText('phy0', { timeout: 60_000 });
+		).toContainText('phy0', { timeout: slow(60_000) });
 
 		// Scan from the other radio and join
 		await page.getByTestId('radio-radio1-scan').click();
 		const results = page.getByTestId('scan-results');
 		await expect(results.getByRole('row', { name: /nuci-e2e/ })).toContainText('WPA2-PSK', {
-			timeout: 60_000,
+			timeout: slow(60_000),
 		});
 		await results.getByRole('button', { name: 'Join nuci-e2e' }).click();
 		await page.getByTestId('join-key').fill('nuci-e2e-key');
@@ -326,7 +327,7 @@ test('wireless: AP on radio0, scan from radio1, join, station associates', async
 		await expect(
 			page.getByTestId('stations').getByRole('row', { name: /nuci-e2e/ }),
 		).toHaveCount(2, {
-			timeout: 90_000,
+			timeout: slow(90_000),
 		});
 	} finally {
 		await ensureClean();
@@ -350,7 +351,7 @@ async function withTestBridge<T>(fn: () => Promise<T>): Promise<T> {
 	);
 	await rpc.uci.apply(false);
 	await expect
-		.poll(async () => Object.keys(await rpc.network.devices()), { timeout: 30_000 })
+		.poll(async () => Object.keys(await rpc.network.devices()), { timeout: slow(30_000) })
 		.toContain('br-e2e');
 	try {
 		return await fn();
@@ -370,7 +371,7 @@ async function withTestBridge<T>(fn: () => Promise<T>): Promise<T> {
 test('devices: bridge VLAN filtering on a test bridge applies with rollback protection', async ({
 	page,
 }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await withTestBridge(async () => {
 		await login(page, 'network/devices');
 		await page.getByTestId('bridge-vlans-add').click();
@@ -385,7 +386,7 @@ test('devices: bridge VLAN filtering on a test bridge applies with rollback prot
 		const rpc = await api();
 		await expect
 			.poll(async () => (await rpc.network.device('br-e2e'))['bridge-vlans'], {
-				timeout: 30_000,
+				timeout: slow(30_000),
 			})
 			.toEqual(
 				expect.arrayContaining([
@@ -396,7 +397,7 @@ test('devices: bridge VLAN filtering on a test bridge applies with rollback prot
 });
 
 test('devices: an unconfirmed VLAN change that cuts off br-lan rolls back', async ({ page }) => {
-	test.setTimeout(420_000);
+	test.setTimeout(slow(420_000));
 	await login(page, 'network/devices');
 	await page.getByTestId('bridge-vlans-add').click();
 	await page.getByTestId('bvlan-device').selectOption('br-lan');
@@ -406,10 +407,10 @@ test('devices: an unconfirmed VLAN change that cuts off br-lan rolls back', asyn
 	await page.getByTestId('bridge-vlans-done').click();
 	await page.getByTestId('apply-apply').click();
 	await expect(page.getByTestId('apply-status')).toContainText('roll back in', {
-		timeout: 30_000,
+		timeout: slow(30_000),
 	});
 	await expect(page.getByText('so the previous configuration was restored')).toBeVisible({
-		timeout: 300_000,
+		timeout: slow(300_000),
 	});
 
 	const rpc = await api();

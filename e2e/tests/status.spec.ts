@@ -5,10 +5,11 @@
 import { expect, test, type Page } from '@playwright/test';
 import { TRANSPORT } from '../lib/transport';
 import { login } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 async function expectTransport(page: Page) {
 	await expect(page.locator('html')).toHaveAttribute('data-transport', TRANSPORT, {
-		timeout: 20_000,
+		timeout: slow(20_000),
 	});
 }
 
@@ -30,7 +31,9 @@ test('processes list real processes with CPU and memory', async ({ page }) => {
 		/\d+(\.\d+)? [KM]iB/,
 	);
 	// CPU share needs two samples
-	await expect(table.getByRole('row', { name: /procd/ })).toContainText('%', { timeout: 15_000 });
+	await expect(table.getByRole('row', { name: /procd/ })).toContainText('%', {
+		timeout: slow(15_000),
+	});
 });
 
 test('system log follows live: HUP to dnsmasq from the Processes page shows up', async ({
@@ -57,7 +60,7 @@ test('system log follows live: HUP to dnsmasq from the Processes page shows up',
 	await expect(procPage.getByText(/^Sent HUP to process \d+\.$/)).toBeVisible();
 
 	// dnsmasq logs that it re-read its files; the log page receives it live.
-	await expect.poll(() => lines.count(), { timeout: 30_000 }).toBeGreaterThan(before);
+	await expect.poll(() => lines.count(), { timeout: slow(30_000) }).toBeGreaterThan(before);
 	await expect(lines.last()).toContainText('dnsmasq');
 	await ctx.close();
 });
@@ -67,11 +70,13 @@ test('realtime graphs plot load, traffic and connections', async ({ page }) => {
 	await expectTransport(page);
 	const load = page.getByTestId('chart-load');
 	await expect(load.getByTestId('chart-load-value-l1')).toHaveText(/^\d+\.\d\d$/, {
-		timeout: 20_000,
+		timeout: slow(20_000),
 	});
 	// CPU needs two samples; the table view lists them
 	await expect
-		.poll(() => page.getByTestId('chart-cpu').locator('tbody tr').count(), { timeout: 20_000 })
+		.poll(() => page.getByTestId('chart-cpu').locator('tbody tr').count(), {
+			timeout: slow(20_000),
+		})
 		.toBeGreaterThan(2);
 
 	await page.getByRole('tab', { name: 'Traffic' }).click();
@@ -80,7 +85,7 @@ test('realtime graphs plot load, traffic and connections', async ({ page }) => {
 		page.getByTestId('traffic-table').getByRole('row', { name: /eth1/ }),
 	).toBeVisible();
 	await expect(page.getByTestId('chart-traffic-value-rx')).toContainText('bit/s', {
-		timeout: 20_000,
+		timeout: slow(20_000),
 	});
 
 	await page.getByRole('tab', { name: 'Wireless' }).click();
@@ -97,7 +102,9 @@ test('realtime graphs plot load, traffic and connections', async ({ page }) => {
 test('chart crosshair is keyboard accessible', async ({ page }) => {
 	await login(page, 'status/realtime');
 	const svg = page.getByTestId('chart-load').getByRole('img');
-	await expect(page.getByTestId('chart-load-value-l1')).toHaveText(/\d/, { timeout: 20_000 });
+	await expect(page.getByTestId('chart-load-value-l1')).toHaveText(/\d/, {
+		timeout: slow(20_000),
+	});
 	await svg.focus();
 	await page.keyboard.press('ArrowLeft');
 	await expect(page.getByTestId('chart-load-tooltip')).toBeVisible();
@@ -128,5 +135,5 @@ test('streams pause while the tab is hidden', async ({ page }) => {
 
 	await hide('visible');
 	await expectTransport(page);
-	await expect.poll(() => requests, { timeout: 15_000 }).toBeGreaterThan(0);
+	await expect.poll(() => requests, { timeout: slow(15_000) }).toBeGreaterThan(0);
 });

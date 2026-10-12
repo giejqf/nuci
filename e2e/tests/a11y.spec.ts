@@ -5,6 +5,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { login } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 const ROUTES = [
 	'status/overview',
@@ -43,7 +44,7 @@ for (const scheme of ['light', 'dark'] as const) {
 		test.use({ colorScheme: scheme });
 
 		test(`no serious accessibility violations (${scheme})`, async ({ page }) => {
-			test.setTimeout(600_000);
+			test.setTimeout(slow(600_000));
 			await login(page);
 			const problems: string[] = [];
 			for (const route of ROUTES) {

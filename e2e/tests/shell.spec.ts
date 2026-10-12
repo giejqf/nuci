@@ -5,6 +5,7 @@ import { expect, test } from '@playwright/test';
 import { createRpc } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 
@@ -29,10 +30,10 @@ test('overview shows live data from the router', async ({ page }) => {
 	await expect(row('wan')).toContainText('dhcp');
 
 	// stats stream: CPU usage needs two samples, uptime keeps moving
-	await expect(page.getByTestId('overview-cpu')).toContainText('%', { timeout: 20_000 });
+	await expect(page.getByTestId('overview-cpu')).toContainText('%', { timeout: slow(20_000) });
 	const uptime = await page.getByTestId('overview-uptime').textContent();
 	await expect(page.getByTestId('overview-uptime')).not.toHaveText(uptime ?? '', {
-		timeout: 20_000,
+		timeout: slow(20_000),
 	});
 	await expect(page.getByTestId('overview-memory')).toContainText('MiB');
 	await expect(page.getByTestId('overview-wireless')).toContainText('No wireless devices.');
@@ -73,7 +74,7 @@ test('an installed nuci-app registers a page through @nuci/app-sdk', async ({ pa
 test('a nuci-app edits uci through the host: change review and apply with rollback', async ({
 	page,
 }) => {
-	test.setTimeout(180_000);
+	test.setTimeout(slow(180_000));
 	await login(page, 'services/hello');
 	const field = page.getByTestId('hello-description');
 	await expect(field).toBeEditable();
@@ -87,9 +88,9 @@ test('a nuci-app edits uci through the host: change review and apply with rollba
 	await expect(page.getByTestId('apply-review-modal')).toBeHidden();
 	await page.getByTestId('apply-apply').click();
 	await expect(page.getByTestId('apply-status')).toContainText('roll back in', {
-		timeout: 30_000,
+		timeout: slow(30_000),
 	});
-	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: slow(120_000) });
 
 	const rpc = createRpc({ endpoint: `${base}/ubus`, storage: null });
 	await rpc.session.login('root', rootPassword());
@@ -99,5 +100,5 @@ test('a nuci-app edits uci through the host: change review and apply with rollba
 	// Clean up through the app as well.
 	await field.fill('');
 	await page.getByTestId('apply-apply').click();
-	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: slow(120_000) });
 });

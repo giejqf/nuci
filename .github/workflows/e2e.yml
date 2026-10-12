@@ -93,7 +93,8 @@ jobs:
             # Perf budgets assume a router-speed guest, not full emulation.
             echo "NUCI_E2E_PERF=1" >> "$GITHUB_ENV"
           else
-            echo "::notice::no /dev/kvm on this runner; the lab runs under TCG and perf checks are skipped"
+            echo "::notice::no /dev/kvm on this runner; the lab runs under TCG (timeouts x3, no perf checks)"
+            echo "NUCI_E2E_TIMEOUT_SCALE=3" >> "$GITHUB_ENV"
           fi
 
       - uses: actions/download-artifact@v4

@@ -10,6 +10,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { createRpc, transfer, uploadFile } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 const SUFFIX = (process.env.NUCI_TARGET ?? 'x86/64') === 'x86/64' ? '' : '-armv8';
@@ -26,13 +27,13 @@ async function api() {
 
 async function saveAndApply(page: Page) {
 	await page.getByTestId('apply-apply').click();
-	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 90_000 });
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: slow(90_000) });
 }
 
 test.describe.configure({ mode: 'serial' });
 
 test('general: hostname and time zone apply through the ApplyBar', async ({ page }) => {
-	test.setTimeout(180_000);
+	test.setTimeout(slow(180_000));
 	await login(page, 'system/general');
 	const host = page.getByTestId('hostname').locator('input').or(page.getByLabel('Hostname'));
 	const original = await page.getByLabel('Hostname').inputValue();
@@ -54,7 +55,7 @@ test('general: hostname and time zone apply through the ApplyBar', async ({ page
 		'CET-1CEST,M3.5.0,M10.5.0/3',
 	]);
 	await expect
-		.poll(async () => (await rpc.system.board()).hostname, { timeout: 30_000 })
+		.poll(async () => (await rpc.system.board()).hostname, { timeout: slow(30_000) })
 		.toBe('nuci-sys-e2e');
 
 	// restore
@@ -70,12 +71,12 @@ async function removeIfInstalled(name: string) {
 	if (!packages.some((p) => p.name === name)) return;
 	await rpc.nuci.pkg.del([name]);
 	await expect
-		.poll(async () => (await rpc.nuci.pkg.jobStatus()).running, { timeout: 120_000 })
+		.poll(async () => (await rpc.nuci.pkg.jobStatus()).running, { timeout: slow(120_000) })
 		.toBe(false);
 }
 
 test('software: install and remove a package through the UI', async ({ page }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await removeIfInstalled('tree'); // a previous failed run may have left it installed
 	await login(page, 'system/software');
 	await expect(
@@ -83,7 +84,7 @@ test('software: install and remove a package through the UI', async ({ page }) =
 	).toBeVisible();
 
 	await page.getByTestId('pkg-update').click();
-	await expect(page.getByText('Package lists updated.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Package lists updated.')).toBeVisible({ timeout: slow(120_000) });
 
 	await page.getByRole('tab', { name: 'Available' }).click();
 	await page.getByTestId('pkg-search').fill('tree');
@@ -91,7 +92,7 @@ test('software: install and remove a package through the UI', async ({ page }) =
 	const row = page.getByTestId('pkg-results').getByRole('row', { name: /^tree\b/ });
 	await row.getByRole('button', { name: 'Install tree' }).click();
 	await page.getByTestId('pkg-confirm-go').click();
-	await expect(page.getByText('Installed tree.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Installed tree.')).toBeVisible({ timeout: slow(120_000) });
 	await expect(page.getByTestId('pkg-job-log')).toContainText('tree');
 
 	await page.getByRole('tab', { name: /Installed/ }).click();
@@ -99,7 +100,7 @@ test('software: install and remove a package through the UI', async ({ page }) =
 	await installed.getByRole('searchbox', { name: 'Filter', exact: true }).fill('tree');
 	await installed.getByRole('button', { name: 'Remove tree' }).click();
 	await page.getByTestId('pkg-confirm-go').click();
-	await expect(page.getByText('Removed tree.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Removed tree.')).toBeVisible({ timeout: slow(120_000) });
 	await expect(installed.getByRole('row', { name: /^tree\b/ })).toHaveCount(0);
 });
 
@@ -149,9 +150,9 @@ test('administration: SSH keys and password round-trip', async ({ page }) => {
 });
 
 test('backup: generate and download a configuration archive', async ({ page }) => {
-	test.setTimeout(120_000);
+	test.setTimeout(slow(120_000));
 	await login(page, 'system/backup');
-	const download = page.waitForEvent('download', { timeout: 90_000 });
+	const download = page.waitForEvent('download', { timeout: slow(90_000) });
 	await page.getByTestId('backup-create').click();
 	const file = await download;
 	expect(file.suggestedFilename()).toMatch(/^backup-.+-\d{4}-\d{2}-\d{2}\.tar\.gz$/);
@@ -163,7 +164,7 @@ test('backup: generate and download a configuration archive', async ({ page }) =
 test('backup and restore beyond the /ubus limits (> 256 KiB) through /nuci/transfer', async ({
 	page,
 }) => {
-	test.setTimeout(600_000);
+	test.setTimeout(slow(600_000));
 	const rpc = await api();
 	const original = await rpc.file.read('/etc/rc.local');
 	// ~600 KiB of incompressible text in a file every backup includes.
@@ -175,7 +176,7 @@ test('backup and restore beyond the /ubus limits (> 256 KiB) through /nuci/trans
 	await uploadFile(rpc.client, '/etc/rc.local', new Blob([big]), undefined, 0o755);
 
 	await login(page, 'system/backup');
-	const download = page.waitForEvent('download', { timeout: 120_000 });
+	const download = page.waitForEvent('download', { timeout: slow(120_000) });
 	await page.getByTestId('backup-create').click();
 	const file = await download;
 	const path = await file.path();
@@ -188,15 +189,15 @@ test('backup and restore beyond the /ubus limits (> 256 KiB) through /nuci/trans
 	await page.getByTestId('restore-file').setInputFiles(path);
 	await page.getByTestId('restore-start').click();
 	await page.getByTestId('restore-confirm').click();
-	await expect(page.getByTestId('restart-status')).toBeVisible({ timeout: 60_000 });
+	await expect(page.getByTestId('restart-status')).toBeVisible({ timeout: slow(60_000) });
 	// The router reboots; the page reloads into the login form when it is back.
-	await expect(page.getByLabel('Password')).toBeVisible({ timeout: 480_000 });
+	await expect(page.getByLabel('Password')).toBeVisible({ timeout: slow(480_000) });
 
 	// file.read stops at 256 KiB: a fresh backup proves the big rc.local came back.
 	const after = await api();
 	await after.nuci.backup.create();
 	await expect
-		.poll(async () => (await after.nuci.backup.status()).running, { timeout: 60_000 })
+		.poll(async () => (await after.nuci.backup.status()).running, { timeout: slow(60_000) })
 		.toBe(false);
 	const again = Buffer.from(
 		await (await transfer.download(after.client, 'backup')).arrayBuffer(),
@@ -206,7 +207,7 @@ test('backup and restore beyond the /ubus limits (> 256 KiB) through /nuci/trans
 });
 
 test('flash: a bogus image is rejected, the real image validates', async ({ page }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'system/backup');
 	const input = page.getByTestId('firmware-file');
 
@@ -218,7 +219,7 @@ test('flash: a bogus image is rejected, the real image validates', async ({ page
 	await page.getByTestId('firmware-upload').click();
 	await expect(page.getByTestId('firmware-validation')).toContainText(
 		'The image failed verification.',
-		{ timeout: 60_000 },
+		{ timeout: slow(60_000) },
 	);
 	// Invalid images can only be flashed with the explicit, dangerous "force" opt-in.
 	const flash = page.getByTestId('firmware-flash');
@@ -229,7 +230,7 @@ test('flash: a bogus image is rejected, the real image validates', async ({ page
 	await page.getByTestId('firmware-upload').click();
 	await expect(page.getByTestId('firmware-validation')).toContainText(
 		'The image is valid for this device.',
-		{ timeout: 240_000 },
+		{ timeout: slow(240_000) },
 	);
 	await expect(page.getByTestId('firmware-flash')).toBeEnabled();
 	// Flashing itself is a manual test (AGENTS.md §9 Phase 3). The upload stays

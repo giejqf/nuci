@@ -5,6 +5,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { createRpc } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 const upnpBase = `http://127.0.0.1:${process.env.NUCI_UPNP_PORT ?? '8085'}`;
@@ -18,9 +19,9 @@ async function api() {
 async function applyWithRollback(page: Page) {
 	await page.getByTestId('apply-apply').click();
 	await expect(page.getByTestId('apply-status')).toContainText('roll back in', {
-		timeout: 30_000,
+		timeout: slow(30_000),
 	});
-	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: 120_000 });
+	await expect(page.getByText('Configuration applied.')).toBeVisible({ timeout: slow(120_000) });
 }
 
 async function addListEntry(page: Page, testid: string, label: string, value: string) {
@@ -57,7 +58,7 @@ test.beforeAll(async () => {
 test('wireguard: two tunnels peer over the loopback and complete a handshake; peer export', async ({
 	page,
 }) => {
-	test.setTimeout(420_000);
+	test.setTimeout(slow(420_000));
 	await login(page, 'network/wireguard');
 	await expect(page.getByRole('heading', { name: 'WireGuard', level: 1 })).toBeVisible();
 
@@ -78,7 +79,7 @@ test('wireguard: two tunnels peer over the loopback and complete a handshake; pe
 
 	const key = (name: string) =>
 		expect.poll(async () => (await page.getByTestId(`wg-${name}-pubkey`).innerText()).trim(), {
-			timeout: 30_000,
+			timeout: slow(30_000),
 		});
 	await key('wge2e0').toMatch(/^[A-Za-z0-9+/]{43}=$/);
 	await key('wge2e1').toMatch(/^[A-Za-z0-9+/]{43}=$/);
@@ -124,12 +125,12 @@ test('wireguard: two tunnels peer over the loopback and complete a handshake; pe
 						?.latest_handshake ?? 0
 				);
 			},
-			{ timeout: 90_000 },
+			{ timeout: slow(90_000) },
 		)
 		.toBeGreaterThan(0);
 	await expect(
 		page.getByTestId('wg-wge2e0-status').getByRole('row', { name: /other-end/ }),
-	).toContainText('ago', { timeout: 30_000 });
+	).toContainText('ago', { timeout: slow(30_000) });
 
 	// Export for the peer whose keys were generated on the router.
 	await page.getByRole('button', { name: 'Configuration for phone' }).click();
@@ -155,7 +156,7 @@ test('wireguard: two tunnels peer over the loopback and complete a handshake; pe
 test('ddns: a service updates through a custom URL and shows its status and log', async ({
 	page,
 }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'services/ddns');
 	await page.getByTestId('ddns-private').check();
 	await page.getByTestId('ddns-services-add').click();
@@ -167,7 +168,7 @@ test('ddns: a service updates through a custom URL and shows its status and log'
 
 	await page.getByTestId('ddns-update').click();
 	const row = page.getByTestId('ddns-services').getByRole('row', { name: /e2e\.example/ });
-	await expect(row).toContainText('updated', { timeout: 90_000 });
+	await expect(row).toContainText('updated', { timeout: slow(90_000) });
 	await expect(row).toContainText('running');
 	await row.getByRole('button', { name: 'Edit e2e.example' }).click();
 	await page.getByTestId('ddns-log').click();
@@ -198,13 +199,13 @@ async function soap(action: string, body: string) {
 }
 
 test('upnp: a mapping requested by a LAN client appears in the list', async ({ page }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'services/upnp');
 	await page.getByTestId('upnp-enabled').check();
 	// QEMU's WAN address is private; report a public one so mappings are allowed.
 	await page.getByTestId('upnp-external-ip').fill('1.2.3.4');
 	await applyWithRollback(page);
-	await expect(page.getByTestId('upnp-state')).toHaveText('running', { timeout: 30_000 });
+	await expect(page.getByTestId('upnp-state')).toHaveText('running', { timeout: slow(30_000) });
 
 	// Through the lab's port forward the request comes from 192.168.1.2 (secure mode).
 	const res = await soap(
@@ -213,21 +214,21 @@ test('upnp: a mapping requested by a LAN client appears in the list', async ({ p
 	);
 	expect(res).toContain('AddPortMappingResponse');
 	const row = page.getByTestId('upnp-redirects').getByRole('row', { name: /nuci-e2e/ });
-	await expect(row).toContainText('40000', { timeout: 15_000 });
+	await expect(row).toContainText('40000', { timeout: slow(15_000) });
 	await expect(row).toContainText('192.168.1.2');
 
 	await soap(
 		'DeletePortMapping',
 		'<NewRemoteHost></NewRemoteHost><NewExternalPort>40000</NewExternalPort><NewProtocol>TCP</NewProtocol>',
 	);
-	await expect(row).toHaveCount(0, { timeout: 15_000 });
+	await expect(row).toHaveCount(0, { timeout: slow(15_000) });
 	await page.getByTestId('upnp-external-ip').fill('');
 	await page.getByTestId('upnp-enabled').uncheck();
 	await applyWithRollback(page);
 });
 
 test('sqm: enabling the wan queue installs cake', async ({ page }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await login(page, 'network/sqm');
 	const queues = page.getByTestId('sqm-queues');
 	await queues.getByRole('button', { name: 'Edit eth1' }).click();
@@ -248,10 +249,12 @@ test('sqm: enabling the wan queue installs cake', async ({ page }) => {
 						>;
 					}>('nuci.sqm', 'status')
 				).interfaces.eth1,
-			{ timeout: 60_000 },
+			{ timeout: slow(60_000) },
 		)
 		.toMatchObject({ egress: [{ kind: 'cake' }], ingress: [{ bandwidth: '50Mbit' }] });
-	await expect(page.getByTestId('sqm-status-eth1')).toContainText('cake', { timeout: 15_000 });
+	await expect(page.getByTestId('sqm-status-eth1')).toContainText('cake', {
+		timeout: slow(15_000),
+	});
 
 	await queues.getByRole('button', { name: 'Edit eth1' }).click();
 	await page.getByTestId('sqm-enabled').uncheck();

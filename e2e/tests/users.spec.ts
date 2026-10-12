@@ -6,6 +6,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { createRpc, isRpcError, transfer } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
 import { login, loginAs } from '../lib/ui';
+import { slow } from '../lib/timing';
 
 const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 const USER = 'e2eview';
@@ -73,7 +74,7 @@ test('root adds a read-only user from System → Users', async ({ page }) => {
 });
 
 test('the read-only user sees permitted pages without write controls', async ({ page }) => {
-	test.setTimeout(300_000);
+	test.setTimeout(slow(300_000));
 	await loginAs(page, USER, PW);
 	const sidebar = page.getByTestId('sidebar');
 	for (const hidden of ['Users', 'Backup / Flash', 'Administration'])
