@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 NUCI_APP_ID:=wireguard
 NUCI_APP_TITLE:=NuCI app: WireGuard tunnels
-NUCI_APP_DEPENDS:=+wireguard-tools +kmod-wireguard
+NUCI_APP_DEPENDS:=+wireguard-tools
 PKG_VERSION:=0.2.0
 PKG_RELEASE:=1
 

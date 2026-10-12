@@ -26,7 +26,7 @@ ls "$REPO"/dist/feed/*.apk >/dev/null 2>&1 || die "no packages in dist/feed (run
 if [ "$(uname -m)" != "x86_64" ] && [ "${NUCI_SDK_DOCKER:-1}" = 1 ] && [ -z "${NUCI_SDK_IN_DOCKER:-}" ]; then
 	log "non-x86_64 host: running the Image Builder in an amd64 container"
 	docker build -q --platform linux/amd64 -t nuci-sdk-builder "$REPO/tools/sdk" >/dev/null
-	exec docker run --rm --platform linux/amd64 --user "$(id -u):$(id -g)" -e HOME=/tmp -e NUCI_SDK_IN_DOCKER=1 \
+	exec docker run --rm --init --platform linux/amd64 --user "$(id -u):$(id -g)" -e HOME=/tmp -e NUCI_SDK_IN_DOCKER=1 \
 		-e NUCI_IB_VERSION="$VERSION" -e NUCI_TARGET="$TARGET" \
 		-v "$REPO:$REPO" -w "$REPO" nuci-sdk-builder "$REPO/tools/imagebuilder/build.sh"
 fi

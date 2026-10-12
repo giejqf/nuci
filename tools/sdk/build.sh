@@ -30,7 +30,7 @@ if [ "$(uname -m)" != "x86_64" ] && [ "${NUCI_SDK_DOCKER:-1}" = 1 ] && [ -z "${N
 	command -v docker >/dev/null || die "non-x86_64 host needs docker (with binfmt qemu-x86_64)"
 	log "non-x86_64 host: running the SDK in an amd64 container"
 	docker build -q --platform linux/amd64 -t nuci-sdk-builder "$REPO/tools/sdk" >/dev/null
-	exec docker run --rm --platform linux/amd64 \
+	exec docker run --rm --init --platform linux/amd64 \
 		--user "$(id -u):$(id -g)" -e HOME=/tmp -e NUCI_SDK_IN_DOCKER=1 \
 		-e NUCI_SDK_VERSION="$VERSION" -e NUCI_SDK_TARGET="$TARGET" -e NUCI_SRC="$SRC" \
 		-v "$REPO:$REPO" -v "$SRC:$SRC" -w "$REPO" nuci-sdk-builder "$REPO/tools/sdk/build.sh"
@@ -60,6 +60,8 @@ fi
 cd "$SDK"
 printf 'src-link nuci %s/feed\n' "$SRC" > feeds.conf
 ./scripts/feeds update nuci >/dev/null
+# Re-index: a cached index misses packages added to the feed since (apps).
+./scripts/feeds update -i nuci >/dev/null
 ./scripts/feeds install -a -p nuci >/dev/null
 
 {

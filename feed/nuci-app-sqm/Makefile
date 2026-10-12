@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 NUCI_APP_ID:=sqm
 NUCI_APP_TITLE:=NuCI app: Smart queue management
-NUCI_APP_DEPENDS:=+sqm-scripts +kmod-sched-cake
+NUCI_APP_DEPENDS:=+sqm-scripts
 PKG_VERSION:=0.2.0
 PKG_RELEASE:=1
 
