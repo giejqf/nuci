@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
-// Phase 0: the router serves NuCI, /ubus answers, / redirects (D16).
+// The router serves NuCI, /ubus answers, / redirects (D16).
 
 import { expect, test } from '@playwright/test';
 import { NULL_SID, ubus } from '../lib/router';
 
-test('/nuci/ serves the SPA', async ({ page }) => {
+test('/nuci/ serves the SPA with the login form', async ({ page }) => {
 	await page.goto('/nuci/');
 	await expect(page).toHaveTitle('NuCI');
-	await expect(page.getByTestId('tagline')).toHaveText('A modern web interface for OpenWrt');
+	await expect(page.getByTestId('login-form')).toBeVisible();
+	// system.board via the null session (unauthenticated ACL)
+	await expect(page.getByTestId('login-model')).toContainText('OpenWrt 25.12');
 });
 
 test('/ redirects to /nuci/ when LuCI is absent', async ({ page }) => {

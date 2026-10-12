@@ -8,6 +8,10 @@
 		".": "./src/index.ts"
 	},
 	"scripts": {
-		"check": "tsc -p tsconfig.json"
+		"check": "svelte-check --tsconfig ./tsconfig.json --threshold error"
+	},
+	"dependencies": {
+		"@nuci/rpc": "workspace:*",
+		"svelte": "^5.57.2"
 	}
 }

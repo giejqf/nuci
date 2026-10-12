@@ -1,0 +1,58 @@
+Name:	uhttpd
+Umask:	0022
+State:	S (sleeping)
+Tgid:	5087
+Ngid:	0
+Pid:	5087
+PPid:	1
+TracerPid:	0
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+FDSize:	64
+Groups:	 
+NStgid:	5087
+NSpid:	5087
+NSpgid:	1
+NSsid:	1
+Kthread:	0
+VmPeak:	    2432 kB
+VmSize:	    2404 kB
+VmLck:	       0 kB
+VmPin:	       0 kB
+VmHWM:	    2100 kB
+VmRSS:	    2100 kB
+RssAnon:	     324 kB
+RssFile:	    1776 kB
+RssShmem:	       0 kB
+VmData:	     304 kB
+VmStk:	     132 kB
+VmExe:	      24 kB
+VmLib:	    1136 kB
+VmPTE:	      40 kB
+VmSwap:	       0 kB
+CoreDumping:	0
+THP_enabled:	0
+untag_mask:	0xffffffffffffffff
+Threads:	1
+SigQ:	0/1917
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	0000000000000000
+SigIgn:	0000000200001000
+SigCgt:	0000000000014002
+CapInh:	0000000000000000
+CapPrm:	000001ffffffffff
+CapEff:	000001ffffffffff
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+Seccomp_filters:	0
+Speculation_Store_Bypass:	vulnerable
+SpeculationIndirectBranch:	always enabled
+Cpus_allowed:	1
+Cpus_allowed_list:	0
+Mems_allowed:	1
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	248
+nonvoluntary_ctxt_switches:	236

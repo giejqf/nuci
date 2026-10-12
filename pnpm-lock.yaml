@@ -250,12 +250,24 @@ importers:
 
   e2e:
     devDependencies:
+      '@nuci/app-sdk':
+        specifier: workspace:*
+        version: link:../packages/app-sdk
+      '@nuci/rpc':
+        specifier: workspace:*
+        version: link:../packages/rpc
+      '@nuci/uci':
+        specifier: workspace:*
+        version: link:../packages/uci
       '@playwright/test':
         specifier: ^1.64.0
         version: 1.64.0
       '@types/node':
         specifier: ^24.19.2
         version: 24.19.2
+      vite:
+        specifier: ^8.3.4
+        version: 8.3.4(@types/node@24.19.2)(jiti@2.7.0)
 
   packages/app-sdk: {}
 
@@ -263,7 +275,14 @@ importers:
 
   packages/rpc: {}
 
-  packages/uci: {}
+  packages/uci:
+    dependencies:
+      '@nuci/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      svelte:
+        specifier: ^5.57.2
+        version: 5.57.2(@typescript-eslint/types@8.71.1)
 
   packages/ui:
     dependencies:
@@ -273,6 +292,12 @@ importers:
       '@nuci/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@nuci/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@nuci/uci':
+        specifier: workspace:*
+        version: link:../uci
       svelte:
         specifier: ^5.57.2
         version: 5.57.2(@typescript-eslint/types@8.71.1)

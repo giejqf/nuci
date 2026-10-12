@@ -1,0 +1,52 @@
+{
+	"object": "nuci.dhcp",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"leases": {},
+		"hosts": {}
+	},
+	"calls": [
+		{
+			"method": "leases",
+			"args": {},
+			"status": 0,
+			"result": {
+				"leases": []
+			}
+		},
+		{
+			"method": "hosts",
+			"args": {},
+			"status": 0,
+			"result": {
+				"hosts": [
+					{
+						"macaddr": "52:55:0a:00:02:02",
+						"ipv4": [
+							"10.0.2.2"
+						],
+						"ipv6": []
+					},
+					{
+						"macaddr": "52:55:0a:00:02:03",
+						"ipv4": [
+							"10.0.2.3"
+						],
+						"ipv6": []
+					},
+					{
+						"macaddr": "52:55:c0:a8:01:02",
+						"ipv4": [
+							"192.168.1.2"
+						],
+						"ipv6": []
+					}
+				]
+			}
+		}
+	]
+}

@@ -1,0 +1,2 @@
+/dev/sda1: UUID="1234-ABCD" LABEL="BOOT" VERSION="FAT16" TYPE="vfat"
+/dev/sda2: UUID="ff-ee" VERSION="4.0" MOUNT="/rom" TYPE="squashfs"

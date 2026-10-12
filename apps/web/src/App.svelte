@@ -1,23 +1,22 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <script lang="ts">
-	import { Router } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
-	import { ThemeToggle } from '@nuci/ui';
+	import { onMount } from 'svelte';
+	import { session } from './lib/session.svelte';
+	import Login from './shell/Login.svelte';
+	import Shell from './shell/Shell.svelte';
+
+	onMount(() => {
+		void session.init();
+	});
 </script>
 
-<div class="navbar bg-base-100 shadow-sm">
-	<div class="flex-1 gap-2 px-2">
-		<Router size={24} aria-hidden="true" />
-		<span class="text-xl font-semibold">{t('app.name')}</span>
+{#if !session.ready}
+	<div class="flex min-h-screen items-center justify-center" role="status">
+		<span class="loading loading-spinner loading-lg" aria-label={t('ui.loading')}></span>
 	</div>
-	<ThemeToggle />
-</div>
-
-<main class="hero min-h-[60vh]">
-	<div class="hero-content text-center">
-		<div>
-			<h1 class="text-4xl font-bold">{t('app.name')}</h1>
-			<p class="py-4 opacity-70" data-testid="tagline">{t('app.tagline')}</p>
-		</div>
-	</div>
-</main>
+{:else if session.authenticated}
+	<Shell />
+{:else}
+	<Login />
+{/if}

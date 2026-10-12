@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// NuCI Server-Sent Events handler for uhttpd-mod-ucode (Phase 0 spike).
+// NuCI Server-Sent Events handler for uhttpd-mod-ucode (D18, ADR-0001).
 //
-// GET /nuci/events?sid=<ubus_rpc_session>&streams=heartbeat
+// GET /nuci/events?sid=<ubus_rpc_session>&streams=heartbeat,stats[&interval=2][&last=<id>]
 //
 // uhttpd forks one process per request and SIGKILLs it after the global
 // script_timeout, so every stream is bounded: it ends cleanly before the
@@ -15,10 +15,15 @@
 
 import { connect } from 'ubus';
 import { cursor } from 'uci';
+import { realtime } from 'nuci.status';
 
 const SID_RE = /^[0-9a-f]{32}$/;
 const NULL_SID = '00000000000000000000000000000000';
-const KNOWN_STREAMS = [ 'heartbeat' ];
+// Stream name -> collector. Collectors are shared with the nuci.* plugins.
+const COLLECTORS = {
+	heartbeat: (start) => ({ t: time(), uptime: time() - start }),
+	stats: () => realtime(),
+};
 
 function parse_query(qs) {
 	let out = {};
@@ -65,7 +70,7 @@ global.handle_request = function(env) {
 	if (!match(sid, SID_RE) || sid == NULL_SID)
 		return reply_error(403, 'Forbidden');
 
-	let streams = filter(split(q.streams ?? 'heartbeat', ','), s => s in KNOWN_STREAMS);
+	let streams = uniq(filter(split(q.streams ?? 'heartbeat', ','), s => s in COLLECTORS));
 
 	if (!length(streams))
 		return reply_error(400, 'Bad Request');
@@ -89,7 +94,8 @@ global.handle_request = function(env) {
 
 	let lifetime = stream_lifetime();
 	let start = time();
-	let id = +(env.headers?.['last-event-id'] ?? 0) || 0;
+	// Event ids continue across reconnects (EventSource header, or `last` from our client).
+	let id = +(env.headers?.['last-event-id'] ?? q.last ?? 0) || 0;
 
 	uhttpd.send('Status: 200 OK\r\n' +
 		'Content-Type: text/event-stream\r\n' +
@@ -98,11 +104,14 @@ global.handle_request = function(env) {
 	uhttpd.send(`retry: 2000\n: nuci events, lifetime ${lifetime}s\n\n`);
 	uhttpd.flush();
 
-	while (time() - start < lifetime) {
-		send_event('heartbeat', ++id, { t: time(), uptime: time() - start });
+	let ticks = 0;
 
-		// Re-check the session every 10 events so a logout ends the stream.
-		if (id % 10 == 0 && !bus.call('session', 'access', {
+	while (time() - start < lifetime) {
+		for (let s in streams)
+			send_event(s, ++id, COLLECTORS[s](start));
+
+		// Re-check the session every 10 ticks so a logout ends the stream.
+		if (++ticks % 10 == 0 && !bus.call('session', 'access', {
 			ubus_rpc_session: sid, scope: 'nuci-events', object: streams[0], function: 'read'
 		})?.access)
 			break;

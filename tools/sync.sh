@@ -22,9 +22,18 @@ if [ "$WEB" = 1 ]; then
 	log "web: dist/ -> /www/nuci"
 	tar --owner=0 --group=0 --exclude=.vite -C "$DIST" -cf - . |
 		lab_ssh 'rm -rf /www/nuci.new && mkdir -p /www/nuci.new && tar -C /www/nuci.new -xf - &&
+			{ [ ! -d /www/nuci/apps ] || mv /www/nuci/apps /www/nuci.new/apps; } &&
 			rm -rf /www/nuci && mv /www/nuci.new /www/nuci'
 fi
 
+# rpcd first: events.uc imports the shared libs, and uhttpd exits if it cannot compile it.
+if [ "$RPCD" = 1 ]; then
+	log "rpcd: plugins, libs, ACLs"
+	lab_put /usr/share/rpcd/ucode "$REPO_ROOT"/rpcd/ucode/nuci-*.uc
+	lab_put /usr/share/ucode/nuci "$REPO_ROOT"/rpcd/lib/nuci/*.uc
+	lab_put /usr/share/rpcd/acl.d "$REPO_ROOT"/rpcd/acl.d/nuci-*.json
+	lab_ssh '/etc/init.d/rpcd restart'
+fi
 if [ "$SERVER" = 1 ]; then
 	log "server: events.uc, nuci-base files, uhttpd integration"
 	FILES="$REPO_ROOT/feed/nuci-base/files"
@@ -42,11 +51,4 @@ if [ "$SERVER" = 1 ]; then
 		/etc/init.d/uhttpd restart'
 fi
 
-if [ "$RPCD" = 1 ]; then
-	log "rpcd: plugins, libs, ACLs"
-	lab_put /usr/share/rpcd/ucode "$REPO_ROOT"/rpcd/ucode/nuci-*.uc
-	lab_put /usr/share/ucode/nuci "$REPO_ROOT"/rpcd/lib/nuci/*.uc
-	lab_put /usr/share/rpcd/acl.d "$REPO_ROOT"/rpcd/acl.d/nuci-*.json
-	lab_ssh '/etc/init.d/rpcd restart'
-fi
 log "synced"

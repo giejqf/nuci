@@ -1,2 +1,39 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /* NuCI component styles. Custom CSS lives here only (AGENTS.md §5). */
+
+/*
+ * Chart tokens: the dataviz reference palette, validated against the DaisyUI
+ * card surfaces (light #ffffff, dark #1d232a): first four slots pass the
+ * adjacent CVD/normal-vision gates in both modes. Charts cap at four series.
+ */
+:root {
+	--viz-1: #2a78d6;
+	--viz-2: #eb6834;
+	--viz-3: #1baf7a;
+	--viz-4: #eda100;
+	--viz-grid: #e1e0d9;
+	--viz-axis: #c3c2b7;
+	--viz-muted: #6b6a65;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:where(:not([data-theme='light'])) {
+		--viz-1: #3987e5;
+		--viz-2: #d95926;
+		--viz-3: #199e70;
+		--viz-4: #c98500;
+		--viz-grid: #2f3640;
+		--viz-axis: #444c57;
+		--viz-muted: #9a9a94;
+	}
+}
+
+:root[data-theme='dark'] {
+	--viz-1: #3987e5;
+	--viz-2: #d95926;
+	--viz-3: #199e70;
+	--viz-4: #c98500;
+	--viz-grid: #2f3640;
+	--viz-axis: #444c57;
+	--viz-muted: #9a9a94;
+}

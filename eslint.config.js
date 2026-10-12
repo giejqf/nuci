@@ -32,6 +32,13 @@ export default ts.config(
 		},
 	},
 	{
+		files: ['**/*.svelte'],
+		rules: {
+			// Assigning a $bindable prop updates the parent; core ESLint cannot see that.
+			'no-useless-assignment': 'off',
+		},
+	},
+	{
 		files: ['**/*.svelte', '**/*.svelte.ts'],
 		languageOptions: {
 			parserOptions: {

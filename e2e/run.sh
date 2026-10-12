@@ -18,6 +18,13 @@ if [ "${NUCI_E2E_SYNC:-1}" = 1 ]; then
 	"$REPO/tools/sync.sh"
 fi
 
+# Test-only nuci-app proving the extension path (AGENTS.md §9 Phase 1).
+HELLO="$REPO/e2e/fixtures/nuci-app-hello"
+(cd "$REPO/e2e" && pnpm exec vite build -c fixtures/nuci-app-hello/vite.config.ts --logLevel error)
+cp "$HELLO/manifest.json" "$HELLO/dist/hello.json"
+lab_put /usr/share/nuci/apps "$HELLO/dist/hello.json"
+lab_put /www/nuci/apps/hello "$HELLO/dist/index.js"
+
 export NUCI_ROOT_PASSWORD NUCI_HTTP_PORT
 cd "$REPO/e2e"
 if [ "${NUCI_E2E_DOCKER:-auto}" != 1 ] && pnpm exec playwright install chromium >/dev/null 2>&1; then

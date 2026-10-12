@@ -1,0 +1,40 @@
+<5>[    0.000000] Linux version 6.12.71 (builder@buildhost) (x86_64-openwrt-linux-musl-gcc (OpenWrt GCC 14.3.0 r32713-f919e7899d) 14.3.0, GNU ld (GNU Binutils) 2.44) #0 SMP Tue Mar  3 00:14:15 2026
+<6>[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz root=PARTUUID=83beaead-02 rootwait console=tty1 console=ttyS0,115200n8 noinitrd
+<6>[    0.000000] BIOS-provided physical RAM map:
+<6>[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+<6>[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+<6>[    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+<6>[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000001ffdbfff] usable
+<6>[    0.000000] BIOS-e820: [mem 0x000000001ffdc000-0x000000001fffffff] reserved
+<6>[    0.000000] BIOS-e820: [mem 0x00000000b0000000-0x00000000bfffffff] reserved
+<6>[    0.000000] BIOS-e820: [mem 0x00000000fed1c000-0x00000000fed1ffff] reserved
+<6>[    0.000000] BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+<6>[    0.000000] NX (Execute Disable) protection: active
+<6>[    0.000000] APIC: Static calls initialized
+<6>[    0.000000] SMBIOS 2.8 present.
+<6>[    0.000000] DMI: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+<6>[    0.000000] DMI: Memory slots populated: 1/1
+<7>[    0.000000] e820: update [mem 0x00000000-0x00000fff] usable ==> reserved
+<7>[    0.000000] e820: remove [mem 0x000a0000-0x000fffff] usable
+<6>[    0.000000] last_pfn = 0x1ffdc max_arch_pfn = 0x400000000
+<6>[    0.000000] MTRR map: 4 entries (3 fixed + 1 variable; max 19), built from 8 variable MTRRs
+<6>[    0.000000] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT  
+<6>[    0.000000] found SMP MP-table at [mem 0x000f5c90-0x000f5c9f]
+<6>[    0.000000] ACPI: Early table checksum verification disabled
+<6>[    0.000000] ACPI: RSDP 0x00000000000F5AD0 000014 (v00 BOCHS )
+<6>[    0.000000] ACPI: RSDT 0x000000001FFE211A 000034 (v01 BOCHS  BXPCRSDT 00000001 BXPC 00000001)
+<6>[    0.000000] ACPI: FACP 0x000000001FFE1F3A 0000F4 (v03 BOCHS  BXPCFACP 00000001 BXPC 00000001)
+<6>[    0.000000] ACPI: DSDT 0x000000001FFE0040 001EFA (v01 BOCHS  BXPCDSDT 00000001 BXPC 00000001)
+<6>[    0.000000] ACPI: FACS 0x000000001FFE0000 000040
+<6>[    0.000000] ACPI: APIC 0x000000001FFE202E 000078 (v01 BOCHS  BXPCAPIC 00000001 BXPC 00000001)
+<6>[    0.000000] ACPI: HPET 0x000000001FFE20A6 000038 (v01 BOCHS  BXPCHPET 00000001 BXPC 00000001)
+<6>[    0.000000] ACPI: MCFG 0x000000001FFE20DE 00003C (v01 BOCHS  BXPCMCFG 00000001 BXPC 00000001)
+<6>[    0.000000] ACPI: Reserving FACP table memory at [mem 0x1ffe1f3a-0x1ffe202d]
+<6>[    0.000000] ACPI: Reserving DSDT table memory at [mem 0x1ffe0040-0x1ffe1f39]
+<6>[    0.000000] ACPI: Reserving FACS table memory at [mem 0x1ffe0000-0x1ffe003f]
+<6>[    0.000000] ACPI: Reserving APIC table memory at [mem 0x1ffe202e-0x1ffe20a5]
+<6>[    0.000000] ACPI: Reserving HPET table memory at [mem 0x1ffe20a6-0x1ffe20dd]
+<6>[    0.000000] ACPI: Reserving MCFG table memory at [mem 0x1ffe20de-0x1ffe2119]
+<6>[    0.000000] Zone ranges:
+<6>[    0.000000]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+<6>[    0.000000]   DMA32    [mem 0x0000000001000000-0x000000001ffdbfff]

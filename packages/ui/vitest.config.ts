@@ -10,5 +10,6 @@ export default defineProject({
 		name: '@nuci/ui',
 		environment: 'jsdom',
 		include: ['src/**/*.test.ts'],
+		setupFiles: ['src/test/setup.ts'],
 	},
 });

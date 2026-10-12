@@ -18,6 +18,8 @@
 	"dependencies": {
 		"@lucide/svelte": "^1.55.0",
 		"@nuci/i18n": "workspace:*",
+		"@nuci/rpc": "workspace:*",
+		"@nuci/uci": "workspace:*",
 		"svelte": "^5.57.2"
 	},
 	"devDependencies": {

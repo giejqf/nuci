@@ -1,3 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
-// Implemented in Phase 1 (see AGENTS.md §9).
-export {};
+//
+// @nuci/uci — uci mirror, staging, change review and the apply protocol.
+
+export {
+	applyChanges,
+	clampTimeout,
+	type ApplyOptions,
+	type ApplyPhase,
+	type ApplyState,
+} from './apply';
+export { UciModel, type Change, type Section, type UciApi, type UciValue } from './model';
+export { isValidName, parseRef, parseSelector, type UciRef } from './path';
+export { UciStore } from './store.svelte';
