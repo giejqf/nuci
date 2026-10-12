@@ -14,7 +14,7 @@
 		"test:unit": "vitest run",
 		"test:ucode": "sh rpcd/test/run.sh",
 		"check": "pnpm -r --parallel check && sh tools/check-ucode.sh",
-		"lint": "eslint . && prettier --check . && sh tools/check-license.sh",
+		"lint": "eslint . && prettier --check . && sh tools/check-license.sh && node tools/check-i18n.mjs",
 		"format": "prettier --write .",
 		"size": "node tools/size.mjs",
 		"e2e": "bash e2e/run.sh"

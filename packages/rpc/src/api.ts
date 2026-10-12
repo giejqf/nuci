@@ -8,6 +8,8 @@ import type { RpcClient } from './client';
 import { RpcError } from './errors';
 import type {
 	AppManifest,
+	ScanResult,
+	WifiStation,
 	BackupStatus,
 	InstalledPackages,
 	JobStatus,
@@ -194,12 +196,18 @@ export function createApi(client: RpcClient) {
 			},
 			interface: (name: string) =>
 				call<InterfaceStatus>(`network.interface.${name}`, 'status'),
+			up: (name: string) => call(`network.interface.${name}`, 'up'),
+			down: (name: string) => call(`network.interface.${name}`, 'down'),
+			renew: (name: string) => call(`network.interface.${name}`, 'renew'),
 			devices: () => call<Record<string, DeviceStatus>>('network.device', 'status'),
 			device: (name: string) => call<DeviceStatus>('network.device', 'status', { name }),
-			/** Radio status; empty when the router has no wireless (the object is absent). */
+			/**
+			 * Radio status via nuci.wifi (netifd rejects calls that carry the
+			 * session argument). Empty when the router has no wireless.
+			 */
 			async wireless(): Promise<Record<string, WirelessRadio>> {
 				try {
-					return await call<Record<string, WirelessRadio>>('network.wireless', 'status');
+					return await call<Record<string, WirelessRadio>>('nuci.wifi', 'status');
 				} catch (e) {
 					if (e instanceof RpcError && e.isNotFound) return {};
 					throw e;
@@ -342,6 +350,30 @@ export function createApi(client: RpcClient) {
 					),
 				del: (packages: string[]) => call<JobStatus>('nuci.pkg', 'del', { packages }),
 				jobStatus: () => call<JobStatus>('nuci.pkg', 'job_status'),
+			},
+			wifi: {
+				stations: async () =>
+					(await call<{ stations: WifiStation[] }>('nuci.wifi', 'assoc_list_enriched'))
+						.stations,
+				scan: async (radio: string) =>
+					(await call<{ results: ScanResult[] }>('nuci.wifi', 'scan', { radio })).results,
+			},
+			diag: {
+				ping: (host: string, count = 4, family?: 4 | 6) =>
+					call<JobStatus>(
+						'nuci.diag',
+						'ping',
+						family ? { host, count, family } : { host, count },
+					),
+				traceroute: (host: string, family?: 4 | 6) =>
+					call<JobStatus>(
+						'nuci.diag',
+						'traceroute',
+						family ? { host, family } : { host },
+					),
+				nslookup: (host: string, server?: string) =>
+					call<JobStatus>('nuci.diag', 'nslookup', server ? { host, server } : { host }),
+				status: () => call<JobStatus>('nuci.diag', 'status'),
 			},
 			backup: {
 				create: () => call<BackupStatus>('nuci.system', 'backup_create'),

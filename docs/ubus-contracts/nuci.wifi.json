@@ -1,0 +1,74 @@
+{
+	"object": "nuci.wifi",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"status": {},
+		"assoc_list_enriched": {},
+		"scan": {
+			"radio": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"radio0": {
+					"up": true,
+					"pending": false,
+					"autostart": true,
+					"disabled": false,
+					"retry_setup_failed": false,
+					"config": {
+						"type": "mac80211",
+						"band": "2g",
+						"channel": "6",
+						"country": "US",
+						"htmode": "HT20",
+						"path": "virtual/mac80211_hwsim/hwsim0"
+					},
+					"interfaces": []
+				},
+				"radio1": {
+					"up": true,
+					"pending": false,
+					"autostart": true,
+					"disabled": false,
+					"retry_setup_failed": false,
+					"config": {
+						"type": "mac80211",
+						"band": "2g",
+						"channel": "6",
+						"country": "US",
+						"htmode": "HT20",
+						"path": "virtual/mac80211_hwsim/hwsim1"
+					},
+					"interfaces": []
+				}
+			}
+		},
+		{
+			"method": "assoc_list_enriched",
+			"args": {},
+			"status": 0,
+			"result": {
+				"stations": []
+			}
+		},
+		{
+			"method": "scan",
+			"args": {
+				"radio": "radio1"
+			},
+			"status": 0,
+			"result": {
+				"results": []
+			}
+		}
+	]
+}

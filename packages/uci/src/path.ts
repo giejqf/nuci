@@ -31,3 +31,8 @@ export function parseSelector(section: string): { type: string; index: number } 
 export function isValidName(name: string): boolean {
 	return /^[A-Za-z0-9_]+$/.test(name);
 }
+
+/** Section types may contain '-' (wifi-iface, wifi-device). */
+export function isValidType(type: string): boolean {
+	return /^[A-Za-z0-9_-]+$/.test(type);
+}

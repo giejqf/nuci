@@ -60,7 +60,10 @@
 	async function apply(rollback = true) {
 		reviewing = false;
 		if (!ctx.apply) return;
-		const result = await uci.applyAll({ ...ctx.apply, rollback });
+		const { prepare, done, ...base } = ctx.apply;
+		const extra = (await prepare?.()) ?? {};
+		const result = await uci.applyAll({ ...base, ...extra, rollback });
+		done?.();
 		if (result.phase === 'confirmed') toasts.success(t('ui.apply.confirmed'));
 		else if (result.phase === 'rolled-back') toasts.warning(t('ui.apply.rolled_back'));
 		else if (result.phase === 'failed')

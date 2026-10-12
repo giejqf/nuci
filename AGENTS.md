@@ -108,7 +108,10 @@ when the client disconnects, so it never pins a worker.
 - `system` — `board`, `info`, `reboot`, `validate_firmware_image`, `sysupgrade`
 - `file` — `read`, `write`, `list`, `stat`, `remove`, `exec` (ACL-restricted by path)
 - `rc` — `list`, `init`
-- `network.interface`, `network.device`, `network.wireless` — `dump`/`status`
+- `network.interface`, `network.device` — `dump`/`status`; `network.interface.<name>` `up`/`down`/`renew`
+- `network.wireless` — netifd rejects the `ubus_rpc_session` argument uhttpd
+  adds to every call (INVALID_ARGUMENT), so the browser reads radio status
+  through `nuci.wifi status`
 - `iwinfo` — `info`, `scan`, `assoclist`, `freqlist`, `countrylist` (needs `rpcd-mod-iwinfo`)
 - `log` — `read` (logd)
 - `dhcp` — `ipv6leases` (odhcpd; 25.12 ships `odhcpd-ipv6only`, IPv4 leases
@@ -120,12 +123,12 @@ when the client disconnects, so it never pins a worker.
 
 | Object | Methods | Backing |
 |--------|---------|---------|
-| `nuci.status` | `realtime` (load, mem, per-iface rx/tx counters, conntrack count), `processes`, `kernel_log`, `conntrack` | `/proc`, `dmesg`, `/proc/net/nf_conntrack` |
-| `nuci.system` | `timezones`, `localtime`, `set_localtime`, `leds`, `block_devices`, `mount_points`, `usb_devices` | bundled zone table (`tools/gen-zoneinfo.mjs`; 25.12 has no `/usr/share/zoneinfo`), `/sys`, `block info` when block-mount is installed, `df` |
+| `nuci.status` | `realtime` (load, mem, per-iface rx/tx counters, conntrack count), `processes`, `kernel_log` (`after` cursor), `conntrack`, `conntrack_summary`, `signal` | `/proc`, `dmesg`, `/proc/net/nf_conntrack`, `kill` |
+| `nuci.system` | `timezones`, `localtime`, `set_localtime`, `leds`, `block_devices`, `mount_points`, `usb_devices`, `backup_create`, `backup_status`, `backup_restore` | bundled zone table (`tools/gen-zoneinfo.mjs`; 25.12 has no `/usr/share/zoneinfo`), `/sys`, `block info` when block-mount is installed, `df` |
 | `nuci.dhcp` | `leases` (merged dnsmasq `/tmp/dhcp.leases` + odhcpd), `hosts` | files + ubus |
-| `nuci.pkg` | `list_installed`, `list_available`, `search`, `update`, `add`, `del`, `info`, `job_status` | `apk` CLI, long jobs run detached with a status file |
-| `nuci.diag` | `ping`, `traceroute`, `nslookup` (bounded args, streamed via polling) | `fs.popen` |
-| `nuci.wifi` | `assoc_list_enriched` (iwinfo + hostnames), `scan` wrapper | `iwinfo` + `nuci.dhcp` |
+| `nuci.pkg` | `list_installed`, `list_available`, `search`, `update`, `add`, `del`, `info`, `job_status` | `apk query --format json`; changes run as detached jobs (`run-job`) with a status dir |
+| `nuci.diag` | `ping`, `traceroute`, `nslookup` (bounded args), `status` (output, polled) | busybox tools as a detached job |
+| `nuci.wifi` | `status` (netifd radio status), `assoc_list_enriched` (iwinfo + hostnames), `scan` wrapper (AP-only radios: `iw … scan ap-force`; idle radios: temporary managed interface) | `iwinfo` via deferred calls, `iw`, `nuci.dhcp` |
 | `nuci.apps` | `list` (installed nuci-app manifests) | `/usr/share/nuci/apps/*.json` |
 
 Rules for ucode plugins:
@@ -135,6 +138,11 @@ Rules for ucode plugins:
   with `fs.popen`/`system([...])` and validate args against an allowlist.
 - Every method declares `args` with types so rpcd validates input.
 - Return a `UBUS_STATUS_*` integer on error, never a free-form string.
+- rpcd is single-threaded and hosts `session`, `uci`, `file`, `rc`, `iwinfo`,
+  `rpc-sys` and every `nuci.*` object. A *synchronous* ubus call from a plugin
+  to any of them deadlocks until the timeout and stalls all other requests:
+  use `conn.defer()` and return the deferred (see `nuci-wifi.uc`). Anything
+  slow (apk, sysupgrade, ping) runs as a detached job (`run-job`).
 
 **ACLs.** `rpcd/acl.d/nuci-base.json` grants the minimum `read`/`write` sets for
 the v1 pages (ubus objects/methods, uci configs, file paths). Root gets `*` from
@@ -354,6 +362,11 @@ Scripts live in `tools/qemu/`. All of them are idempotent and non-interactive.
   rpcd-mod-ucode rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-rpcsys`, pushes the
   locally built nuci packages
   (`apk add --allow-untrusted ./nuci-*.apk`), restarts `uhttpd` and `rpcd`.
+  The 25.12 release image ships LuCI; provisioning removes it before
+  installing NuCI. `--wireless` adds two `mac80211_hwsim` radios with
+  `wpad-basic-mbedtls` and `iw`, sets band 2g / channel 6 / country `US`
+  (hostapd rejects the default `00`) and reboots (wpad and netifd's ucode
+  wireless only come up in the right order after a boot).
   Verify on the target that each listed package exists under that name in 25.12;
   adjust in one place (`tools/qemu/packages.txt`).
 - `snapshot.sh save|restore <name>` — `savevm`/`loadvm` through the monitor

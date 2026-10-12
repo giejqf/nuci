@@ -11,7 +11,7 @@
 // calls, then reloads base. Framework-free; see store.svelte.ts for runes.
 
 import type { UciSection, UciSetValues, UciValues } from '@nuci/rpc';
-import { isValidName, parseRef, parseSelector, type UciRef } from './path';
+import { isValidName, isValidType, parseRef, parseSelector, type UciRef } from './path';
 
 export type UciValue = string | string[];
 
@@ -255,7 +255,7 @@ export class UciModel {
 		name?: string,
 		values: Record<string, UciValue> = {},
 	): string {
-		if (!isValidName(type)) throw new Error(`invalid section type ${type}`);
+		if (!isValidType(type)) throw new Error(`invalid section type ${type}`);
 		if (name !== undefined && (!isValidName(name) || this.#view(config)[name]))
 			throw new Error(`invalid or duplicate section name ${name}`);
 		const section = name ?? `_new${this.#nextId++}`;

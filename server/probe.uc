@@ -2,19 +2,26 @@
 //
 // GET /nuci/probe — connectivity probe for the apply protocol (ADR-0002).
 // Answers whether the router-side address of *this* connection is still
-// assigned. A browser may reuse a keep-alive connection whose address was
-// removed by the new config; such a probe must not count as "reachable".
+// assigned and still planned by the committed config. A browser may reuse a
+// keep-alive connection whose address was removed, and netifd may apply a new
+// address seconds after `uci apply`; neither may count as "reachable".
 //
 // uhttpd compiles handlers in template mode, hence the {% %} wrapper.
 {%
 
 'use strict';
 
-import { address_present, normalize_addr } from 'nuci.net';
+import { connect } from 'ubus';
+import { cursor } from 'uci';
+import { address_present, address_planned, normalize_addr } from 'nuci.net';
 
 global.handle_request = function(env) {
 	let addr = env.SERVER_ADDR;
-	let ok = address_present(null, addr);
+	let bus = connect();
+	// Assigned now, and still planned by the committed config (netifd may lag).
+	let ok = address_present(null, addr) && address_planned({ ubus: bus, uci: cursor() }, addr);
+
+	bus?.disconnect();
 
 	uhttpd.send('Status: 200 OK\r\n' +
 		'Content-Type: application/json\r\n' +

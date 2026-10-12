@@ -224,3 +224,41 @@ export interface BackupStatus extends JobStatus {
 	path?: string;
 	size?: number;
 }
+
+export interface WifiStation {
+	device: string;
+	ssid?: string;
+	mac: string;
+	hostname?: string;
+	ipv4: string[];
+	ipv6: string[];
+	signal?: number;
+	noise?: number;
+	inactive?: number;
+	connected_time?: number;
+	/** kbit/s */
+	rx_rate?: number;
+	tx_rate?: number;
+	rx_bytes?: number;
+	tx_bytes?: number;
+}
+
+export interface ScanResult {
+	ssid?: string;
+	bssid: string;
+	mode?: string;
+	channel?: number;
+	band?: number;
+	frequency?: number;
+	signal?: number;
+	quality?: number;
+	quality_max?: number;
+	encryption?: {
+		enabled: boolean;
+		wpa?: number[];
+		authentication?: string[];
+		ciphers?: string[];
+		[k: string]: unknown;
+	};
+	[key: string]: unknown;
+}

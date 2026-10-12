@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Provision a running lab VM: SSH key, root password, rpcd/uhttpd deps,
 # locally built nuci packages, LuCI removal. Idempotent.
-# Usage: provision.sh [--keep-luci] [--packages DIR] [--extra "pkg pkg"]
+# Usage: provision.sh [--keep-luci] [--packages DIR] [--extra "pkg pkg"] [--wireless]
+#   --wireless  add two mac80211_hwsim radios (2.4 GHz, US) for the Network suite
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
 
 KEEP_LUCI=0
+WIRELESS=0
 PKG_DIR="${NUCI_PKG_DIR:-$REPO_ROOT/dist/feed}"
 EXTRA=""
 while [ $# -gt 0 ]; do
@@ -14,6 +16,7 @@ while [ $# -gt 0 ]; do
 		--keep-luci) KEEP_LUCI=1; shift ;;
 		--packages) PKG_DIR="$2"; shift 2 ;;
 		--extra) EXTRA="$2"; shift 2 ;;
+		--wireless) WIRELESS=1; shift ;;
 		*) die "unknown argument $1" ;;
 	esac
 done
@@ -70,6 +73,31 @@ if ls "$PKG_DIR"/*.apk >/dev/null 2>&1; then
 	lab_ssh "apk add --allow-untrusted /tmp/nuci-pkgs/*.apk"
 else
 	log "no nuci packages in $PKG_DIR (run tools/sdk/build.sh); skipping"
+fi
+
+if [ "$WIRELESS" -eq 1 ]; then
+	# Findings (Phase 4): hostapd rejects the default country "00"; wpad and
+	# netifd's ucode wireless only come up in the right order after a reboot.
+	log "adding mac80211_hwsim radios"
+	lab_ssh 'apk add kmod-mac80211-hwsim wpad-basic-mbedtls iw >/dev/null &&
+		[ -s /etc/config/wireless ] || wifi config
+		for r in $(uci show wireless | sed -n "s/^wireless\.\([^.=]*\)=wifi-device$/\1/p"); do
+			uci set wireless.$r.band=2g; uci set wireless.$r.channel=6
+			uci set wireless.$r.htmode=HT20; uci set wireless.$r.country=US
+		done
+		uci commit wireless'
+	log "rebooting for wireless"
+	lab_ssh 'reboot' || true
+	sleep 20
+	for i in $(seq 1 120); do
+		lab_ssh true 2>/dev/null && break
+		[ "$i" -eq 120 ] && die "ssh did not come back after reboot"
+		sleep 2
+	done
+	for i in $(seq 1 60); do
+		lab_ssh 'ubus list network.wireless >/dev/null 2>&1 && ubus list hostapd >/dev/null 2>&1' && break
+		sleep 2
+	done
 fi
 
 log "restarting rpcd and uhttpd"

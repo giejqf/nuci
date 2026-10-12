@@ -15,6 +15,8 @@ export interface PageRoute {
 	group: Group;
 	order: number;
 	acl: string;
+	/** Not listed in the sidebar (e.g. detail pages with params). */
+	hidden?: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- page components take no common props
 	load: () => Promise<{ default: Component<any> }>;
 }
@@ -115,6 +117,71 @@ export const routes: PageRoute[] = [
 		order: 60,
 		acl: 'nuci-system',
 		load: () => import('../pages/system/Reboot.svelte'),
+	},
+	{
+		path: 'network/interfaces',
+		title: 'nav.network.interfaces',
+		group: 'network',
+		order: 10,
+		acl: 'nuci-network',
+		load: () => import('../pages/network/Interfaces.svelte'),
+	},
+	{
+		path: 'network/interfaces/:name',
+		title: 'nav.network.interfaces',
+		group: 'network',
+		order: 11,
+		acl: 'nuci-network',
+		hidden: true,
+		load: () => import('../pages/network/InterfaceEdit.svelte'),
+	},
+	{
+		path: 'network/devices',
+		title: 'nav.network.devices',
+		group: 'network',
+		order: 20,
+		acl: 'nuci-network',
+		load: () => import('../pages/network/Devices.svelte'),
+	},
+	{
+		path: 'network/wireless',
+		title: 'nav.network.wireless',
+		group: 'network',
+		order: 30,
+		acl: 'nuci-network',
+		load: () => import('../pages/network/Wireless.svelte'),
+	},
+	{
+		path: 'network/dhcp',
+		title: 'nav.network.dhcp',
+		group: 'network',
+		order: 40,
+		acl: 'nuci-network',
+		load: () => import('../pages/network/Dhcp.svelte'),
+	},
+	{
+		path: 'network/hostnames',
+		title: 'nav.network.hostnames',
+		group: 'network',
+		order: 50,
+		acl: 'nuci-network',
+		load: () => import('../pages/network/Hostnames.svelte'),
+	},
+	{
+		path: 'network/routes',
+		title: 'nav.network.routes',
+		group: 'network',
+		order: 60,
+		acl: 'nuci-network',
+		load: () => import('../pages/network/Routes.svelte'),
+	},
+	{
+		path: 'network/diagnostics',
+		title: 'nav.network.diagnostics',
+		group: 'network',
+		order: 70,
+		acl: 'nuci-network',
+		load: () => import('../pages/network/Diagnostics.svelte'),
 	},
 ];
 

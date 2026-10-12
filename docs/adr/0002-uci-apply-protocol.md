@@ -80,6 +80,17 @@ only after the probe has kept succeeding for a **settle window**: 10 s when
 `network`, `wireless`, `firewall` or `dhcp` changed, 2 s otherwise; any failed
 probe restarts the window. e2e covers both the unconfirmed and the eager case.
 
+A third finding, from the packaged (fresh VM) run: the eager-confirm test
+confirmed a lock-out again. Under load netifd applied the new address later
+than hold-off + settle window (~13 s), so every probe still passed. Timing
+cannot be made safe, so the probe became deterministic for address changes:
+`/nuci/probe` also checks that the connection's address is still *planned* by
+the committed configuration (`address_planned`: the live interface holding the
+address is static, still static, enabled, and still lists it). `uci apply`
+commits before services reload, so a change that removes the browser's
+address makes the probe fail immediately. The settle window stays as the
+safety margin for changes the probe cannot reason about (firewall, wireless).
+
 ## Consequences
 
 - AGENTS.md §3.2/§3.3 describe this protocol.

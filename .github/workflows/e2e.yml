@@ -50,7 +50,7 @@ jobs:
         run: |
           tools/qemu/fetch.sh "$OPENWRT_VERSION"
           tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION"
-          tools/qemu/provision.sh
+          tools/qemu/provision.sh --wireless
 
       - name: Router serves NuCI, /ubus and /nuci/events
         run: |

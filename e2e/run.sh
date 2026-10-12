@@ -10,7 +10,7 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 
 "$REPO/tools/qemu/start.sh"
 if [ ! -f "$RUN_DIR/nuci.provisioned" ]; then
-	"$REPO/tools/qemu/provision.sh"
+	"$REPO/tools/qemu/provision.sh" --wireless
 	. "$QEMU_DIR/.env"
 fi
 if [ "${NUCI_E2E_SYNC:-1}" = 1 ]; then

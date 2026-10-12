@@ -10,5 +10,5 @@ export {
 	type ApplyState,
 } from './apply';
 export { UciModel, type Change, type Section, type UciApi, type UciValue } from './model';
-export { isValidName, parseRef, parseSelector, type UciRef } from './path';
+export { isValidName, isValidType, parseRef, parseSelector, type UciRef } from './path';
 export { UciStore } from './store.svelte';

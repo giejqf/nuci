@@ -24,7 +24,7 @@
 			.map((g) => {
 				const entries: Entry[] = [
 					...routes
-						.filter((r) => r.group === g.id && session.canRead(r.acl))
+						.filter((r) => r.group === g.id && !r.hidden && session.canRead(r.acl))
 						.map((r) => ({ path: r.path, label: t(r.title), order: r.order })),
 					...appHost.routes
 						.filter(
@@ -61,7 +61,8 @@
 							<li>
 								<a
 									href="#/{e.path}"
-									class:menu-active={router.path === e.path}
+									class:menu-active={router.path === e.path ||
+										router.path.startsWith(`${e.path}/`)}
 									aria-current={router.path === e.path ? 'page' : undefined}
 									onclick={() => onnavigate?.()}>{e.label}</a
 								>

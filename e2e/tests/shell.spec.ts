@@ -19,8 +19,10 @@ test('overview shows live data from the router', async ({ page }) => {
 	await expect(page.getByTestId('overview-firmware')).toContainText('OpenWrt 25.12');
 
 	const interfaces = page.getByTestId('overview-interfaces');
-	await expect(interfaces.getByRole('row', { name: /lan/ })).toContainText('192.168.1.1/24');
-	await expect(interfaces.getByRole('row', { name: /wan\b/ })).toContainText('dhcp');
+	const row = (name: string) =>
+		interfaces.getByRole('row').filter({ has: page.getByRole('cell', { name, exact: true }) });
+	await expect(row('lan')).toContainText('192.168.1.1/24');
+	await expect(row('wan')).toContainText('dhcp');
 
 	// stats stream: CPU usage needs two samples, uptime keeps moving
 	await expect(page.getByTestId('overview-cpu')).toContainText('%', { timeout: 20_000 });

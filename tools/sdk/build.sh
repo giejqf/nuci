@@ -4,7 +4,9 @@
 # Output: dist/feed/*.apk. Requires `pnpm build` first (nuci-base ships the SPA).
 #
 # Env: NUCI_SDK_VERSION (default 25.12.0), NUCI_SDK_TARGET (default x86/64),
-#      NUCI_SDK_DOCKER=0 to force running the SDK natively.
+#      NUCI_SDK_DOCKER=0 to force running the SDK natively,
+#      NUCI_SRC=<dir> to package another checkout (e.g. a frozen worktree)
+#      while the SDK cache and dist/feed stay in this repo.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -14,11 +16,12 @@ CACHE="$REPO/tools/sdk/cache"
 WORK="$REPO/tools/sdk/work"
 OUT="$REPO/dist/feed"
 PACKAGES=(rpcd-mod-nuci nuci-base nuci)
+SRC="$(cd "${NUCI_SRC:-$REPO}" && pwd)"
 
 log() { printf '[sdk] %s\n' "$*" >&2; }
 die() { printf '[sdk] error: %s\n' "$*" >&2; exit 1; }
 
-[ -f "$REPO/apps/web/dist/index.html" ] || die "run 'pnpm build' first"
+[ -f "$SRC/apps/web/dist/index.html" ] || die "run 'pnpm build' first (in $SRC)"
 
 # The SDK's prebuilt host tools are x86_64 Linux binaries.
 if [ "$(uname -m)" != "x86_64" ] && [ "${NUCI_SDK_DOCKER:-1}" = 1 ] && [ -z "${NUCI_SDK_IN_DOCKER:-}" ]; then
@@ -27,8 +30,8 @@ if [ "$(uname -m)" != "x86_64" ] && [ "${NUCI_SDK_DOCKER:-1}" = 1 ] && [ -z "${N
 	docker build -q --platform linux/amd64 -t nuci-sdk-builder "$REPO/tools/sdk" >/dev/null
 	exec docker run --rm --platform linux/amd64 \
 		--user "$(id -u):$(id -g)" -e HOME=/tmp -e NUCI_SDK_IN_DOCKER=1 \
-		-e NUCI_SDK_VERSION="$VERSION" -e NUCI_SDK_TARGET="$TARGET" \
-		-v "$REPO:$REPO" -w "$REPO" nuci-sdk-builder "$REPO/tools/sdk/build.sh"
+		-e NUCI_SDK_VERSION="$VERSION" -e NUCI_SDK_TARGET="$TARGET" -e NUCI_SRC="$SRC" \
+		-v "$REPO:$REPO" -v "$SRC:$SRC" -w "$REPO" nuci-sdk-builder "$REPO/tools/sdk/build.sh"
 fi
 
 BASE_URL="${OPENWRT_MIRROR:-https://downloads.openwrt.org}/releases/$VERSION/targets/$TARGET"
@@ -53,7 +56,7 @@ if [ ! -d "$SDK" ]; then
 fi
 
 cd "$SDK"
-printf 'src-link nuci %s/feed\n' "$REPO" > feeds.conf
+printf 'src-link nuci %s/feed\n' "$SRC" > feeds.conf
 ./scripts/feeds update nuci >/dev/null
 ./scripts/feeds install -a -p nuci >/dev/null
 
@@ -66,7 +69,7 @@ make defconfig >/dev/null
 targets=()
 for p in "${PACKAGES[@]}"; do targets+=("package/$p/clean" "package/$p/compile"); done
 log "building ${PACKAGES[*]}"
-make "${targets[@]}" NUCI_SRC="$REPO" -j1 V=s > "$WORK/build.log" 2>&1 ||
+make "${targets[@]}" NUCI_SRC="$SRC" -j1 V=s > "$WORK/build.log" 2>&1 ||
 	{ tail -40 "$WORK/build.log" >&2; die "build failed (log: $WORK/build.log)"; }
 
 rm -f "$OUT"/*.apk

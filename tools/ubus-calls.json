@@ -147,6 +147,16 @@
 			}
 		],
 		["nuci.pkg", "job_status", {}],
-		["nuci.system", "backup_status", {}]
+		["nuci.system", "backup_status", {}],
+		["nuci.wifi", "status", {}],
+		["nuci.wifi", "assoc_list_enriched", {}],
+		[
+			"nuci.wifi",
+			"scan",
+			{
+				"radio": "radio1"
+			}
+		],
+		["nuci.diag", "status", {}]
 	]
 }

@@ -4,6 +4,7 @@
 	import { ApplyBar, setNuciContext, Toaster } from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { appHost } from '../apps/host.svelte';
+	import { browserAddress, configuredAddresses, handoffTarget, handoffUrl } from '../lib/handoff';
 	import { probe, rpc, uci } from '../lib/services';
 	import { session } from '../lib/session.svelte';
 	import { router } from '../router/router.svelte';
@@ -14,10 +15,53 @@
 	import Sidebar from './Sidebar.svelte';
 	import Topbar from './Topbar.svelte';
 
+	// Address handoff (ADR-0002 §6): set while an apply moves the browser's address.
+	let handoff = $state<{ host: string; url: string; reachable: boolean } | null>(null);
+
+	async function prepare() {
+		const host = browserAddress(location.hostname);
+		if (!host) return {};
+		let liveIface: string | null = null;
+		try {
+			liveIface =
+				(await rpc.network.interfaces()).find((i) =>
+					(i['ipv4-address'] ?? []).some((a) => a.address === host),
+				)?.interface ?? null;
+		} catch {
+			return {};
+		}
+		const target = handoffTarget(host, liveIface, configuredAddresses(uci));
+		if (!target) return {};
+		const state = {
+			host: target,
+			url: handoffUrl(target, rpc.client.sid, location),
+			reachable: false,
+		};
+		handoff = state;
+		const port = location.port ? `:${location.port}` : '';
+		return {
+			probe: async () => {
+				if (await probe()) return true;
+				try {
+					const r = await fetch(`${location.protocol}//${target}${port}/nuci/probe`, {
+						cache: 'no-store',
+						signal: AbortSignal.timeout(2000),
+					});
+					if (handoff)
+						handoff.reachable =
+							r.ok && ((await r.json()) as { ok?: boolean }).ok === true;
+				} catch {
+					if (handoff) handoff.reachable = false;
+				}
+				return false;
+			},
+		};
+	}
+
 	setNuciContext({
 		uci,
 		canWrite: (config) => session.canWriteUci(config),
-		apply: { probe, timeout: 90 },
+		apply: { probe, timeout: 90, prepare, done: () => (handoff = null) },
 	});
 
 	let drawer = $state(false);
@@ -61,6 +105,23 @@
 				<div role="alert" class="alert" data-testid="not-found">{t('nav.not_found')}</div>
 			{/if}
 		</main>
+		{#if handoff}
+			<div
+				role="status"
+				aria-live="polite"
+				class="alert alert-info mx-4 mb-2"
+				data-testid="handoff"
+			>
+				<span
+					>{handoff.reachable
+						? t('handoff.ready', { host: handoff.host })
+						: t('handoff.waiting', { host: handoff.host })}</span
+				>
+				{#if handoff.reachable}<a class="btn btn-sm btn-primary" href={handoff.url}
+						>{t('handoff.continue')}</a
+					>{/if}
+			</div>
+		{/if}
 		<ApplyBar />
 	</div>
 	<div class="drawer-side z-30">

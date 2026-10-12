@@ -1,0 +1,40 @@
+{
+	"object": "nuci.diag",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"ping": {
+			"host": "String",
+			"count": "Integer",
+			"family": "Integer"
+		},
+		"traceroute": {
+			"host": "String",
+			"family": "Integer"
+		},
+		"nslookup": {
+			"host": "String",
+			"server": "String"
+		},
+		"status": {}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"name": "diag",
+				"running": false,
+				"command": "ping -c 4 -W 2 127.0.0.1",
+				"started": 1791773582,
+				"log": "PING 127.0.0.1 (127.0.0.1): 56 data bytes\n64 bytes from 127.0.0.1: seq=0 ttl=64 time=8.413 ms\n64 bytes from 127.0.0.1: seq=1 ttl=64 time=0.901 ms\n64 bytes from 127.0.0.1: seq=2 ttl=64 time=1.023 ms\n64 bytes from 127.0.0.1: seq=3 ttl=64 time=1.693 ms\n\n--- 127.0.0.1 ping statistics ---\n4 packets transmitted, 4 packets received, 0% packet loss\nround-trip min/avg/max = 0.901/3.007/8.413 ms\n",
+				"finished": 1791773585,
+				"rc": 0
+			}
+		}
+	]
+}

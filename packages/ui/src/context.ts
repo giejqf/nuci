@@ -11,7 +11,12 @@ export interface NuciContext {
 	/** Whether the session may write `config` (ACL `uci` scope). */
 	canWrite?: (config: string) => boolean;
 	/** Connectivity probe and defaults for the apply protocol. */
-	apply?: Pick<ApplyOptions, 'probe' | 'timeout' | 'holdoffMs' | 'settleMs' | 'shouldConfirm'>;
+	apply?: Pick<ApplyOptions, 'probe' | 'timeout' | 'holdoffMs' | 'settleMs' | 'shouldConfirm'> & {
+		/** Per-apply overrides computed from the staged changes (e.g. an address handoff). */
+		prepare?: () => Promise<Partial<ApplyOptions>> | Partial<ApplyOptions>;
+		/** Called with the outcome (e.g. to clear a handoff banner). */
+		done?: () => void;
+	};
 }
 
 const KEY = Symbol('nuci');

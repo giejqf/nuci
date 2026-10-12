@@ -1,0 +1,12 @@
+phy#1
+	Interface phy1-sta0
+		ifindex 10
+		wdev 0x100000004
+		addr 02:00:00:00:01:00
+		type managed
+phy#0
+	Interface phy0-ap0
+		ifindex 6
+		ssid nuci-ap
+		type AP
+		channel 6 (2437 MHz), width: 20 MHz, center1: 2437 MHz

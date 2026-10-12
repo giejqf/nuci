@@ -72,9 +72,6 @@
 				"network.device": [
 					"status"
 				],
-				"network.wireless": [
-					"status"
-				],
 				"iwinfo": [
 					"devices",
 					"info",
@@ -96,6 +93,9 @@
 				"nuci.dhcp": [
 					"leases",
 					"hosts"
+				],
+				"nuci.wifi": [
+					"status"
 				]
 			},
 			"nuci-events": [
@@ -176,19 +176,67 @@
 		}
 	},
 	"nuci-network": {
-		"description": "NuCI: Network pages",
+		"description": "NuCI: Network pages (interfaces, devices, wireless, DHCP/DNS, routes, diagnostics)",
 		"read": {
+			"ubus": {
+				"network.interface": [
+					"dump"
+				],
+				"network.interface.*": [
+					"status"
+				],
+				"network.device": [
+					"status"
+				],
+				"iwinfo": [
+					"devices",
+					"info",
+					"assoclist",
+					"freqlist",
+					"txpowerlist",
+					"countrylist",
+					"phyname"
+				],
+				"nuci.wifi": [
+					"status",
+					"assoc_list_enriched"
+				],
+				"nuci.dhcp": [
+					"leases",
+					"hosts"
+				],
+				"nuci.diag": [
+					"status"
+				]
+			},
 			"uci": [
 				"network",
 				"dhcp",
-				"wireless"
+				"wireless",
+				"firewall"
 			]
 		},
 		"write": {
+			"ubus": {
+				"network.interface.*": [
+					"up",
+					"down",
+					"renew"
+				],
+				"nuci.wifi": [
+					"scan"
+				],
+				"nuci.diag": [
+					"ping",
+					"traceroute",
+					"nslookup"
+				]
+			},
 			"uci": [
 				"network",
 				"dhcp",
-				"wireless"
+				"wireless",
+				"firewall"
 			]
 		}
 	},

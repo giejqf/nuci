@@ -102,6 +102,8 @@ describe('staging', () => {
 		const kinds = model.changes('network').map((c) => c.kind);
 		expect(kinds).toEqual(['remove', 'add', 'add', 'order']);
 		expect(() => model.add('network', 'interface', 'lan')).toThrow();
+		expect(model.add('wireless', 'wifi-iface')).toMatch(/^_new\d+$/);
+		expect(() => model.add('wireless', 'wifi iface')).toThrow();
 	});
 
 	it('rejects invalid option names and unknown sections', () => {
