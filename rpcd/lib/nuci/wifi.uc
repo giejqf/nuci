@@ -145,6 +145,8 @@ function parse_iw_scan(text) {
 // usable interface a temporary managed one is created with `iw` (if present).
 // Returns { results } or a ubus status code.
 function scan(ctx, radio) {
+	let has_iw = ctx?.iw;	// test override; context() keeps only the common fields
+
 	ctx = context(ctx);
 
 	if (type(radio) != 'string' || !match(radio, RADIO_RE))
@@ -160,7 +162,7 @@ function scan(ctx, radio) {
 	if (!phy)
 		return 4;
 
-	if (!(ctx.iw ?? access('/usr/sbin/iw')))
+	if (!(has_iw ?? access('/usr/sbin/iw')))
 		return { results: [] };
 
 	ctx.run([ 'iw', 'phy', phy, 'interface', 'add', SCAN_IFACE, 'type', 'managed' ]);
