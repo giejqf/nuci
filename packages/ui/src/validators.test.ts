@@ -1,6 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 import { describe, expect, it } from 'vitest';
-import { all, cidr4, hostname, integer, ipaddr, ipv4, ipv6, port, required } from './validators';
+import {
+	all,
+	cidr4,
+	cidr6,
+	hostname,
+	integer,
+	ipaddr,
+	ipv4,
+	ipv6,
+	ipv6OrHost,
+	port,
+	required,
+} from './validators';
 
 describe('validators', () => {
 	it('required', () => {
@@ -54,5 +66,14 @@ describe('formatAddress', () => {
 		expect(formatAddress('2001:0db8:0000:0001:0000:0000:0000:0001')).toBe('2001:db8:0:1::1');
 		expect(formatAddress('0000:0000:0000:0000:0000:0000:0000:0001')).toBe('::1');
 		expect(formatAddress('192.168.1.1')).toBe('192.168.1.1');
+	});
+	it('cidr6 / ipv6OrHost', () => {
+		expect(cidr6('2001:db8:1::2/64')).toBeNull();
+		expect(cidr6('2001:db8::')).toBe('validate.cidr6');
+		expect(cidr6('2001:db8::/129')).toBe('validate.cidr6');
+		expect(cidr6('10.0.0.1/8')).toBe('validate.cidr6');
+		expect(ipv6OrHost('aftr.example.net')).toBeNull();
+		expect(ipv6OrHost('2001:db8::1')).toBeNull();
+		expect(ipv6OrHost('not a host')).toBe('validate.ipv6_or_host');
 	});
 });

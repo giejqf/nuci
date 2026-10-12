@@ -262,3 +262,14 @@ export interface ScanResult {
 	};
 	[key: string]: unknown;
 }
+
+/** A NuCI login (nuci.users list, ADR-0006). Passwords are never returned. */
+export interface NuciUser {
+	username: string;
+	read: string[];
+	write: string[];
+	/** root: shown, never editable. */
+	builtin: boolean;
+	/** Account created by NuCI (no login shell). */
+	managed: boolean;
+}

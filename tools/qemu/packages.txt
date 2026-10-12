@@ -12,3 +12,17 @@ ucode
 ucode-mod-fs
 ucode-mod-ubus
 ucode-mod-uci
+# Test-only: tunnel protocols and veth pairs (bridge VLAN tests) used by the e2e suite
+# (netifd picks up new protocol handlers on restart; provision restarts it).
+6in4
+6rd
+ds-lite
+kmod-veth
+# Backends of the first-party apps (their packages depend on these; the lab
+# syncs the apps from the working tree, so it installs them directly).
+wireguard-tools
+kmod-wireguard
+ddns-scripts
+miniupnpd-nftables
+sqm-scripts
+kmod-sched-cake

@@ -7,13 +7,12 @@
 <script lang="ts">
 	import { DatabaseBackup, HardDriveUpload, Upload } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
-	import { downloadFile, isRpcError, uploadFile } from '@nuci/rpc';
+	import { isRpcError, transfer } from '@nuci/rpc';
 	import { formatBytes, Modal, Page, Section, toasts } from '@nuci/ui';
 	import { rpc, waitForRestart } from '../../lib/services';
 	import { session } from '../../lib/session.svelte';
 
 	const BACKUP = '/tmp/nuci-backup.tar.gz';
-	const RESTORE = '/tmp/nuci-restore.tar.gz';
 	const FIRMWARE = '/tmp/firmware.bin';
 
 	type Validation = {
@@ -57,15 +56,16 @@
 		try {
 			await rpc.nuci.backup.create();
 			await waitBackup();
-			const bytes = await downloadFile(rpc.client, BACKUP);
+			// Streamed through /nuci/transfer: no size limit (ADR-0005).
+			const blob = await transfer.download(rpc.client, 'backup');
 			const name = `backup-${session.board?.hostname ?? 'openwrt'}-${new Date().toISOString().slice(0, 10)}.tar.gz`;
-			const url = URL.createObjectURL(new Blob([bytes], { type: 'application/gzip' }));
+			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
 			a.download = name;
 			a.click();
 			URL.revokeObjectURL(url);
-			toasts.success(t('backup.downloaded', { size: formatBytes(bytes.length) }));
+			toasts.success(t('backup.downloaded', { size: formatBytes(blob.size) }));
 		} catch (e) {
 			err(e);
 		} finally {
@@ -78,9 +78,9 @@
 		if (!restoreFile) return;
 		try {
 			restoreProgress = 0;
-			await uploadFile(
+			await transfer.upload(
 				rpc.client,
-				RESTORE,
+				'restore',
 				restoreFile,
 				(s, total) => (restoreProgress = total ? s / total : 1),
 			);
@@ -107,9 +107,9 @@
 		force = false;
 		try {
 			fwProgress = 0;
-			await uploadFile(
+			await transfer.upload(
 				rpc.client,
-				FIRMWARE,
+				'firmware',
 				fwFile,
 				(s, total) => (fwProgress = total ? s / total : 1),
 			);
@@ -206,6 +206,7 @@
 					class="btn btn-sm btn-warning"
 					disabled={!restoreFile || !canBackup || restoreProgress !== null}
 					onclick={() => (restoreConfirm = true)}
+					data-testid="restore-start"
 				>
 					<Upload size={16} aria-hidden="true" />{t('backup.restore_button')}
 				</button>
@@ -298,8 +299,11 @@
 		<button type="button" class="btn btn-ghost" onclick={() => (restoreConfirm = false)}
 			>{t('ui.cancel')}</button
 		>
-		<button type="button" class="btn btn-warning" onclick={restore}
-			>{t('backup.restore_button')}</button
+		<button
+			type="button"
+			class="btn btn-warning"
+			onclick={restore}
+			data-testid="restore-confirm">{t('backup.restore_button')}</button
 		>
 	{/snippet}
 </Modal>

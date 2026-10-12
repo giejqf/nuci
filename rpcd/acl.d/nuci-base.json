@@ -207,6 +207,9 @@
 				],
 				"nuci.diag": [
 					"status"
+				],
+				"network": [
+					"get_proto_handlers"
 				]
 			},
 			"uci": [
@@ -319,17 +322,11 @@
 			"ubus": {
 				"nuci.system": [
 					"backup_status"
-				],
-				"file": [
-					"read",
-					"stat"
 				]
 			},
-			"file": {
-				"/tmp/nuci-backup.tar.gz": [
-					"read"
-				]
-			}
+			"nuci-transfer": [
+				"backup"
+			]
 		},
 		"write": {
 			"ubus": {
@@ -337,24 +334,16 @@
 					"backup_create",
 					"backup_restore"
 				],
-				"file": [
-					"write",
-					"remove"
-				],
 				"system": [
 					"validate_firmware_image",
 					"sysupgrade",
 					"reboot"
 				]
 			},
-			"file": {
-				"/tmp/nuci-restore.tar.gz": [
-					"write"
-				],
-				"/tmp/firmware.bin": [
-					"write"
-				]
-			}
+			"nuci-transfer": [
+				"restore",
+				"firmware"
+			]
 		}
 	},
 	"nuci-firewall": {
@@ -375,6 +364,27 @@
 			"uci": [
 				"firewall"
 			]
+		}
+	},
+	"nuci-users": {
+		"description": "NuCI: User management",
+		"read": {
+			"ubus": {
+				"nuci.users": [
+					"list",
+					"groups"
+				]
+			}
+		},
+		"write": {
+			"ubus": {
+				"nuci.users": [
+					"create",
+					"update",
+					"set_password",
+					"delete"
+				]
+			}
 		}
 	}
 }

@@ -113,6 +113,46 @@ test('interfaces: create and delete an interface in a firewall zone', async ({ p
 		.not.toContain('e2etest');
 });
 
+test('interfaces: a 6in4 tunnel is offered when installed and netifd brings it up', async ({
+	page,
+}) => {
+	test.setTimeout(300_000);
+	await login(page, 'network/interfaces');
+	await page.getByTestId('iface-add').click();
+	await page.getByTestId('new-iface-name').fill('e2e6in4');
+	// Offered because netifd reports the 6in4 handler (installed by provision.sh).
+	await page.getByTestId('new-iface-proto').selectOption('6in4');
+	// Tunnels create their own device.
+	await expect(page.getByTestId('iface-add-modal').getByLabel('Device')).toHaveCount(0);
+	await page.getByTestId('new-iface-create').click();
+	await expect(page).toHaveURL(/#\/network\/interfaces\/e2e6in4$/);
+	await expect(page.getByTestId('field-device')).toHaveCount(0);
+	await page.getByTestId('field-peeraddr').fill('192.0.2.1');
+	await page.getByTestId('field-ip6addr').fill('2001:db8:1::2');
+	await expect(page.getByText('Enter an IPv6 address with a prefix length')).toBeVisible();
+	await page.getByTestId('field-ip6addr').fill('2001:db8:1::2/64');
+	await page.getByTestId('field-tunlink').selectOption('wan');
+	await applyWithRollback(page);
+
+	const rpc = await api();
+	await expect
+		.poll(async () => (await rpc.network.interface('e2e6in4').catch(() => null))?.up, {
+			timeout: 30_000,
+		})
+		.toBe(true);
+	const st = await rpc.network.interface('e2e6in4');
+	expect(st.l3_device).toBe('6in4-e2e6in4');
+	expect(st['ipv6-address']?.map((a) => `${a.address}/${a.mask}`)).toContain('2001:db8:1::2/64');
+
+	await page.goto('/nuci/#/network/interfaces');
+	await page.getByTestId('iface-e2e6in4').getByRole('button', { name: 'Delete e2e6in4' }).click();
+	await page.getByRole('button', { name: 'Delete', exact: true }).click();
+	await applyWithRollback(page);
+	await expect
+		.poll(async () => Object.keys(await rpc.uci.getAll('network')))
+		.not.toContain('e2e6in4');
+});
+
 test('devices: status lists physical devices and the LAN bridge', async ({ page }) => {
 	await login(page, 'network/devices');
 	const table = page.getByTestId('device-status');
@@ -291,4 +331,91 @@ test('wireless: AP on radio0, scan from radio1, join, station associates', async
 	} finally {
 		await ensureClean();
 	}
+});
+
+/** Test bridge br-e2e over a netifd veth pair (kmod-veth from provision.sh). */
+async function withTestBridge<T>(fn: () => Promise<T>): Promise<T> {
+	const rpc = await api();
+	await rpc.uci.add(
+		'network',
+		'device',
+		{ type: 'veth', name: 'e2eveth0', peer_name: 'e2eveth1' },
+		'vethe2e',
+	);
+	await rpc.uci.add(
+		'network',
+		'device',
+		{ type: 'bridge', name: 'br-e2e', ports: ['e2eveth0'] },
+		'bre2e',
+	);
+	await rpc.uci.apply(false);
+	await expect
+		.poll(async () => Object.keys(await rpc.network.devices()), { timeout: 30_000 })
+		.toContain('br-e2e');
+	try {
+		return await fn();
+	} finally {
+		const clean = await api();
+		for (const [name, s] of Object.entries(await clean.uci.getAll('network')))
+			if (
+				name === 'vethe2e' ||
+				name === 'bre2e' ||
+				(s['.type'] === 'bridge-vlan' && s.device === 'br-e2e')
+			)
+				await clean.uci.delete('network', name);
+		await clean.uci.apply(false);
+	}
+}
+
+test('devices: bridge VLAN filtering on a test bridge applies with rollback protection', async ({
+	page,
+}) => {
+	test.setTimeout(300_000);
+	await withTestBridge(async () => {
+		await login(page, 'network/devices');
+		await page.getByTestId('bridge-vlans-add').click();
+		await page.getByTestId('bvlan-device').selectOption('br-e2e');
+		await page.getByTestId('bvlan-vid').fill('10');
+		await page.getByTestId('bvlan-port-e2eveth0').selectOption('u');
+		await page.getByTestId('bvlan-pvid-e2eveth0').check();
+		await page.getByTestId('bridge-vlans-done').click();
+		await expect(page.getByTestId('bridge-vlans')).toContainText('e2eveth0 (untagged, PVID)');
+		await applyWithRollback(page);
+
+		const rpc = await api();
+		await expect
+			.poll(async () => (await rpc.network.device('br-e2e'))['bridge-vlans'], {
+				timeout: 30_000,
+			})
+			.toEqual(
+				expect.arrayContaining([
+					expect.objectContaining({ id: 10, ports: ['e2eveth0:*'] }),
+				]),
+			);
+	});
+});
+
+test('devices: an unconfirmed VLAN change that cuts off br-lan rolls back', async ({ page }) => {
+	test.setTimeout(420_000);
+	await login(page, 'network/devices');
+	await page.getByTestId('bridge-vlans-add').click();
+	await page.getByTestId('bvlan-device').selectOption('br-lan');
+	await page.getByTestId('bvlan-vid').fill('1');
+	// eth0 tagged only, no PVID: the host's untagged frames are dropped.
+	await page.getByTestId('bvlan-port-eth0').selectOption('t');
+	await page.getByTestId('bridge-vlans-done').click();
+	await page.getByTestId('apply-apply').click();
+	await expect(page.getByTestId('apply-status')).toContainText('roll back in', {
+		timeout: 30_000,
+	});
+	await expect(page.getByText('so the previous configuration was restored')).toBeVisible({
+		timeout: 300_000,
+	});
+
+	const rpc = await api();
+	const vlans = Object.values(await rpc.uci.getAll('network')).filter(
+		(s) => s['.type'] === 'bridge-vlan' && s.device === 'br-lan',
+	);
+	expect(vlans).toEqual([]);
+	expect((await rpc.network.interface('lan'))['ipv4-address']?.[0]?.address).toBe('192.168.1.1');
 });

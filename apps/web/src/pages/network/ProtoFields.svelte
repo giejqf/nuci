@@ -3,6 +3,7 @@
 <script lang="ts">
 	import { t } from '@nuci/i18n';
 	import { DynamicList, Select, TextField, Toggle } from '@nuci/ui';
+	import { uci } from '../../lib/services';
 	import type { ProtoField } from './proto-registry';
 
 	interface Props {
@@ -10,6 +11,13 @@
 		fields: ProtoField[];
 	}
 	let { iface, fields }: Props = $props();
+	// Underlay candidates for tunnels: every other logical interface.
+	const ifaces = $derived(
+		uci
+			.sections('network', 'interface')
+			.map((s) => s['.name'])
+			.filter((n) => n !== iface && n !== 'loopback'),
+	);
 </script>
 
 {#each fields as f (f.option)}
@@ -32,6 +40,17 @@
 			{description}
 			options={(f.options ?? []).map((o) => ({ value: o.value, label: t(o.label) }))}
 			placeholder={t('proto.default')}
+			testid="field-{f.option}"
+		/>
+	{:else if f.kind === 'interface'}
+		<Select
+			{label}
+			uci={ref}
+			{description}
+			options={[
+				{ value: '', label: t('proto.tunlink_auto') },
+				...ifaces.map((n) => ({ value: n, label: n })),
+			]}
 			testid="field-{f.option}"
 		/>
 	{:else if f.kind === 'toggle'}

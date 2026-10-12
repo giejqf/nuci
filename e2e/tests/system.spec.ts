@@ -2,10 +2,12 @@
 // Phase 3: System pages. Exit criteria: package install/remove and firmware
 // validation through the UI (sysupgrade itself is tested manually only).
 
-import { existsSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { gunzipSync } from 'node:zlib';
 import { expect, test, type Page } from '@playwright/test';
-import { createRpc } from '../../packages/rpc/src/index.ts';
+import { createRpc, transfer, uploadFile } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
 import { login } from '../lib/ui';
 
@@ -158,6 +160,51 @@ test('backup: generate and download a configuration archive', async ({ page }) =
 	expect(statSync(path).size).toBeGreaterThan(1000);
 });
 
+test('backup and restore beyond the /ubus limits (> 256 KiB) through /nuci/transfer', async ({
+	page,
+}) => {
+	test.setTimeout(600_000);
+	const rpc = await api();
+	const original = await rpc.file.read('/etc/rc.local');
+	// ~600 KiB of incompressible text in a file every backup includes.
+	const marker = `nuci-e2e-big-${Date.now()}`;
+	const noise = randomBytes(450 * 1024)
+		.toString('base64')
+		.replace(/(.{76})/g, '# $1\n');
+	const big = `${original}\n# ${marker}\n${noise}\n`;
+	await uploadFile(rpc.client, '/etc/rc.local', new Blob([big]), undefined, 0o755);
+
+	await login(page, 'system/backup');
+	const download = page.waitForEvent('download', { timeout: 120_000 });
+	await page.getByTestId('backup-create').click();
+	const file = await download;
+	const path = await file.path();
+	const archive = readFileSync(path);
+	expect(archive.length).toBeGreaterThan(256 * 1024);
+	expect(gunzipSync(archive).includes(Buffer.from(marker))).toBe(true);
+
+	// Put the small rc.local back, then restore the big one from the archive.
+	await rpc.file.write('/etc/rc.local', original, { mode: 0o755 });
+	await page.getByTestId('restore-file').setInputFiles(path);
+	await page.getByTestId('restore-start').click();
+	await page.getByTestId('restore-confirm').click();
+	await expect(page.getByTestId('restart-status')).toBeVisible({ timeout: 60_000 });
+	// The router reboots; the page reloads into the login form when it is back.
+	await expect(page.getByLabel('Password')).toBeVisible({ timeout: 480_000 });
+
+	// file.read stops at 256 KiB: a fresh backup proves the big rc.local came back.
+	const after = await api();
+	await after.nuci.backup.create();
+	await expect
+		.poll(async () => (await after.nuci.backup.status()).running, { timeout: 60_000 })
+		.toBe(false);
+	const again = Buffer.from(
+		await (await transfer.download(after.client, 'backup')).arrayBuffer(),
+	);
+	expect(gunzipSync(again).includes(Buffer.from(marker))).toBe(true);
+	await after.file.write('/etc/rc.local', original, { mode: 0o755 });
+});
+
 test('flash: a bogus image is rejected, the real image validates', async ({ page }) => {
 	test.setTimeout(300_000);
 	await login(page, 'system/backup');
@@ -185,7 +232,6 @@ test('flash: a bogus image is rejected, the real image validates', async ({ page
 		{ timeout: 240_000 },
 	);
 	await expect(page.getByTestId('firmware-flash')).toBeEnabled();
-	// Flashing itself is a manual test (AGENTS.md §9 Phase 3). Clean up the upload.
-	const rpc = await api();
-	await rpc.file.remove('/tmp/firmware.bin');
+	// Flashing itself is a manual test (AGENTS.md §9 Phase 3). The upload stays
+	// in /tmp of the disposable lab VM; the next upload replaces it.
 });

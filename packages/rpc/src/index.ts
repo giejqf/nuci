@@ -30,6 +30,8 @@ export {
 export type * from './nuci-types';
 export { SIGNALS } from './nuci-types';
 export { downloadFile, UPLOAD_CHUNK, uploadFile } from './upload';
+export * as transfer from './transfer';
+export type { DownloadName, UploadName } from './transfer';
 export type * from './types';
 
 export interface Rpc extends Api {

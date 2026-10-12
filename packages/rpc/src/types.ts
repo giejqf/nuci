@@ -67,6 +67,15 @@ export interface UciSection {
 
 export type UciValues = Record<string, UciSection>;
 
+/** One entry of `network get_proto_handlers` (netifd). */
+export interface ProtoHandler {
+	/** Option name -> netifd type ("string", "uinteger", "list(string)", ...). */
+	validate: Record<string, string>;
+	no_device?: boolean;
+	immediate?: boolean;
+	[flag: string]: unknown;
+}
+
 export interface UciChange {
 	0: 'set' | 'add' | 'remove' | 'rename' | 'list-add' | 'list-del' | 'order' | string;
 	1: string;
@@ -112,6 +121,8 @@ export interface InterfaceStatus {
 
 export interface DeviceStatus {
 	type?: string;
+	/** Bridges with VLAN filtering: port specs as netifd reports them ("eth0:t", "lan1:*"). */
+	'bridge-vlans'?: { id: number; local?: boolean; ports: string[] }[];
 	devtype?: string;
 	present: boolean;
 	up: boolean;

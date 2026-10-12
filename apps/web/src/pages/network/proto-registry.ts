@@ -5,7 +5,8 @@
 
 import { validators, type Validator } from '@nuci/ui';
 
-export type FieldKind = 'text' | 'password' | 'number' | 'list' | 'select' | 'toggle';
+/** `interface`: a logical interface picker (e.g. a tunnel's underlay). */
+export type FieldKind = 'text' | 'password' | 'number' | 'list' | 'select' | 'toggle' | 'interface';
 
 export interface ProtoField {
 	option: string;
@@ -28,6 +29,8 @@ export interface Proto {
 	fields: ProtoField[];
 	/** Offers a DHCP server tab (LAN-side protocols). */
 	dhcpServer?: boolean;
+	/** Creates its own device (tunnels): no device selection. */
+	noDevice?: boolean;
 }
 
 const v = validators;
@@ -57,6 +60,29 @@ const metric: ProtoField = {
 	label: 'proto.metric',
 	kind: 'number',
 	validate: v.integer(0, 9999),
+	advanced: true,
+};
+
+const tunlink: ProtoField = {
+	option: 'tunlink',
+	label: 'proto.tunlink',
+	kind: 'interface',
+	description: 'proto.tunlink_help',
+};
+const tunnelMtu: ProtoField = {
+	option: 'mtu',
+	label: 'proto.mtu',
+	kind: 'number',
+	validate: v.integer(1280, 9000),
+	placeholder: '1280',
+	advanced: true,
+};
+const tunnelTtl: ProtoField = {
+	option: 'ttl',
+	label: 'proto.ttl',
+	kind: 'number',
+	validate: v.integer(1, 255),
+	placeholder: '64',
 	advanced: true,
 };
 
@@ -197,11 +223,116 @@ export const PROTOS: Proto[] = [
 			metric,
 		],
 	},
+	{
+		id: '6in4',
+		label: 'proto.6in4',
+		noDevice: true,
+		fields: [
+			{
+				option: 'peeraddr',
+				label: 'proto.tunnel_server',
+				kind: 'text',
+				validate: v.all(v.required, v.ipv4),
+			},
+			{
+				option: 'ip6addr',
+				label: 'proto.tunnel_local6',
+				kind: 'text',
+				validate: v.cidr6,
+				placeholder: '2001:db8:1::2/64',
+			},
+			{ option: 'ip6prefix', label: 'proto.routed_prefix', kind: 'list', validate: v.cidr6 },
+			tunlink,
+			{
+				option: 'tunnelid',
+				label: 'proto.tunnelid',
+				kind: 'text',
+				description: 'proto.tunnelbroker_help',
+				advanced: true,
+			},
+			{ option: 'username', label: 'proto.username', kind: 'text', advanced: true },
+			{ option: 'password', label: 'proto.updatekey', kind: 'password', advanced: true },
+			tunnelMtu,
+			tunnelTtl,
+			metric,
+		],
+	},
+	{
+		id: '6rd',
+		label: 'proto.6rd',
+		noDevice: true,
+		fields: [
+			{
+				option: 'peeraddr',
+				label: 'proto.border_relay',
+				kind: 'text',
+				validate: v.all(v.required, v.ipv4),
+			},
+			{
+				option: 'ip6prefix',
+				label: 'proto.6rd_prefix',
+				kind: 'text',
+				validate: v.all(v.required, v.ipv6),
+				placeholder: '2001:db8::',
+			},
+			{
+				option: 'ip6prefixlen',
+				label: 'proto.6rd_prefixlen',
+				kind: 'number',
+				validate: v.all(v.required, v.integer(0, 64)),
+			},
+			{
+				option: 'ip4prefixlen',
+				label: 'proto.ip4prefixlen',
+				kind: 'number',
+				validate: v.integer(0, 32),
+				placeholder: '0',
+			},
+			tunlink,
+			tunnelMtu,
+			tunnelTtl,
+		],
+	},
+	{
+		id: 'dslite',
+		label: 'proto.dslite',
+		noDevice: true,
+		fields: [
+			{
+				option: 'peeraddr',
+				label: 'proto.aftr',
+				kind: 'text',
+				validate: v.all(v.required, v.ipv6OrHost),
+			},
+			{ option: 'ip6addr', label: 'proto.tunnel_local6', kind: 'text', validate: v.ipv6 },
+			tunlink,
+			{
+				option: 'encaplimit',
+				label: 'proto.encaplimit',
+				kind: 'text',
+				placeholder: 'ignore',
+				advanced: true,
+			},
+			tunnelMtu,
+		],
+	},
 	{ id: 'none', label: 'proto.none', fields: [] },
 ];
 
 export function proto(id: string | undefined): Proto | undefined {
 	return PROTOS.find((p) => p.id === id);
+}
+
+/**
+ * Protocols to offer: those netifd has handlers for (`none` is built in),
+ * plus the interface's current one. Unknown handlers (null) offer all.
+ */
+export function availableProtos(
+	handlers: Record<string, unknown> | null,
+	current?: string,
+): Proto[] {
+	if (!handlers) return PROTOS;
+	return PROTOS.filter((p) => p.id === 'none' || p.id === current || p.id in handlers);
 }
 
 /** Options that belong to `from` but not to `to` (unset when switching). */

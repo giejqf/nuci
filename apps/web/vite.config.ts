@@ -21,6 +21,8 @@ export default defineConfig({
 		proxy: {
 			'/ubus': { target: router, changeOrigin: true },
 			'/nuci/events': { target: router, changeOrigin: true },
+			'/nuci/transfer': { target: router, changeOrigin: true },
+			'/nuci/probe': { target: router, changeOrigin: true },
 		},
 	},
 });

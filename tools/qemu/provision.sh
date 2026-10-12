@@ -67,6 +67,9 @@ if [ -n "$MISSING" ]; then
 	wait_wan
 	log "apk add $MISSING"
 	lab_ssh "apk update >/dev/null && apk add $MISSING"
+	# New netifd protocol handlers (6in4, ...) are only loaded at netifd start.
+	lab_ssh '/etc/init.d/network restart' || true
+	for i in $(seq 1 60); do lab_ssh true 2>/dev/null && break; sleep 2; done
 else
 	log "all base packages present"
 fi

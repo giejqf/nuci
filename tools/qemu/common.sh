@@ -16,6 +16,8 @@ fi
 NUCI_ROOT_PASSWORD="${NUCI_ROOT_PASSWORD:-}"
 NUCI_HTTP_PORT="${NUCI_HTTP_PORT:-8080}"
 NUCI_SSH_PORT="${NUCI_SSH_PORT:-2222}"
+# UPnP control point port of the router (nuci-app-upnp e2e).
+NUCI_UPNP_PORT="${NUCI_UPNP_PORT:-8085}"
 
 log() { printf '[qemu] %s\n' "$*" >&2; }
 die() { printf '[qemu] error: %s\n' "$*" >&2; exit 1; }

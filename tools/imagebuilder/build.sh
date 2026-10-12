@@ -14,8 +14,9 @@ TARGET="${NUCI_TARGET:-x86/64}"
 CACHE="$REPO/tools/imagebuilder/cache"
 WORK="$REPO/tools/imagebuilder/work"
 IMAGES="$REPO/tools/qemu/images"
-# NuCI plus what the lab needs; LuCI is left out on purpose.
-PACKAGES="nuci kmod-mac80211-hwsim wpad-basic-mbedtls iw -luci -luci-light -luci-ssl -wpad-basic -wpad-mini"
+# NuCI, its first-party apps (their DEPENDS pull in the backends) and what
+# the lab needs; LuCI is left out on purpose.
+PACKAGES="nuci nuci-app-wireguard nuci-app-ddns nuci-app-upnp nuci-app-sqm kmod-mac80211-hwsim wpad-basic-mbedtls iw 6in4 6rd ds-lite kmod-veth -luci -luci-light -luci-ssl -wpad-basic -wpad-mini"
 
 log() { printf '[ib] %s\n' "$*" >&2; }
 die() { printf '[ib] error: %s\n' "$*" >&2; exit 1; }

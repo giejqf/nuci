@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nuci-base
-PKG_VERSION:=0.1.0
+PKG_VERSION:=0.2.0
 PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
@@ -43,7 +43,7 @@ define Build/Prepare
 	$(INSTALL_DIR) $(PKG_BUILD_DIR)
 	$(CP) $(NUCI_SRC)/apps/web/dist $(PKG_BUILD_DIR)/www
 	rm -rf $(PKG_BUILD_DIR)/www/.vite
-	$(CP) $(NUCI_SRC)/server/events.uc $(NUCI_SRC)/server/probe.uc $(PKG_BUILD_DIR)/
+	$(CP) $(NUCI_SRC)/server/events.uc $(NUCI_SRC)/server/probe.uc $(NUCI_SRC)/server/transfer.uc $(PKG_BUILD_DIR)/
 	$(CP) $(NUCI_SRC)/rpcd/acl.d/nuci-base.json $(PKG_BUILD_DIR)/
 endef
 
@@ -56,6 +56,7 @@ define Package/nuci-base/install
 	$(INSTALL_DIR) $(1)/usr/share/nuci/apps
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/events.uc $(1)/usr/share/nuci/events.uc
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/probe.uc $(1)/usr/share/nuci/probe.uc
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/transfer.uc $(1)/usr/share/nuci/transfer.uc
 	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/nuci-base.json $(1)/usr/share/rpcd/acl.d/
 	$(INSTALL_DIR) $(1)/etc/config
@@ -85,6 +86,7 @@ define Package/nuci-base/postrm
 grep -q 'nuci-root-redirect' /www/index.html 2>/dev/null && rm -f /www/index.html
 uci -q del_list uhttpd.main.ucode_prefix='/nuci/events=/usr/share/nuci/events.uc'
 uci -q del_list uhttpd.main.ucode_prefix='/nuci/probe=/usr/share/nuci/probe.uc'
+uci -q del_list uhttpd.main.ucode_prefix='/nuci/transfer=/usr/share/nuci/transfer.uc'
 uci commit uhttpd
 /etc/init.d/uhttpd reload 2>/dev/null
 /etc/init.d/rpcd reload 2>/dev/null

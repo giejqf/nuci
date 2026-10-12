@@ -13,11 +13,14 @@
 		SectionList,
 		Select,
 		TextField,
+		Toggle,
 		validators,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { rpc, uci } from '../../lib/services';
 	import { session } from '../../lib/session.svelte';
+	import BridgeVlanPorts from './BridgeVlanPorts.svelte';
+	import { parsePort } from './bridge-vlan';
 
 	let status = $state<Record<string, DeviceStatus>>({});
 	let error = $state('');
@@ -48,6 +51,21 @@
 				tx: Number(d.statistics?.tx_bytes ?? 0),
 			})),
 	);
+	const bridges = $derived(
+		uci
+			.sections('network', 'device')
+			.filter((d) => d.type === 'bridge' && d.name)
+			.map((d) => ({ name: String(d.name), ports: asList(d.ports as string | string[]) })),
+	);
+	const portsOf = (bridge: unknown) => bridges.find((b) => b.name === bridge)?.ports ?? [];
+	const describePorts = (v: unknown) =>
+		asList(v as string | string[])
+			.map(parsePort)
+			.map(
+				(p) =>
+					`${p.port} (${t(p.mode === 't' ? 'network.port_tagged' : 'network.port_untagged')}${p.pvid ? ', PVID' : ''})`,
+			)
+			.join(', ') || '—';
 	const MAC = (v: string) =>
 		v === '' || /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(v) ? null : 'network.mac_invalid';
 
@@ -164,6 +182,48 @@
 						uci="network.{s}.macaddr"
 						validate={MAC}
 						placeholder="aa:bb:cc:dd:ee:ff"
+					/>
+				{/snippet}
+			</SectionList>
+		</Section>
+
+		<Section title={t('network.bridge_vlans')} description={t('network.bridge_vlans_help')}>
+			<SectionList
+				config="network"
+				type="bridge-vlan"
+				testid="bridge-vlans"
+				addLabel={t('network.add_bridge_vlan')}
+				editTitle={t('network.bridge_vlan')}
+				defaults={{ device: bridges[0]?.name ?? '' }}
+				columns={[
+					{ option: 'device', label: t('network.bridge') },
+					{ option: 'vlan', label: t('network.vlan_id') },
+					{ option: 'ports', label: t('network.ports'), format: describePorts },
+				]}
+			>
+				{#snippet editor(s)}
+					<Select
+						label={t('network.bridge')}
+						uci="network.{s}.device"
+						options={bridges.map((b) => ({ value: b.name, label: b.name }))}
+						testid="bvlan-device"
+					/>
+					<TextField
+						label={t('network.vlan_id')}
+						uci="network.{s}.vlan"
+						validate={validators.all(validators.required, validators.integer(1, 4094))}
+						testid="bvlan-vid"
+					/>
+					<BridgeVlanPorts
+						section={s}
+						ports={portsOf(uci.get('network', s, 'device'))}
+						readonly={!session.canWriteUci('network')}
+					/>
+					<Toggle
+						label={t('network.bridge_vlan_local')}
+						uci="network.{s}.local"
+						default={true}
+						description={t('network.bridge_vlan_local_help')}
 					/>
 				{/snippet}
 			</SectionList>

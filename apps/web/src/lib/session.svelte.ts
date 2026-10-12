@@ -17,7 +17,6 @@ class Session {
 	#reloginWaiters: ((ok: boolean) => void)[] = [];
 
 	async init(): Promise<void> {
-		rpc.client.onSessionExpired = () => this.#promptRelogin();
 		rpc.system
 			.board()
 			.then((b) => (this.board = b))
@@ -31,6 +30,9 @@ class Session {
 				rpc.client.setSession(null);
 			}
 		}
+		// Only now: a stored session that died with a reboot must lead to the
+		// login form, not to a re-login prompt the shell cannot show yet.
+		rpc.client.onSessionExpired = () => this.#promptRelogin();
 		this.ready = true;
 	}
 

@@ -53,6 +53,7 @@ rm -f "$MON"
 LAN_NIC="user,model=virtio-net-pci,net=192.168.1.0/24,host=192.168.1.2,dhcpstart=192.168.1.100"
 LAN_NIC="$LAN_NIC,hostfwd=tcp:127.0.0.1:$NUCI_HTTP_PORT-192.168.1.1:80"
 LAN_NIC="$LAN_NIC,hostfwd=tcp:127.0.0.1:$NUCI_SSH_PORT-192.168.1.1:22"
+LAN_NIC="$LAN_NIC,hostfwd=tcp:127.0.0.1:$NUCI_UPNP_PORT-192.168.1.1:5000"
 WAN_NIC="user,model=virtio-net-pci"
 
 COMMON=(

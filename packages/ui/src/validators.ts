@@ -52,6 +52,19 @@ export const cidr4: Validator = (v) => {
 	return null;
 };
 
+/** IPv6 with a mandatory /prefix (0-128). */
+export const cidr6: Validator = (v) => {
+	if (v === '') return null;
+	const [ip = '', prefix, extra] = v.split('/');
+	if (extra !== undefined || prefix === undefined || !isIpv6(ip)) return 'validate.cidr6';
+	if (!(/^[0-9]{1,3}$/.test(prefix) && Number(prefix) <= 128)) return 'validate.cidr6';
+	return null;
+};
+
+/** IPv6 address or DNS name (e.g. an AFTR). */
+export const ipv6OrHost: Validator = (v) =>
+	v === '' || isIpv6(v) || hostname(v) === null ? null : 'validate.ipv6_or_host';
+
 export function integer(min = -Infinity, max = Infinity): Validator {
 	return (v) => {
 		if (v === '') return null;

@@ -14,7 +14,7 @@
 	import { rpc, uci } from '../../lib/services';
 	import { session } from '../../lib/session.svelte';
 	import ProtoFields from './ProtoFields.svelte';
-	import { obsoleteOptions, PROTOS, proto } from './proto-registry';
+	import { availableProtos, obsoleteOptions, proto } from './proto-registry';
 
 	let { params }: { params: Record<string, string> } = $props();
 	const name = $derived(params.name ?? '');
@@ -22,6 +22,7 @@
 	let tab = $state('general');
 	let error = $state('');
 	let runtimeDevices = $state<string[]>([]);
+	let handlers = $state<Record<string, unknown> | null>(null);
 
 	const writable = $derived(session.canWriteUci('network'));
 	const section = $derived(uci.getSection('network', name));
@@ -44,6 +45,10 @@
 		rpc.network
 			.devices()
 			.then((d) => (runtimeDevices = Object.keys(d)))
+			.catch(() => {});
+		rpc.network
+			.protoHandlers()
+			.then((h) => (handlers = h))
 			.catch(() => {});
 	});
 
@@ -93,19 +98,22 @@
 							<Select
 								label={t('network.protocol')}
 								uci="network.{name}.proto"
-								options={PROTOS.map((p) => ({ value: p.id, label: t(p.label) }))}
+								options={availableProtos(handlers, protoId).map((p) => ({
+									value: p.id,
+									label: t(p.label),
+								}))}
 								onchange={changeProto}
 								testid="field-proto"
 							/>
-							<Select
-								label={t('network.device')}
-								uci="network.{name}.device"
-								options={[
-									{ value: '', label: t('network.no_device') },
-									...devices.map((d) => ({ value: d, label: d })),
-								]}
-								testid="field-device"
-							/>
+							{#if !current?.noDevice}<Select
+									label={t('network.device')}
+									uci="network.{name}.device"
+									options={[
+										{ value: '', label: t('network.no_device') },
+										...devices.map((d) => ({ value: d, label: d })),
+									]}
+									testid="field-device"
+								/>{/if}
 							{#if current}<ProtoFields
 									iface={name}
 									fields={current.fields.filter((f) => !f.advanced)}

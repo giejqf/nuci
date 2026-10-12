@@ -10,7 +10,7 @@
 	import { rpc, uci } from '../../lib/services';
 	import { session } from '../../lib/session.svelte';
 	import { router } from '../../router/router.svelte';
-	import { PROTOS, proto } from './proto-registry';
+	import { availableProtos, proto } from './proto-registry';
 
 	let status = $state<Record<string, InterfaceStatus>>({});
 	let error = $state('');
@@ -21,6 +21,7 @@
 	let newZone = $state('');
 	let confirmDelete = $state<string | null>(null);
 	let devStatus = $state<Record<string, unknown>>({});
+	let handlers = $state<Record<string, unknown> | null>(null);
 
 	const writable = $derived(session.canWriteUci('network'));
 	const ifaces = $derived(
@@ -66,6 +67,10 @@
 			(e) => (error = isRpcError(e) ? t(e.messageKey) : String(e)),
 		);
 		void refresh();
+		rpc.network
+			.protoHandlers()
+			.then((h) => (handlers = h))
+			.catch(() => {});
 		const timer = setInterval(
 			() => document.visibilityState === 'visible' && void refresh(),
 			5000,
@@ -87,7 +92,7 @@
 		if (!newName || nameError) return;
 		uci.add('network', 'interface', newName, {
 			proto: newProto,
-			...(newDevice ? { device: newDevice } : {}),
+			...(newDevice && !proto(newProto)?.noDevice ? { device: newDevice } : {}),
 		});
 		if (newZone) setZone(uci, newName, newZone);
 		adding = false;
@@ -227,16 +232,17 @@
 	<Select
 		label={t('network.protocol')}
 		bind:value={newProto}
-		options={PROTOS.map((p) => ({ value: p.id, label: t(p.label) }))}
+		options={availableProtos(handlers).map((p) => ({ value: p.id, label: t(p.label) }))}
+		testid="new-iface-proto"
 	/>
-	<Select
-		label={t('network.device')}
-		bind:value={newDevice}
-		options={[
-			{ value: '', label: t('network.no_device') },
-			...devices.map((d) => ({ value: d, label: d })),
-		]}
-	/>
+	{#if !proto(newProto)?.noDevice}<Select
+			label={t('network.device')}
+			bind:value={newDevice}
+			options={[
+				{ value: '', label: t('network.no_device') },
+				...devices.map((d) => ({ value: d, label: d })),
+			]}
+		/>{/if}
 	<Select
 		label={t('network.firewall_zone')}
 		bind:value={newZone}

@@ -8,26 +8,27 @@ import type { RpcClient } from './client';
 import { RpcError } from './errors';
 import type {
 	AppManifest,
-	ScanResult,
-	WifiStation,
 	BackupStatus,
-	InstalledPackages,
-	JobStatus,
-	PackageInfo,
-	PackagePage,
-	ConntrackSummary,
-	ProcessList,
-	WifiDeviceStats,
 	BlockDevice,
 	ConntrackEntry,
+	ConntrackSummary,
 	DhcpLease,
+	InstalledPackages,
+	JobStatus,
 	KernelLogEntry,
 	KnownHost,
 	Led,
 	LocalTime,
 	MountPoint,
+	NuciUser,
+	PackageInfo,
+	PackagePage,
+	ProcessList,
 	RealtimeStats,
+	ScanResult,
 	UsbDevice,
+	WifiDeviceStats,
+	WifiStation,
 } from './nuci-types';
 import type {
 	AclMap,
@@ -42,6 +43,7 @@ import type {
 	IwinfoStation,
 	LogEntry,
 	LoginResult,
+	ProtoHandler,
 	SystemInfo,
 	UciSection,
 	UciValues,
@@ -200,6 +202,9 @@ export function createApi(client: RpcClient) {
 			down: (name: string) => call(`network.interface.${name}`, 'down'),
 			renew: (name: string) => call(`network.interface.${name}`, 'renew'),
 			devices: () => call<Record<string, DeviceStatus>>('network.device', 'status'),
+			/** Installed netifd protocol handlers with their option schemas. */
+			protoHandlers: () =>
+				call<Record<string, ProtoHandler>>('network', 'get_proto_handlers'),
 			device: (name: string) => call<DeviceStatus>('network.device', 'status', { name }),
 			/**
 			 * Radio status via nuci.wifi (netifd rejects calls that carry the
@@ -374,6 +379,27 @@ export function createApi(client: RpcClient) {
 				nslookup: (host: string, server?: string) =>
 					call<JobStatus>('nuci.diag', 'nslookup', server ? { host, server } : { host }),
 				status: () => call<JobStatus>('nuci.diag', 'status'),
+			},
+			users: {
+				list: async () => (await call<{ users: NuciUser[] }>('nuci.users', 'list')).users,
+				/** Installed ACL groups (name -> description). */
+				groups: async () =>
+					(await call<{ groups: Record<string, string> }>('nuci.users', 'groups')).groups,
+				create: (user: {
+					username: string;
+					password: string;
+					read: string[];
+					write: string[];
+				}) => call<{ username: string }>('nuci.users', 'create', user),
+				update: (user: { username: string; read: string[]; write: string[] }) =>
+					call<{ username: string }>('nuci.users', 'update', user),
+				setPassword: (username: string, password: string) =>
+					call<{ username: string }>('nuci.users', 'set_password', {
+						username,
+						password,
+					}),
+				delete: (username: string) =>
+					call<{ username: string }>('nuci.users', 'delete', { username }),
 			},
 			firewall: {
 				/** Ruleset fw4 would generate from the committed config. */
