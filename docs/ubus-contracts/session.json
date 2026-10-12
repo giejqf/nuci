@@ -60,6 +60,22 @@
 						"read",
 						"write"
 					],
+					"nuci-app-ddns": [
+						"read",
+						"write"
+					],
+					"nuci-app-sqm": [
+						"read",
+						"write"
+					],
+					"nuci-app-upnp": [
+						"read",
+						"write"
+					],
+					"nuci-app-wireguard": [
+						"read",
+						"write"
+					],
 					"nuci-backup": [
 						"read",
 						"write"
@@ -186,6 +202,13 @@
 					"nuci.apps": [
 						"list"
 					],
+					"nuci.ddns": [
+						"providers",
+						"status",
+						"log",
+						"update_status",
+						"update"
+					],
 					"nuci.dhcp": [
 						"leases",
 						"hosts"
@@ -210,6 +233,9 @@
 						"add",
 						"del"
 					],
+					"nuci.sqm": [
+						"status"
+					],
 					"nuci.status": [
 						"realtime",
 						"processes",
@@ -230,6 +256,9 @@
 						"backup_create",
 						"backup_restore"
 					],
+					"nuci.upnp": [
+						"status"
+					],
 					"nuci.users": [
 						"list",
 						"groups",
@@ -243,12 +272,21 @@
 						"assoc_list_enriched",
 						"scan"
 					],
+					"nuci.wireguard": [
+						"status",
+						"genkey",
+						"genpsk",
+						"pubkey"
+					],
 					"rc": [
 						"list",
 						"init"
 					],
 					"rpc-sys": [
 						"password_set"
+					],
+					"service": [
+						"list"
 					],
 					"session": [
 						"access",
@@ -280,6 +318,10 @@
 					]
 				},
 				"uci": {
+					"ddns": [
+						"read",
+						"write"
+					],
 					"dhcp": [
 						"read",
 						"write"
@@ -300,11 +342,19 @@
 						"read",
 						"write"
 					],
+					"sqm": [
+						"read",
+						"write"
+					],
 					"system": [
 						"read",
 						"write"
 					],
 					"uhttpd": [
+						"read",
+						"write"
+					],
+					"upnpd": [
 						"read",
 						"write"
 					],

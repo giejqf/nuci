@@ -137,6 +137,9 @@
 				"file": [
 					"read",
 					"stat"
+				],
+				"service": [
+					"list"
 				]
 			},
 			"uci": [

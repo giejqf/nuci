@@ -453,7 +453,7 @@
 			"args": {},
 			"status": 0,
 			"result": {
-				"localtime": 1791793670,
+				"localtime": 1791800995,
 				"zonename": "UTC",
 				"timezone": "UTC0"
 			}
@@ -518,8 +518,8 @@
 					{
 						"device": "tmpfs",
 						"size": 247224,
-						"used": 12736,
-						"avail": 234488,
+						"used": 2072,
+						"avail": 245152,
 						"mount": "/tmp",
 						"type": "tmpfs",
 						"options": [
@@ -532,8 +532,8 @@
 					{
 						"device": "/dev/loop0",
 						"size": 87737,
-						"used": 1243,
-						"avail": 79520,
+						"used": 4227,
+						"avail": 76536,
 						"mount": "/overlay",
 						"type": "ext4",
 						"options": [
@@ -544,8 +544,8 @@
 					{
 						"device": "overlayfs:/overlay",
 						"size": 87737,
-						"used": 1243,
-						"avail": 79520,
+						"used": 4227,
+						"avail": 76536,
 						"mount": "/",
 						"type": "overlay",
 						"options": [
@@ -626,14 +626,7 @@
 			"status": 0,
 			"result": {
 				"name": "backup",
-				"running": false,
-				"command": "/sbin/sysupgrade -b /tmp/nuci-backup.tar.gz",
-				"started": 1791793317,
-				"log": "Mon Oct 12 08:22:06 UTC 2026 upgrade: Saving config files...\n",
-				"finished": 1791793342,
-				"rc": 0,
-				"path": "/tmp/nuci-backup.tar.gz",
-				"size": 488629
+				"running": false
 			}
 		}
 	]

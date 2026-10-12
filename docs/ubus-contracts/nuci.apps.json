@@ -16,6 +16,34 @@
 			"result": {
 				"apps": [
 					{
+						"id": "ddns",
+						"title": "Dynamic DNS",
+						"icon": "Globe",
+						"entry": "apps/ddns/index.js",
+						"version": "0.2.0",
+						"menu": {
+							"group": "services",
+							"order": 20
+						},
+						"acls": [
+							"nuci-app-ddns"
+						]
+					},
+					{
+						"id": "upnp",
+						"title": "UPnP",
+						"icon": "Router",
+						"entry": "apps/upnp/index.js",
+						"version": "0.2.0",
+						"menu": {
+							"group": "services",
+							"order": 30
+						},
+						"acls": [
+							"nuci-app-upnp"
+						]
+					},
+					{
 						"id": "hello",
 						"title": "Hello",
 						"icon": "Smile",
@@ -27,6 +55,34 @@
 						},
 						"acls": [
 							"nuci-base"
+						]
+					},
+					{
+						"id": "wireguard",
+						"title": "WireGuard",
+						"icon": "ShieldCheck",
+						"entry": "apps/wireguard/index.js",
+						"version": "0.2.0",
+						"menu": {
+							"group": "network",
+							"order": 80
+						},
+						"acls": [
+							"nuci-app-wireguard"
+						]
+					},
+					{
+						"id": "sqm",
+						"title": "SQM QoS",
+						"icon": "Gauge",
+						"entry": "apps/sqm/index.js",
+						"version": "0.2.0",
+						"menu": {
+							"group": "network",
+							"order": 85
+						},
+						"acls": [
+							"nuci-app-sqm"
 						]
 					}
 				]

@@ -43,6 +43,7 @@ import type {
 	IwinfoStation,
 	LogEntry,
 	LoginResult,
+	ProcdService,
 	ProtoHandler,
 	SystemInfo,
 	UciSection,
@@ -184,11 +185,25 @@ export function createApi(client: RpcClient) {
 		},
 
 		rc: {
-			list: () => call<Record<string, InitScript>>('rc', 'list'),
+			/**
+			 * Init scripts. rpcd's running check spawns a shell per script (tens of
+			 * seconds on small routers); skip it and ask procd via service.list().
+			 */
+			list: (skipRunningCheck = false) =>
+				call<Record<string, InitScript>>(
+					'rc',
+					'list',
+					skipRunningCheck ? { skip_running_check: true } : {},
+				),
 			init: (
 				name: string,
 				action: 'start' | 'stop' | 'restart' | 'reload' | 'enable' | 'disable',
 			) => call('rc', 'init', { name, action }),
+		},
+
+		service: {
+			/** procd services and their instances (one call for all). */
+			list: () => call<Record<string, ProcdService>>('service', 'list'),
 		},
 
 		network: {

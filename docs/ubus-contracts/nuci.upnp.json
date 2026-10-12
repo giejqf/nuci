@@ -1,0 +1,22 @@
+{
+	"object": "nuci.upnp",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"status": {}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"running": false,
+				"redirects": []
+			}
+		}
+	]
+}

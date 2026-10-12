@@ -65,10 +65,7 @@
 			"args": {
 				"radio": "radio1"
 			},
-			"status": 0,
-			"result": {
-				"results": []
-			}
+			"status": 7
 		}
 	]
 }

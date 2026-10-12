@@ -183,6 +183,12 @@ export interface IwinfoStation {
 	[key: string]: unknown;
 }
 
+/** One entry of procd's `service list`. */
+export interface ProcdService {
+	instances?: Record<string, { running: boolean; pid?: number }>;
+	[key: string]: unknown;
+}
+
 export interface InitScript {
 	start?: number;
 	stop?: number;

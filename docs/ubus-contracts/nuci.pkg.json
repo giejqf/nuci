@@ -77,6 +77,18 @@
 						"installed_size": 181656
 					},
 					{
+						"name": "ddns-scripts",
+						"version": "2.8.4-r8",
+						"description": "Dynamic DNS Client scripts (with IPv6 support) A highly configurable set of scripts for doing dynamic dns updates. - IPv6 support - DNS server support - Glue Record support (require BIND host or KNOT host) - DNS requests via TCP - Proxy server support - log file support - support to run once Version: 2.8.4-8 Info : https://openwrt.org/docs/guide-user/services/ddns/client",
+						"installed_size": 73066
+					},
+					{
+						"name": "ddns-scripts-services",
+						"version": "2.8.4-r8",
+						"description": "Dynamic DNS Client definitions for supported services",
+						"installed_size": 17936
+					},
+					{
 						"name": "dnsmasq",
 						"version": "2.93-r1",
 						"description": "It is intended to provide coupled DNS and DHCP service to a LAN.",
@@ -141,6 +153,24 @@
 						"version": "20260221-r1",
 						"description": "Intel I915 DMC firmware",
 						"installed_size": 1049472
+					},
+					{
+						"name": "ip-tiny",
+						"version": "6.18.0-r2",
+						"description": "Routing control utility (minimal)",
+						"installed_size": 355329
+					},
+					{
+						"name": "iptables-mod-ipopt",
+						"version": "1.8.10-r2",
+						"description": "iptables extensions for matching/changing IP packet options. Matches: - dscp - ecn - length - statistic - tcpmss - unclean - hl Targets: - DSCP - CLASSIFY - ECN - HL",
+						"installed_size": 175934
+					},
+					{
+						"name": "iptables-nft",
+						"version": "1.8.10-r2",
+						"description": "Extra iptables nftables nft binaries. iptables-nft iptables-nft-restore iptables-nft-save iptables-translate iptables-restore-translate",
+						"installed_size": 438
 					},
 					{
 						"name": "iw",
@@ -279,6 +309,36 @@
 						"version": "6.12.71-r1",
 						"description": "HMAC digest CryptoAPI module",
 						"installed_size": 7304
+					},
+					{
+						"name": "kmod-crypto-kpp",
+						"version": "6.12.71-r1",
+						"description": "Key-agreement Protocol Primitives",
+						"installed_size": 6045
+					},
+					{
+						"name": "kmod-crypto-lib-chacha20",
+						"version": "6.12.71-r1",
+						"description": "ChaCha library interface",
+						"installed_size": 25928
+					},
+					{
+						"name": "kmod-crypto-lib-chacha20poly1305",
+						"version": "6.12.71-r1",
+						"description": "ChaCha20-Poly1305 AEAD support (8-byte nonce library version)",
+						"installed_size": 10892
+					},
+					{
+						"name": "kmod-crypto-lib-curve25519",
+						"version": "6.12.71-r1",
+						"description": "Curve25519 scalar multiplication library",
+						"installed_size": 66062
+					},
+					{
+						"name": "kmod-crypto-lib-poly1305",
+						"version": "6.12.71-r1",
+						"description": "Poly1305 library interface",
+						"installed_size": 26276
 					},
 					{
 						"name": "kmod-crypto-manager",
@@ -461,6 +521,12 @@
 						"installed_size": 15796
 					},
 					{
+						"name": "kmod-ifb",
+						"version": "6.12.71-r1",
+						"description": "The Intermediate Functional Block",
+						"installed_size": 12400
+					},
+					{
 						"name": "kmod-igb",
 						"version": "6.12.71-r1",
 						"description": "Kernel modules for Intel(R) 82575/82576 PCI-Express Gigabit Ethernet adapters.",
@@ -483,6 +549,18 @@
 						"version": "6.12.71-r1",
 						"description": "Kernel modules for IPv6-in-IPv6 and IPv4-in-IPv6 tunnelling",
 						"installed_size": 46203
+					},
+					{
+						"name": "kmod-ipt-core",
+						"version": "6.12.71-r1",
+						"description": "Netfilter core kernel modules Includes: - comment - limit - LOG - mac - multiport - REJECT - TCPMSS",
+						"installed_size": 65888
+					},
+					{
+						"name": "kmod-ipt-ipopt",
+						"version": "6.12.71-r1",
+						"description": "Netfilter (IPv4) modules for matching/changing IP packet options Includes: - CLASSIFY - dscp/DSCP - ecn/ECN - hl/HL - length - mark/MARK - statistic - tcpmss - time - ttl/TTL - unclean",
+						"installed_size": 46361
 					},
 					{
 						"name": "kmod-iptunnel",
@@ -575,6 +653,12 @@
 						"installed_size": 42156
 					},
 					{
+						"name": "kmod-nf-ipt",
+						"version": "6.12.71-r1",
+						"description": "Iptables core",
+						"installed_size": 66516
+					},
+					{
 						"name": "kmod-nf-log",
 						"version": "6.12.71-r1",
 						"description": "Netfilter Logging",
@@ -609,6 +693,12 @@
 						"version": "6.12.71-r1",
 						"description": "Kernel modules support for a netlink-based userspace interface",
 						"installed_size": 17333
+					},
+					{
+						"name": "kmod-nft-compat",
+						"version": "6.12.71-r1",
+						"description": "Netfilter nf_tables compat support",
+						"installed_size": 14880
 					},
 					{
 						"name": "kmod-nft-core",
@@ -713,6 +803,18 @@
 						"installed_size": 147291
 					},
 					{
+						"name": "kmod-sched-cake",
+						"version": "6.12.71-r1",
+						"description": "Common Applications Kept Enhanced fq_codel/blue derived shaper",
+						"installed_size": 39148
+					},
+					{
+						"name": "kmod-sched-core",
+						"version": "6.12.71-r1",
+						"description": "Core kernel scheduler support for IP traffic",
+						"installed_size": 229783
+					},
+					{
 						"name": "kmod-sit",
 						"version": "6.12.71-r1",
 						"description": "Kernel modules for IPv6-in-IPv4 tunnelling",
@@ -737,10 +839,28 @@
 						"installed_size": 236561
 					},
 					{
+						"name": "kmod-udptunnel4",
+						"version": "6.12.71-r1",
+						"description": "IPv4 UDP tunneling support",
+						"installed_size": 19843
+					},
+					{
+						"name": "kmod-udptunnel6",
+						"version": "6.12.71-r1",
+						"description": "IPv6 UDP tunneling support",
+						"installed_size": 6315
+					},
+					{
 						"name": "kmod-veth",
 						"version": "6.12.71-r1",
 						"description": "This device is a local ethernet tunnel. Devices are created in pairs. When one end receives the packet it appears on its pair and vice versa.",
 						"installed_size": 31969
+					},
+					{
+						"name": "kmod-wireguard",
+						"version": "6.12.71-r1",
+						"description": "WireGuard is a novel VPN that runs inside the Linux Kernel and utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. It uses UDP.",
+						"installed_size": 96861
 					},
 					{
 						"name": "libblkid1",
@@ -759,6 +879,12 @@
 						"version": "1.2.5-r5",
 						"description": "C library",
 						"installed_size": 529463
+					},
+					{
+						"name": "libcap-ng",
+						"version": "0.8.4-r2",
+						"description": "POSIX capabilities library library",
+						"installed_size": 20556
 					},
 					{
 						"name": "libcomerr0",
@@ -789,6 +915,24 @@
 						"version": "14.3.0-r5",
 						"description": "GCC support library",
 						"installed_size": 114723
+					},
+					{
+						"name": "libiptext-nft0",
+						"version": "1.8.10-r2",
+						"description": "IPv4/IPv6 firewall - shared libiptext nft library",
+						"installed_size": 24809
+					},
+					{
+						"name": "libiptext0",
+						"version": "1.8.10-r2",
+						"description": "IPv4 firewall - shared libiptext library",
+						"installed_size": 107473
+					},
+					{
+						"name": "libiptext6-0",
+						"version": "1.8.10-r2",
+						"description": "IPv6 firewall - shared libiptext library",
+						"installed_size": 16809
 					},
 					{
 						"name": "libiwinfo-data",
@@ -911,10 +1055,22 @@
 						"installed_size": 28789
 					},
 					{
+						"name": "libxtables12",
+						"version": "1.8.10-r2",
+						"description": "IPv4/IPv6 firewall - shared xtables library",
+						"installed_size": 57412
+					},
+					{
 						"name": "logd",
 						"version": "2025.10.30~6f78fa49-r1",
 						"description": "OpenWrt system log implementation",
 						"installed_size": 36384
+					},
+					{
+						"name": "miniupnpd-nftables",
+						"version": "2.3.9-r1",
+						"description": "Lightweight UPnP IGD & PCP/NAT-PMP daemon (nftables)",
+						"installed_size": 177894
 					},
 					{
 						"name": "mkf2fs",
@@ -1055,6 +1211,18 @@
 						"installed_size": 24737
 					},
 					{
+						"name": "sqm-scripts",
+						"version": "1.7.2-r1",
+						"description": "A set of scripts that does simple SQM configuration.",
+						"installed_size": 69473
+					},
+					{
+						"name": "tc-tiny",
+						"version": "6.18.0-r2",
+						"description": "Traffic control utility (minimal)",
+						"installed_size": 365697
+					},
+					{
 						"name": "ubox",
 						"version": "2025.10.30~6f78fa49-r1",
 						"description": "OpenWrt system helper toolbox",
@@ -1175,6 +1343,12 @@
 						"installed_size": 282188
 					},
 					{
+						"name": "wireguard-tools",
+						"version": "1.0.20260223-r1",
+						"description": "WireGuard is a novel VPN that runs inside the Linux Kernel and utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. It uses UDP. This package provides the userspace control program for WireGuard, `wg(8)`, a netifd ",
+						"installed_size": 58124
+					},
+					{
 						"name": "wireless-regdb",
 						"version": "2026.09.03-r1",
 						"description": "Wireless Regulatory Database",
@@ -1185,6 +1359,12 @@
 						"version": "2025.08.26~ca266cc2-r5",
 						"description": "This package contains a basic IEEE 802.1x/WPA Authenticator and Supplicant with WPA-PSK, SAE (WPA3-Personal), 802.11r and 802.11w support.",
 						"installed_size": 1126933
+					},
+					{
+						"name": "xtables-nft",
+						"version": "1.8.10-r2",
+						"description": "IP firewall administration tool nft",
+						"installed_size": 181231
 					},
 					{
 						"name": "zlib",
@@ -1204,9 +1384,30 @@
 			},
 			"status": 0,
 			"result": {
-				"total": 0,
+				"total": 11185,
 				"offset": 0,
-				"packages": []
+				"packages": [
+					{
+						"name": "464xlat",
+						"version": "13"
+					},
+					{
+						"name": "6in4",
+						"version": "29"
+					},
+					{
+						"name": "6rd",
+						"version": "13"
+					},
+					{
+						"name": "6to4",
+						"version": "13"
+					},
+					{
+						"name": "aardvark-dns",
+						"version": "1.12.2-r1"
+					}
+				]
 			}
 		},
 		{
@@ -1216,7 +1417,118 @@
 			},
 			"status": 0,
 			"result": {
-				"packages": []
+				"packages": [
+					{
+						"name": "tree",
+						"version": "2.2.1-r2",
+						"description": "List contents of directories in a tree-like format"
+					},
+					{
+						"name": "freeradius3-mod-cache-rbtree",
+						"version": "3.2.10-r2",
+						"description": "DATASTORE CACHE RBTREE"
+					},
+					{
+						"name": "kamailio-mod-mtree",
+						"version": "6.0.1-r2",
+						"description": "Memory caching system for Kamailio"
+					},
+					{
+						"name": "perl-html-tree",
+						"version": "5.07.5.40-r1",
+						"description": "HTML-Tree is a suite of Perl modules for making parse trees out of HTML source."
+					},
+					{
+						"name": "augeas",
+						"version": "1.14.1-r1",
+						"description": "Augeas is a configuration editing tool. It parses configuration files in their native formats and transforms them into a tree. Configuration changes are made by manipulating this tree and saving it back into native config files."
+					},
+					{
+						"name": "bsdtar",
+						"version": "3.8.1-r2",
+						"description": "Reads a variety of formats including tar, pax, zip, xar, lha, ar, cab, mtree, rar, warc, 7z and ISO images. Writes tar, pax, zip, xar, ar, ISO, mtree and shar archives. Automatically handles archives compressed with gzip, bzip2, lzip, xz, lzma or compress."
+					},
+					{
+						"name": "dtc",
+						"version": "1.7.2-r1",
+						"description": "Device Tree Compiler for Flat Device Trees Device Tree Compiler, dtc, takes as input a device-tree in a given format and outputs a device-tree in another format for booting kernels on embedded systems."
+					},
+					{
+						"name": "erlang-syntax-tools",
+						"version": "28.0.3-r1",
+						"description": "Erlang/OTP is a general-purpose programming language and runtime environment. This package provides support for handling abstract Erlang syntax trees."
+					},
+					{
+						"name": "fdt-utils",
+						"version": "1.7.2-r1",
+						"description": "Flat Device Tree Utilities"
+					},
+					{
+						"name": "libfdt",
+						"version": "1.7.2-r1",
+						"description": "This is a library containing functions for manipulating Flat Device Trees."
+					},
+					{
+						"name": "libredblack",
+						"version": "1.3-r4",
+						"description": "RedBlack Balanced Tree Searching and Sorting Library."
+					},
+					{
+						"name": "libsmartcols1",
+						"version": "2.41.5-r1",
+						"description": "The smartcols library is used to print tables and trees in a pretty way."
+					},
+					{
+						"name": "libuci2",
+						"version": "2.0.0-r1",
+						"description": "UCI2 is a C library that provides an alternative UCI parser with an Abstract Syntax Tree (AST) representation of configuration files."
+					},
+					{
+						"name": "lsd",
+						"version": "1.1.5-r1",
+						"description": "This project is a rewrite of GNU ls with lots of added features like colors, icons, tree-view, more formatting options etc. The project is heavily inspired by the super colorls project."
+					},
+					{
+						"name": "mc",
+						"version": "4.8.33-r1",
+						"description": "GNU Midnight Commander is a visual file manager. It's a feature rich full-screen text mode application that allows you to copy, move and delete files and whole directory trees, search for files and run commands in the subshell. Internal viewer and editor are included as well."
+					},
+					{
+						"name": "procs",
+						"version": "0.14.3-r1",
+						"description": "Procs is a 'ps' command replacement written in Rust, offering enhanced usability and information display. Features include color-coded output, theme auto-detection, advanced search, and extended process details (TCP/UDP ports, Docker names, I/O throughput). It also supports pager functionality, a 'top'-like watch mode, and a process tree view​​."
+					},
+					{
+						"name": "psmisc",
+						"version": "23.7-r1",
+						"description": "psmisc is a set of additional small useful utilities that use the proc filesystem like fuser, killall, prtstat, pstree."
+					},
+					{
+						"name": "python3-jsonpath-ng",
+						"version": "1.5.3-r1",
+						"description": "A final implementation of JSONPath for Python that aims to be standard compliant, including arithmetic and binary comparison operators, as defined in the original JSONPath proposal. This packages merges both jsonpath-rw and jsonpath-rw-ext and provides several AST API enhancements, such as the ability to update or removes nodes in the tree."
+					},
+					{
+						"name": "python3-jsonpath-ng-src",
+						"version": "1.5.3-r1",
+						"description": "A final implementation of JSONPath for Python that aims to be standard compliant, including arithmetic and binary comparison operators, as defined in the original JSONPath proposal. This packages merges both jsonpath-rw and jsonpath-rw-ext and provides several AST API enhancements, such as the ability to update or removes nodes in the tree. This package contains the Python source files for python3-jsonpath-ng."
+					},
+					{
+						"name": "python3-lxml",
+						"version": "6.0.2-r1",
+						"description": "lxml is a Pythonic, mature binding for the libxml2 and libxslt libraries. It provides safe and convenient access to these libraries using the ElementTree API. It extends the ElementTree API significantly to offer support for XPath, RelaxNG, XML Schema, XSLT, C14N and much more."
+					},
+					{
+						"name": "python3-lxml-src",
+						"version": "6.0.2-r1",
+						"description": "lxml is a Pythonic, mature binding for the libxml2 and libxslt libraries. It provides safe and convenient access to these libraries using the ElementTree API. It extends the ElementTree API significantly to offer support for XPath, RelaxNG, XML Schema, XSLT, C14N and much more. This package contains the Python source files for python3-lxml."
+					},
+					{
+						"name": "samba4-utils",
+						"version": "4.22.7-r3",
+						"description": "installs: smbstatus smbtree mvxattr smbtar (smbcquotas) Utilities collection"
+					}
+				]
 			}
 		},
 		{
@@ -1252,7 +1564,12 @@
 			"status": 0,
 			"result": {
 				"name": "pkg",
-				"running": false
+				"running": false,
+				"command": "apk del tree",
+				"started": 1791800674,
+				"log": "(1/1) Purging tree (2.2.1-r2)\n  Executing tree-2.2.1-r2.pre-deinstall\nOK: 23.9 MiB in 223 packages\n",
+				"finished": 1791800677,
+				"rc": 0
 			}
 		}
 	]

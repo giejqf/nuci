@@ -1,0 +1,35 @@
+{
+	"object": "nuci.sqm",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"status": {}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"interfaces": {
+					"eth1": {
+						"egress": [
+							{
+								"kind": "fq_codel",
+								"handle": "0:",
+								"root": true,
+								"sent_bytes": 27548,
+								"sent_packets": 384,
+								"dropped": 0
+							}
+						],
+						"ingress": []
+					}
+				}
+			}
+		}
+	]
+}

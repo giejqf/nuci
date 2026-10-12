@@ -2,7 +2,7 @@
 <!-- System → Startup: init scripts (rc) and /etc/rc.local. -->
 <script lang="ts">
 	import { t } from '@nuci/i18n';
-	import { isRpcError, type InitScript } from '@nuci/rpc';
+	import { type InitScript, type ProcdService, isRpcError } from '@nuci/rpc';
 	import { DataTable, Page, Section, toasts } from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { rpc } from '../../lib/services';
@@ -23,9 +23,19 @@
 
 	async function load() {
 		try {
-			const list = await rpc.rc.list();
+			// Fast path: no per-script running check; procd knows what runs.
+			const [list, procd] = await Promise.all([
+				rpc.rc.list(true),
+				rpc.service.list().catch(() => ({}) as Record<string, ProcdService>),
+			]);
 			scripts = Object.entries(list)
-				.map(([name, s]) => ({ ...s, name }))
+				.map(([name, s]) => {
+					const svc = procd[name];
+					const running = svc
+						? Object.values(svc.instances ?? {}).some((i) => i.running)
+						: undefined;
+					return { ...s, running, name };
+				})
 				.sort((a, b) => (a.start ?? 99) - (b.start ?? 99) || a.name.localeCompare(b.name));
 			error = '';
 		} catch (e) {

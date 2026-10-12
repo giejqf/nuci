@@ -289,6 +289,23 @@
 					"last_error": false,
 					"teardown_on_l3_link_down": false,
 					"no_task": false
+				},
+				"wireguard": {
+					"validate": {
+						"private_key": "string",
+						"listen_port": "uinteger",
+						"mtu": "uinteger",
+						"fwmark": "string",
+						"addresses": "string"
+					},
+					"immediate": false,
+					"no_device": false,
+					"init_available": true,
+					"renew_available": true,
+					"force_link_default": false,
+					"last_error": false,
+					"teardown_on_l3_link_down": false,
+					"no_task": true
 				}
 			}
 		}

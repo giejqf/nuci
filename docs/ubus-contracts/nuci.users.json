@@ -55,6 +55,10 @@
 			"result": {
 				"groups": {
 					"nuci-admin": "NuCI: Administration (root password, SSH, web server)",
+					"nuci-app-ddns": "NuCI app: Dynamic DNS",
+					"nuci-app-sqm": "NuCI app: Smart queue management (SQM)",
+					"nuci-app-upnp": "NuCI app: UPnP and NAT-PMP",
+					"nuci-app-wireguard": "NuCI app: WireGuard tunnels and peers",
 					"nuci-backup": "NuCI: Backup, restore and firmware upgrade",
 					"nuci-base": "NuCI: shell, session, installed apps, heartbeat stream",
 					"nuci-firewall": "NuCI: Firewall pages (zones, forwards, rules, NAT, ruleset preview)",

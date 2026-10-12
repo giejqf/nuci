@@ -137,6 +137,155 @@
 					"stop": 21,
 					"enabled": true,
 					"running": true
+				},
+				"sqm": {
+					"start": 50,
+					"enabled": true,
+					"running": false
+				},
+				"nuci-wireguard": {
+					"start": 99,
+					"enabled": true,
+					"running": false
+				},
+				"ddns": {
+					"start": 95,
+					"stop": 10,
+					"enabled": true,
+					"running": false
+				},
+				"miniupnpd": {
+					"start": 94,
+					"stop": 15,
+					"enabled": true,
+					"running": false
+				}
+			}
+		},
+		{
+			"method": "list",
+			"args": {
+				"skip_running_check": true
+			},
+			"status": 0,
+			"result": {
+				"boot": {
+					"start": 10,
+					"stop": 90,
+					"enabled": true
+				},
+				"cron": {
+					"start": 50,
+					"enabled": true
+				},
+				"dnsmasq": {
+					"start": 19,
+					"enabled": true
+				},
+				"done": {
+					"start": 95,
+					"enabled": true
+				},
+				"dropbear": {
+					"start": 19,
+					"stop": 50,
+					"enabled": true
+				},
+				"firewall": {
+					"start": 19,
+					"enabled": true
+				},
+				"gpio_switch": {
+					"start": 94,
+					"stop": 10,
+					"enabled": true
+				},
+				"led": {
+					"start": 96,
+					"enabled": true
+				},
+				"log": {
+					"start": 12,
+					"stop": 89,
+					"enabled": true
+				},
+				"network": {
+					"start": 20,
+					"stop": 90,
+					"enabled": true
+				},
+				"nuci": {
+					"start": 99,
+					"enabled": true
+				},
+				"odhcpd": {
+					"start": 35,
+					"stop": 85,
+					"enabled": true
+				},
+				"packet_steering": {
+					"start": 25,
+					"enabled": true
+				},
+				"rpcd": {
+					"start": 12,
+					"enabled": true
+				},
+				"sysctl": {
+					"start": 11,
+					"enabled": true
+				},
+				"sysfixtime": {
+					"start": 0,
+					"stop": 90,
+					"enabled": true
+				},
+				"sysntpd": {
+					"start": 98,
+					"enabled": true
+				},
+				"system": {
+					"start": 10,
+					"enabled": true
+				},
+				"uhttpd": {
+					"start": 50,
+					"enabled": true
+				},
+				"umount": {
+					"stop": 90,
+					"enabled": false
+				},
+				"urandom_seed": {
+					"start": 99,
+					"enabled": true
+				},
+				"urngd": {
+					"start": 0,
+					"enabled": true
+				},
+				"wpad": {
+					"start": 19,
+					"stop": 21,
+					"enabled": true
+				},
+				"sqm": {
+					"start": 50,
+					"enabled": true
+				},
+				"nuci-wireguard": {
+					"start": 99,
+					"enabled": true
+				},
+				"ddns": {
+					"start": 95,
+					"stop": 10,
+					"enabled": true
+				},
+				"miniupnpd": {
+					"start": 94,
+					"stop": 15,
+					"enabled": true
 				}
 			}
 		}

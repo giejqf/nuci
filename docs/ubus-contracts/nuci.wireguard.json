@@ -1,0 +1,26 @@
+{
+	"object": "nuci.wireguard",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"status": {},
+		"genkey": {},
+		"genpsk": {},
+		"pubkey": {
+			"private_key": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"interfaces": {}
+			}
+		}
+	]
+}

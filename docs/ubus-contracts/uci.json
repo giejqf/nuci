@@ -91,14 +91,17 @@
 			"status": 0,
 			"result": {
 				"configs": [
+					"ddns",
 					"dhcp",
 					"dropbear",
 					"firewall",
 					"network",
 					"nuci",
 					"rpcd",
+					"sqm",
 					"system",
 					"uhttpd",
+					"upnpd",
 					"wireless"
 				]
 			}
@@ -164,8 +167,8 @@
 						".type": "globals",
 						".name": "globals",
 						".index": 1,
-						"dhcp_default_duid": "0004abea809788a341f3850c2b370ffbd93f",
-						"ula_prefix": "fd95:d0c7:8ce9::/48"
+						"dhcp_default_duid": "0004ac2b970523dc49b1bab5fb8631c765a6",
+						"ula_prefix": "fd50:b8db:9212::/48"
 					},
 					"cfg030f15": {
 						".anonymous": true,

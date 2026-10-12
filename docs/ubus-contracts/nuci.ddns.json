@@ -1,0 +1,364 @@
+{
+	"object": "nuci.ddns",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "x86/64"
+	},
+	"signature": {
+		"providers": {},
+		"status": {},
+		"log": {
+			"section": "String"
+		},
+		"update": {},
+		"update_status": {}
+	},
+	"calls": [
+		{
+			"method": "providers",
+			"args": {},
+			"status": 0,
+			"result": {
+				"providers": [
+					{
+						"name": "3322.org",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "afraid.org-basicauth",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "afraid.org-keyauth",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "afraid.org-v2-basic",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "afraid.org-v2-token",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "all-inkl.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "apertodns.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "apertodns.com-token",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "changeip.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "core-networks.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "ddo.jp",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "desec.io",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dhis.org",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dnsever.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "dnsexit.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "dnshome.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dnsmadeeasy.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "dnsomatic.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "do.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dondominio.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "duckdns.org",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "duiadns.net",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dy.fi",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "dyn.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dyndns.it",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "dyndns.org",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dynu.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "dynv6.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "easydns.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "eurodns.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "goip.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "he.net",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "hosting.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "infomaniak.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "inwx.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "ipnodns.ru",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "ipv64.net",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "joker.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "loopia.se",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "moniker.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "mydns.jp",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "myonlineportal.net",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "mythic-beasts.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "mythic-beasts.com (API v2)",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "namecheap.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "njal.la",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "no-ip.pl",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "now-dns.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "nsupdate.info",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "opendns.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "oray.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "ovh.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "regfish.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "schokokeks.org",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "selfhost.de",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "simply.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "sitelutions.com",
+						"ipv4": true,
+						"ipv6": false
+					},
+					{
+						"name": "spdyn.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "strato.com",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "udmedia.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "variomedia.de",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "ydns.io",
+						"ipv4": true,
+						"ipv6": true
+					},
+					{
+						"name": "zoneedit.com",
+						"ipv4": true,
+						"ipv6": false
+					}
+				]
+			}
+		},
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"services": {
+					"myddns_ipv4": {
+						"running": false,
+						"registered_ip": null,
+						"last_update": null,
+						"next_check": null
+					},
+					"myddns_ipv6": {
+						"running": false,
+						"registered_ip": null,
+						"last_update": null,
+						"next_check": null
+					}
+				}
+			}
+		}
+	]
+}

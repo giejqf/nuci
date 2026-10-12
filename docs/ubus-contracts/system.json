@@ -59,32 +59,32 @@
 			"args": {},
 			"status": 0,
 			"result": {
-				"localtime": 1791793654,
-				"uptime": 451,
+				"localtime": 1791800976,
+				"uptime": 2866,
 				"load": [
-					80864,
-					74496,
-					43520
+					105376,
+					127680,
+					120320
 				],
 				"memory": {
 					"total": 506314752,
-					"free": 409530368,
-					"shared": 13041664,
-					"buffered": 5021696,
-					"available": 401399808,
-					"cached": 40800256
+					"free": 408707072,
+					"shared": 2121728,
+					"buffered": 11812864,
+					"available": 406798336,
+					"cached": 32894976
 				},
 				"root": {
 					"total": 87737,
-					"free": 86494,
-					"used": 1243,
-					"avail": 79520
+					"free": 83510,
+					"used": 4227,
+					"avail": 76536
 				},
 				"tmp": {
 					"total": 247224,
-					"free": 234488,
-					"used": 12736,
-					"avail": 234488
+					"free": 245152,
+					"used": 2072,
+					"avail": 245152
 				},
 				"swap": {
 					"total": 0,

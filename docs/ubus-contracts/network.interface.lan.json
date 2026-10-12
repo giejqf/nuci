@@ -37,12 +37,13 @@
 				"available": true,
 				"autostart": true,
 				"dynamic": false,
-				"uptime": 371,
+				"uptime": 165,
 				"l3_device": "br-lan",
 				"proto": "static",
 				"device": "br-lan",
 				"updated": [
-					"addresses"
+					"addresses",
+					"routes"
 				],
 				"metric": 0,
 				"dns_metric": 0,
@@ -57,10 +58,10 @@
 				"ipv6-prefix": [],
 				"ipv6-prefix-assignment": [
 					{
-						"address": "fd95:d0c7:8ce9::",
+						"address": "fd50:b8db:9212::",
 						"mask": 60,
 						"local-address": {
-							"address": "fd95:d0c7:8ce9::1",
+							"address": "fd50:b8db:9212::1",
 							"mask": 60
 						}
 					}

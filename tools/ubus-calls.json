@@ -1,26 +1,10 @@
 {
 	"$comment": "Calls recorded by tools/record-ubus.sh into docs/ubus-contracts/<object>.json. Only read-only calls.",
 	"calls": [
-		[
-			"session",
-			"access",
-			{}
-		],
-		[
-			"system",
-			"board",
-			{}
-		],
-		[
-			"system",
-			"info",
-			{}
-		],
-		[
-			"uci",
-			"configs",
-			{}
-		],
+		["session", "access", {}],
+		["system", "board", {}],
+		["system", "info", {}],
+		["uci", "configs", {}],
 		[
 			"uci",
 			"get",
@@ -59,26 +43,10 @@
 				"config": "nope"
 			}
 		],
-		[
-			"uci",
-			"changes",
-			{}
-		],
-		[
-			"network.interface",
-			"dump",
-			{}
-		],
-		[
-			"network.interface.lan",
-			"status",
-			{}
-		],
-		[
-			"network.device",
-			"status",
-			{}
-		],
+		["uci", "changes", {}],
+		["network.interface", "dump", {}],
+		["network.interface.lan", "status", {}],
+		["network.device", "status", {}],
 		[
 			"network.device",
 			"status",
@@ -86,16 +54,8 @@
 				"name": "br-lan"
 			}
 		],
-		[
-			"iwinfo",
-			"devices",
-			{}
-		],
-		[
-			"dhcp",
-			"ipv6leases",
-			{}
-		],
+		["iwinfo", "devices", {}],
+		["dhcp", "ipv6leases", {}],
 		[
 			"file",
 			"stat",
@@ -117,11 +77,7 @@
 				"path": "/etc/hostname-does-not-exist"
 			}
 		],
-		[
-			"rc",
-			"list",
-			{}
-		],
+		["rc", "list", {}],
 		[
 			"log",
 			"read",
@@ -131,26 +87,10 @@
 				"oneshot": true
 			}
 		],
-		[
-			"nuci.apps",
-			"list",
-			{}
-		],
-		[
-			"nuci.status",
-			"realtime",
-			{}
-		],
-		[
-			"nuci.status",
-			"processes",
-			{}
-		],
-		[
-			"nuci.status",
-			"kernel_log",
-			{}
-		],
+		["nuci.apps", "list", {}],
+		["nuci.status", "realtime", {}],
+		["nuci.status", "processes", {}],
+		["nuci.status", "kernel_log", {}],
 		[
 			"nuci.status",
 			"kernel_log",
@@ -166,61 +106,17 @@
 				"signal": 15
 			}
 		],
-		[
-			"nuci.status",
-			"conntrack",
-			{}
-		],
-		[
-			"nuci.status",
-			"conntrack_summary",
-			{}
-		],
-		[
-			"nuci.system",
-			"timezones",
-			{}
-		],
-		[
-			"nuci.system",
-			"localtime",
-			{}
-		],
-		[
-			"nuci.system",
-			"leds",
-			{}
-		],
-		[
-			"nuci.system",
-			"block_devices",
-			{}
-		],
-		[
-			"nuci.system",
-			"mount_points",
-			{}
-		],
-		[
-			"nuci.system",
-			"usb_devices",
-			{}
-		],
-		[
-			"nuci.dhcp",
-			"leases",
-			{}
-		],
-		[
-			"nuci.dhcp",
-			"hosts",
-			{}
-		],
-		[
-			"nuci.pkg",
-			"list_installed",
-			{}
-		],
+		["nuci.status", "conntrack", {}],
+		["nuci.status", "conntrack_summary", {}],
+		["nuci.system", "timezones", {}],
+		["nuci.system", "localtime", {}],
+		["nuci.system", "leds", {}],
+		["nuci.system", "block_devices", {}],
+		["nuci.system", "mount_points", {}],
+		["nuci.system", "usb_devices", {}],
+		["nuci.dhcp", "leases", {}],
+		["nuci.dhcp", "hosts", {}],
+		["nuci.pkg", "list_installed", {}],
 		[
 			"nuci.pkg",
 			"list_available",
@@ -250,26 +146,10 @@
 				"name": "dnsmasq"
 			}
 		],
-		[
-			"nuci.pkg",
-			"job_status",
-			{}
-		],
-		[
-			"nuci.system",
-			"backup_status",
-			{}
-		],
-		[
-			"nuci.wifi",
-			"status",
-			{}
-		],
-		[
-			"nuci.wifi",
-			"assoc_list_enriched",
-			{}
-		],
+		["nuci.pkg", "job_status", {}],
+		["nuci.system", "backup_status", {}],
+		["nuci.wifi", "status", {}],
+		["nuci.wifi", "assoc_list_enriched", {}],
 		[
 			"nuci.wifi",
 			"scan",
@@ -277,60 +157,24 @@
 				"radio": "radio1"
 			}
 		],
+		["nuci.diag", "status", {}],
+		["nuci.firewall", "preview", {}],
+		["nuci.firewall", "ruleset", {}],
+		["network", "get_proto_handlers", {}],
+		["nuci.users", "list", {}],
+		["nuci.users", "groups", {}],
+		["nuci.wireguard", "status", {}],
+		["nuci.ddns", "providers", {}],
+		["nuci.ddns", "status", {}],
+		["nuci.upnp", "status", {}],
+		["nuci.sqm", "status", {}],
 		[
-			"nuci.diag",
-			"status",
-			{}
-		],
-		[
-			"nuci.firewall",
-			"preview",
-			{}
-		],
-		[
-			"nuci.firewall",
-			"ruleset",
-			{}
-		],
-		[
-			"network",
-			"get_proto_handlers",
-			{}
-		],
-		[
-			"nuci.users",
+			"rc",
 			"list",
-			{}
+			{
+				"skip_running_check": true
+			}
 		],
-		[
-			"nuci.users",
-			"groups",
-			{}
-		],
-		[
-			"nuci.wireguard",
-			"status",
-			{}
-		],
-		[
-			"nuci.ddns",
-			"providers",
-			{}
-		],
-		[
-			"nuci.ddns",
-			"status",
-			{}
-		],
-		[
-			"nuci.upnp",
-			"status",
-			{}
-		],
-		[
-			"nuci.sqm",
-			"status",
-			{}
-		]
+		["service", "list", {}]
 	]
 }
