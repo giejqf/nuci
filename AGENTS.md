@@ -36,7 +36,7 @@ mobile-native apps, themes beyond DaisyUI built-ins, non-root multi-user UX
 |------|---------|
 | Apps | First `nuci-app-*` packages: `wireguard`, `ddns`, `upnp`, `sqm`, built on `@nuci/app-sdk` 0.2 (configuration access through the host, ADR-0004) |
 | Translations | Complete `zh-CN` and `de` catalogs for core and apps, language switcher, locale-aware number/date formatting |
-| Users | Non-root rpcd users with ACL group assignment and a System → Users page (changes D17, ADR-0005) |
+| Users | Non-root rpcd users with ACL group assignment and a System → Users page (changes D17, ADR-0006) |
 | 0.1 limitations | Backups and firmware beyond the `/ubus` size limits (streaming handler), more interface protocols (`6in4`, `6rd`, `dslite`; WireGuard via its app), bridge VLAN filtering (DSA `bridge-vlan`) |
 
 **Non-goals for 0.2:** apps beyond the four above, themes beyond DaisyUI
@@ -69,7 +69,7 @@ semantics is fine; copying code is not.
 | D14 | Hosting/CI | **GitHub + GitHub Actions**; e2e on hosted runners with TCG, self-hosted KVM runner optional later | |
 | D15 | Theme | **Stock DaisyUI** `light`/`dark`, follows system preference, user override persisted in `localStorage`; no custom palette in v1 | |
 | D16 | `/` takeover | **Yes.** `nuci-base` installs `/www/index.html` redirecting to `/nuci/` when no LuCI is detected, guarded by `uci nuci.main.root_redirect` (default `1`) | |
-| D17 | Users | **Root only for v1.** ACL file is still shipped and the client still checks `session.access`, but no non-root UX work, no user management | |
+| D17 | Users | **Root plus optional limited users** (amended by ADR-0006 for 0.2): System → Users manages NuCI logins (system account without shell + rpcd login with ACL groups) through `nuci.users`; root is never modified there. 0.1 was root only | |
 | D18 | Realtime transport | **Server-Sent Events** from a ucode handler at `/nuci/events` (`uhttpd-mod-ucode`), with automatic fallback to ubus polling when `EventSource` fails | Live graphs/logs without per-request overhead; polling stays as the safety net. Viability confirmed by ADR-0001 (bounded streams) |
 | D19 | Target packages (25.12) | `uhttpd-mod-ubus`, `uhttpd-mod-ucode`, `rpcd-mod-ucode`, `rpcd-mod-file`, `rpcd-mod-iwinfo`, `rpcd-mod-rpcsys`, `ucode-mod-{fs,ubus,uci}`, pinned in `tools/qemu/packages.txt` | Verified on 25.12.0 in Phase 0. The stock release image ships LuCI; the lab removes it after installing these |
 
@@ -96,7 +96,9 @@ uhttpd ─┬─mod-ubus──▶  ubus  ──▶  rpcd  ──▶  stock objec
         └─mod-ucode──▶  /usr/share/nuci/events.uc   SSE handler: validates sid via
                      │                              session.access, then streams
                      │                              stats/log events every N seconds
-                     └─▶ /usr/share/nuci/probe.uc   apply probe (ADR-0002)
+                     ├─▶ /usr/share/nuci/probe.uc   apply probe (ADR-0002)
+                     └─▶ /usr/share/nuci/transfer.uc streaming backup/restore/firmware
+                                                    transfers past the /ubus limits (ADR-0005)
 ACLs: /usr/share/rpcd/acl.d/nuci-*.json
 ```
 
@@ -131,6 +133,9 @@ when the client disconnects, so it never pins a worker.
   come from dnsmasq's lease file via `nuci.dhcp`)
 - `network.wireless` is absent on devices without radios; treat "not found"
   as "no wireless".
+- `network` — `get_proto_handlers` lists the installed netifd protocols with
+  their option schemas; the UI offers only those (Phase 8). New handlers are
+  loaded when netifd starts.
 
 **`nuci.*` ucode objects** fill the gaps LuCI covers with `rpcd-mod-luci`:
 
@@ -143,6 +148,26 @@ when the client disconnects, so it never pins a worker.
 | `nuci.diag` | `ping`, `traceroute`, `nslookup` (bounded args), `status` (output, polled) | busybox tools as a detached job |
 | `nuci.wifi` | `status` (netifd radio status), `assoc_list_enriched` (iwinfo + hostnames), `scan` wrapper (AP-only radios: `iw … scan ap-force`; idle radios: temporary managed interface) | `iwinfo` via deferred calls, `iw`, `nuci.dhcp` |
 | `nuci.apps` | `list` (installed nuci-app manifests) | `/usr/share/nuci/apps/*.json` |
+| `nuci.users` | `list`, `groups`, `create`, `update`, `set_password`, `delete` (ADR-0006) | `/etc/passwd`, `/etc/shadow`, busybox `passwd` via stdin, uci `rpcd` |
+
+First-party apps ship their own objects (plugin + lib + ACL inside
+`apps/nuci-app-<id>/rpcd/`, typed wrappers in the app's `src/api.ts`):
+
+| Object (app) | Methods | Backing |
+|--------|---------|---------|
+| `nuci.wireguard` (wireguard) | `status` (no private keys; preshared keys as a flag), `genkey`, `genpsk`, `pubkey` | `wg show all dump`, `wg genkey/genpsk/pubkey` (key on stdin) |
+| `nuci.ddns` (ddns) | `providers`, `status`, `log`, `update` (job: `/etc/init.d/ddns restart`), `update_status` | `/usr/share/ddns/{default,custom}`, `/var/run/ddns`, `/var/log/ddns` |
+| `nuci.upnp` (upnp) | `status` (procd state, active mappings) | `service list`, miniupnpd lease file |
+| `nuci.sqm` (sqm) | `status` (root qdiscs egress/ingress) | `tc -s qdisc` on the device and `ifb4<dev>` |
+
+Findings that shape the apps (25.12.0): netifd loads protocol handlers
+(`/lib/netifd/proto/*.sh`) only at start, so a protocol installed later is
+unknown until the network service restarts (pages check
+`get_proto_handlers` and say so); netifd applies WireGuard peers only when
+the interface is set up, so `nuci-app-wireguard` ships a procd service whose
+`network` reload trigger re-runs `ifup` for tunnels whose running peers differ
+from the config; miniupnpd refuses all mappings while the WAN address is
+private unless `upnpd.config.external_ip` is set.
 | `nuci.firewall` | `preview` (`fw4 -q print` of the saved config), `ruleset` (`nft list ruleset`); output bounded to 512 KiB with a `truncated` flag | `fw4`, `nft` |
 
 Rules for ucode plugins:
@@ -172,7 +197,9 @@ packages/ui                   NuCI component library (DaisyUI-styled, uci-aware)
 packages/uci                  UCI model: staged changes, diff/review, commit/apply/rollback
 packages/rpc                  ubus JSON-RPC client: session, batching, typed object wrappers
 packages/i18n                 message catalogs + t()
-packages/app-sdk              public API for future nuci-app-*: manifest schema, registerPage()
+packages/app-sdk              public API for nuci-app-*: manifest schema, registerPage(), HostContext
+packages/app-kit              building apps with Svelte + @nuci/ui against HostContext (ADR-0004)
+apps/nuci-app-<id>            first-party apps (UI, manifest, optional rpcd plugin + ACL)
 ```
 
 - `@nuci/rpc` — `call(object, method, args)`, batching of concurrent calls into
@@ -197,11 +224,18 @@ packages/app-sdk              public API for future nuci-app-*: manifest schema,
 - `apps/web` — shell (`<Sidebar>`, `<Topbar>`, theme switch), login, route table,
   v1 pages. Pages are thin: they compose `@nuci/ui` + `@nuci/uci` + `@nuci/rpc`.
   Each page group is a lazy chunk (`import('./pages/network/Interfaces.svelte')`).
-- `@nuci/app-sdk` — the only thing a future `nuci-app-*` imports. Defines the
-  manifest (`/www/nuci/apps/<id>/manifest.json`: id, title, icon, menu placement,
-  entry ES module, required ACLs) and `registerPage()`. The core loads manifests
-  from `nuci.apps list` at boot and mounts them into the router. Build this early
-  (Phase 1), keep its surface small, and treat it as semver-public from 0.1.
+- `@nuci/app-sdk` — the public contract for `nuci-app-*`. Defines the
+  manifest (`/usr/share/nuci/apps/<id>.json`: id, title, icon, menu placement,
+  entry ES module under `/www/nuci/apps/<id>/`, required ACLs),
+  `registerPage()` and `HostContext`. The core loads manifests from
+  `nuci.apps list` after login and mounts app pages into the router. Keep its
+  surface small; semver-public since 0.1. 0.2.0 added `HostContext.uci` (the
+  host's staging model), `notify` and `locale` (ADR-0004).
+- `@nuci/app-kit` — how first-party apps are built: Svelte 5 + `@nuci/ui`
+  bundled into the app (pages stay islands), fields bound to `host.uci`
+  through `HostUciStore`, `@nuci/i18n` aliased to the host's translator,
+  toasts forwarded to the host, CSS without preflight/themes, Vite config.
+  Apps live in `apps/nuci-app-<id>/` and are packaged by `feed/nuci-app.mk`.
 
 ### 3.3 Cross-cutting
 
@@ -224,17 +258,28 @@ packages/app-sdk              public API for future nuci-app-*: manifest schema,
   Pages never know which transport is active.
 - **Theme:** stock DaisyUI `light`/`dark` via `data-theme`, system preference by
   default, user choice persisted in `localStorage`.
+- **Languages (0.2):** English source catalogs (`packages/i18n/en.json`, each
+  app's `src/en.json`); shipped translations in `packages/i18n/locales/` (lazy
+  chunks) and `apps/*/src/locales/` (bundled into the app). The language is
+  the stored choice (`nuci.locale`) or the browser's (primary-subtag match);
+  switching reloads the page. Numbers, sizes, dates and durations use `Intl`
+  with the active locale. `tools/check-i18n.mjs` (lint) fails on unknown
+  keys and on incomplete shipped translations (missing, empty, or different
+  `{placeholders}`).
 - **Error handling:** every ubus status code maps to a user-visible message;
   permission denied on a page = page renders read-only with an explanation.
 - **Accessibility:** DaisyUI components used with proper labels; keyboard
   navigable tables/forms; `aria-live` for apply status.
 - **Bundle budget:** ≤ 120 KB gzipped for shell + login + Status overview;
-  each page chunk ≤ 20 KB gzipped (tightened from 250/80 KB in ADR-0003).
-  CI fails over budget.
+  each page chunk ≤ 20 KB gzipped (tightened from 250/80 KB in ADR-0003);
+  each first-party app entry ≤ 60 KB gzipped including its own Svelte
+  runtime (ADR-0004). CI fails over budget.
 - **Request size:** uhttpd-mod-ubus rejects `/ubus` bodies over 64 KiB
   (`UH_UBUS_MAX_POST_SIZE`), and rpcd's `file.read` refuses files ≥ 256 KiB.
-  `@nuci/rpc` splits batches below the limit; uploads use 45 KiB `file.write`
-  chunks (no cgi-io).
+  `@nuci/rpc` splits batches below the limit. Backups, restores and firmware
+  go through `/nuci/transfer` (ADR-0005: named files only, session in the
+  `X-Nuci-Session` header, `nuci-transfer` ACL scope); small files still use
+  `file.read`/`file.write` (no cgi-io).
 - **No runtime network access other than `/ubus`** (no CDNs, no fonts fetched).
 
 ---
@@ -249,7 +294,8 @@ nuci/
 ├── package.json                   pnpm workspace root
 ├── pnpm-workspace.yaml
 ├── apps/
-│   └── web/                       SPA → builds to dist/ → /www/nuci/
+│   ├── web/                       SPA → builds to dist/ → /www/nuci/
+│   └── nuci-app-<id>/             first-party apps → /www/nuci/apps/<id>/
 │       ├── src/
 │       │   ├── main.ts
 │       │   ├── App.svelte
@@ -263,7 +309,8 @@ nuci/
 │   ├── uci/                       @nuci/uci
 │   ├── ui/                        @nuci/ui
 │   ├── i18n/                      @nuci/i18n
-│   └── app-sdk/                   @nuci/app-sdk
+│   ├── app-sdk/                   @nuci/app-sdk
+│   └── app-kit/                   @nuci/app-kit
 ├── rpcd/
 │   ├── ucode/                     nuci-*.uc  → /usr/share/rpcd/ucode/
 │   ├── acl.d/                     nuci-*.json → /usr/share/rpcd/acl.d/
@@ -273,7 +320,9 @@ nuci/
 ├── feed/                          OpenWrt package feed (add as `src-link nuci`)
 │   ├── nuci/                      meta package: depends on everything below
 │   ├── nuci-base/                 /www/nuci + uhttpd config + SSE handler + root redirect + ACLs
-│   └── rpcd-mod-nuci/             ucode plugins
+│   ├── rpcd-mod-nuci/             ucode plugins
+│   ├── nuci-app.mk                shared rules for app packages
+│   └── nuci-app-<id>/             one Makefile per first-party app
 ├── e2e/                           Playwright project
 │   ├── playwright.config.ts
 │   ├── fixtures/                  router state fixtures (uci snapshots)
@@ -542,10 +591,10 @@ next phase's pages before the previous phase's exit criteria are met.
 ### Phase 8 — Lifting 0.1 limitations
 - Streaming transfer handler (`/nuci/transfer`, `uhttpd-mod-ucode`,
   session-authenticated like `/nuci/events`): backup download of any size,
-  restore and firmware upload without 45 KiB `/ubus` chunks. Verify request
-  body access and limits under uhttpd first; record the result in an ADR.
+  restore and firmware upload without 45 KiB `/ubus` chunks. Verified and
+  recorded in ADR-0005.
 - Interface protocols `6in4`, `6rd`, `dslite` in `proto-registry.ts`, offered
-  only when installed (`nuci.network protocols` lists `/lib/netifd/proto`).
+  only when installed (stock `network get_proto_handlers`; no new method).
 - Devices: bridge VLAN filtering editor (`bridge-vlan` sections, port
   tagging/PVID) with the rollback protocol.
 - **Exit:** e2e: a backup larger than 256 KiB downloads and restores; firmware
@@ -554,7 +603,7 @@ next phase's pages before the previous phase's exit criteria are met.
   `br-lan` rolls back).
 
 ### Phase 9 — Users and ACLs
-- ADR-0005 amends D17: non-root users are supported. rpcd `login` sections
+- ADR-0006 amends D17: non-root users are supported. rpcd `login` sections
   with ACL groups; roles are presets of `nuci-*` groups (administrator,
   operator, read-only) plus custom selection. Passwords are hashed on the
   router by a narrow `nuci.users` method (never stored in clear, never sent
@@ -609,7 +658,8 @@ next phase's pages before the previous phase's exit criteria are met.
 4. **Every uci-writing page goes through `@nuci/uci` staging + apply protocol.**
    No direct `uci.commit` from a page.
 5. **Every new ucode method ships with:** `args` schema, ACL entry, a host test,
-   a recorded fixture, and a typed wrapper in `@nuci/rpc`.
+   a recorded fixture, and a typed wrapper in `@nuci/rpc` (core) or in the
+   app's `src/api.ts` (first-party apps; core never imports apps).
 6. **Don't widen ACLs to make a feature work.** Add a narrow `nuci.*` method
    instead of granting `file.exec` on arbitrary paths.
 7. **Add an ADR** (`docs/adr/NNNN-title.md`) for any change to §2 or §3.
@@ -627,8 +677,5 @@ next phase's pages before the previous phase's exit criteria are met.
 
 ## 11. Open questions (answer and move to §2)
 
-- **Non-root users and user management** — scheduled for 0.2 (Phase 9);
-  becomes a §2 decision with ADR-0005.
-- **Transfer handler limits** — request body handling and maximum sizes under
-  `uhttpd-mod-ucode` to be verified in Phase 8.
+- None open. (Non-root users: decided in ADR-0006, D17.)
 

@@ -180,6 +180,24 @@ Edit configuration through `host.uci`: the edit is staged in the host, and
 the user applies it from the host's apply bar, which runs the rollback
 protocol (ADR-0002). `@nuci/ui` fields do this for you.
 
+## Translations
+
+Put English messages in `src/en.json` (keys prefixed with your app id) and
+translations in `src/locales/<locale>.json` (e.g. `de`, `zh-CN`): the same
+keys, the same `{placeholders}`. Pass them all as `messages`; the host shows
+the user's language and falls back to English per key. For first-party apps
+`pnpm lint` checks that shipped translations are complete.
+
+```ts
+const locales = import.meta.glob<Record<string, string>>('./locales/*.json', {
+	eager: true,
+	import: 'default',
+});
+const messages: Record<string, Record<string, string>> = { en };
+for (const [path, catalog] of Object.entries(locales))
+	messages[path.replace(/^.*\/(.+)\.json$/, '$1')] = catalog;
+```
+
 ## Server side
 
 If the app needs logic on the router, ship an rpcd ucode plugin
@@ -190,6 +208,12 @@ error, argv arrays only, no synchronous ubus calls into rpcd-hosted objects
 
 Ship an ACL file `/usr/share/rpcd/acl.d/nuci-app-<id>.json` with the narrowest
 grants the app needs, and list its group in the manifest's `acls`.
+
+Wrap your methods in a typed module (`src/api.ts`) over `host.call()`, so
+pages never deal with raw ubus replies. Files the router needs besides the
+plugin (init scripts, helpers) go into `root/` in the app directory and are
+installed as-is by `feed/nuci-app.mk`; see `nuci-app-wireguard` for a procd
+service that reacts to network config changes.
 
 ## Packaging
 

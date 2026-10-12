@@ -31,6 +31,11 @@ const ROUTES = [
 	'firewall/forwards',
 	'firewall/rules',
 	'firewall/nat',
+	'system/users',
+	'network/wireguard',
+	'network/sqm',
+	'services/ddns',
+	'services/upnp',
 ];
 
 for (const scheme of ['light', 'dark'] as const) {

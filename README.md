@@ -4,22 +4,24 @@ A fast, modern web interface for OpenWrt 25.12. It is a new frontend, not
 built on LuCI: a Svelte 5 single-page app that talks to the router through
 stock `rpcd`/`ubus` and a few small ucode plugins.
 
-> Status: 0.1 release candidate. All v1 page groups (Status, System,
-> Network, Firewall) are implemented and tested end to end on OpenWrt 25.12
-> x86/64 and armsr/armv8 (QEMU); see
-> [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md). See [AGENTS.md](AGENTS.md) for the architecture, the
-> locked decisions and the plan, and [docs/adr](docs/adr) for decisions made
-> along the way.
+> Status: 0.2 release candidate. All v1 page groups (Status, System,
+> Network, Firewall), non-root users, German and Simplified Chinese, and the
+> first apps (WireGuard, Dynamic DNS, UPnP, SQM) are implemented and tested
+> end to end on OpenWrt 25.12 x86/64 and armsr/armv8 (QEMU); see
+> [docs/releases](docs/releases). See [AGENTS.md](AGENTS.md) for the
+> architecture, the locked decisions and the plan, and [docs/adr](docs/adr)
+> for decisions made along the way.
 
 ## Layout
 
 | Path | What |
 |------|------|
 | `apps/web` | The SPA (Vite + Svelte 5 + Tailwind v4 + DaisyUI v5) → `/www/nuci/` |
-| `packages/*` | `@nuci/rpc`, `@nuci/uci`, `@nuci/ui`, `@nuci/i18n`, `@nuci/app-sdk` |
+| `apps/nuci-app-*` | First-party apps: WireGuard, Dynamic DNS, UPnP, SQM |
+| `packages/*` | `@nuci/rpc`, `@nuci/uci`, `@nuci/ui`, `@nuci/i18n`, `@nuci/app-sdk`, `@nuci/app-kit` |
 | `rpcd/` | ucode plugins (`nuci.*` ubus objects), shared libs, ACLs, host tests |
-| `server/events.uc` | Server-Sent Events handler for `uhttpd-mod-ucode` |
-| `feed/` | OpenWrt package feed: `nuci`, `nuci-base`, `rpcd-mod-nuci` |
+| `server/*.uc` | `uhttpd-mod-ucode` handlers: events (SSE), apply probe, transfers |
+| `feed/` | OpenWrt package feed: `nuci`, `nuci-base`, `rpcd-mod-nuci`, `nuci-app-*` |
 | `tools/qemu/` | QEMU lab for development and e2e |
 | `e2e/` | Playwright tests against the QEMU lab |
 | `docs/adr/` | Architecture decision records |
@@ -50,10 +52,11 @@ From a release (OpenWrt 25.12, any architecture; the packages are
 architecture independent):
 
 ```sh
-BASE=https://github.com/giejqf/nuci/releases/download/v0.1.0
+BASE=https://github.com/giejqf/nuci/releases/download/v0.2.0
 wget -O /etc/apk/keys/nuci-feed.pem "$BASE/nuci-feed.pem"
 echo "$BASE/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 apk update && apk add nuci
+# optional apps: nuci-app-wireguard nuci-app-ddns nuci-app-upnp nuci-app-sqm
 ```
 
 From source: `pnpm build && tools/sdk/build.sh`, copy `dist/feed/*.apk` to
