@@ -4,9 +4,10 @@ A fast, modern web interface for OpenWrt 25.12. It is a new frontend, not
 built on LuCI: a Svelte 5 single-page app that talks to the router through
 stock `rpcd`/`ubus` and a few small ucode plugins.
 
-> Status: pre-0.1. All v1 page groups (Status, System, Network, Firewall)
-> are implemented and tested end to end on OpenWrt 25.12 (QEMU); the 0.1
-> release hardening is in progress. See [AGENTS.md](AGENTS.md) for the architecture, the
+> Status: 0.1 release candidate. All v1 page groups (Status, System,
+> Network, Firewall) are implemented and tested end to end on OpenWrt 25.12
+> x86/64 and armsr/armv8 (QEMU); see
+> [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md). See [AGENTS.md](AGENTS.md) for the architecture, the
 > locked decisions and the plan, and [docs/adr](docs/adr) for decisions made
 > along the way.
 
