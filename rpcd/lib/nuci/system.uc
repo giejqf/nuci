@@ -7,6 +7,42 @@
 import { access } from 'fs';
 import { context, read, read_int, read_trim, list, lines } from 'nuci.util';
 import { zones } from 'nuci.zoneinfo';
+import { start, status } from 'nuci.job';
+
+const BACKUP = '/tmp/nuci-backup.tar.gz';
+const RESTORE = '/tmp/nuci-restore.tar.gz';
+
+// Configuration backup via `sysupgrade -b` (slow: runs as job "backup").
+function backup_create(ctx) {
+	return start(ctx, 'backup', [ '/sbin/sysupgrade', '-b', BACKUP ]);
+}
+
+function backup_status(ctx) {
+	ctx = context(ctx);
+
+	let st = status(ctx, 'backup');
+
+	if (!st.running && st.rc == 0 && index(st.command ?? '', ' -b ') >= 0) {
+		let data = read(ctx, BACKUP);
+
+		if (data != null) {
+			st.path = BACKUP;
+			st.size = length(data);
+		}
+	}
+
+	return st;
+}
+
+// Restore the archive uploaded to RESTORE (the caller reboots afterwards).
+function backup_restore(ctx) {
+	ctx = context(ctx);
+
+	if (read(ctx, RESTORE) == null)
+		return 4; // NOT_FOUND: upload first
+
+	return start(ctx, 'backup', [ '/sbin/sysupgrade', '-r', RESTORE ]);
+}
 
 function timezones() {
 	return zones;
@@ -221,6 +257,7 @@ function usb_devices(ctx) {
 }
 
 export {
+	backup_create, backup_status, backup_restore, BACKUP, RESTORE,
 	timezones, localtime, set_localtime, parse_trigger, leds, parse_block_info,
 	block_devices, parse_mounts, parse_df, mount_points, usb_devices
 };

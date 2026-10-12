@@ -17,6 +17,13 @@
 	let reviewing = $state(false);
 	let saving = $state(false);
 
+	// The bar outlives pages: a route change (e.g. browser back) closes the review.
+	$effect(() => {
+		const close = () => (reviewing = false);
+		window.addEventListener('hashchange', close);
+		return () => window.removeEventListener('hashchange', close);
+	});
+
 	const count = $derived(uci.totalChanges);
 	const phase = $derived(uci.apply.phase);
 	const busy = $derived(uci.busy || saving);

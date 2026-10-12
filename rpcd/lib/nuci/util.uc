@@ -8,16 +8,21 @@
 
 import { readfile, popen, lsdir } from 'fs';
 
-const SAFE_ARG = /^[A-Za-z0-9@%+,._\/:=-]*$/;
+// Single-quote one argument for /bin/sh: the shell sees it as one literal word.
+function shell_quote(s) {
+	return "'" + replace(s, "'", "'\\''") + "'";
+}
 
-// Run a fixed command (argv array) and return its stdout. Arguments are
-// validated against a strict charset and never reach a shell unquoted.
+// Run a command given as an argv array and return its stdout. fs.popen()
+// needs a command string, so every argument is quoted: argv reaches the
+// program unchanged and nothing is ever interpreted by the shell. Callers
+// still validate user input against allowlists before building argv.
 function default_run(argv) {
 	for (let a in argv)
-		if (type(a) != 'string' || !match(a, SAFE_ARG))
+		if (type(a) != 'string' || index(a, '\n') >= 0 || index(a, '\u0000') >= 0)
 			return null;
 
-	let p = popen(join(' ', argv) + ' 2>/dev/null', 'r');
+	let p = popen(join(' ', map(argv, shell_quote)) + ' 2>/dev/null', 'r');
 
 	if (!p)
 		return null;
@@ -28,12 +33,18 @@ function default_run(argv) {
 	return out;
 }
 
+// Run argv without a shell and return the exit code (for detached jobs).
+function default_spawn(argv) {
+	return system(argv);
+}
+
 function context(ctx) {
 	ctx ??= {};
 
 	return {
 		root: ctx.root ?? '',
 		run: ctx.run ?? default_run,
+		spawn: ctx.spawn ?? default_spawn,
 		ubus: ctx.ubus,
 		uci: ctx.uci,
 	};
@@ -63,4 +74,4 @@ function lines(text) {
 	return filter(split(text ?? '', '\n'), l => length(l));
 }
 
-export { context, default_run, read, read_trim, read_int, list, lines };
+export { context, default_run, default_spawn, shell_quote, read, read_trim, read_int, list, lines };

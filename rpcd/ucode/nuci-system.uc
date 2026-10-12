@@ -7,7 +7,8 @@
 import { cursor } from 'uci';
 import { methods, STATUS } from 'nuci.rpc';
 import {
-	timezones, localtime, set_localtime, leds, block_devices, mount_points, usb_devices
+	timezones, localtime, set_localtime, leds, block_devices, mount_points, usb_devices,
+	backup_create, backup_status, backup_restore
 } from 'nuci.system';
 
 return {
@@ -27,6 +28,9 @@ return {
 		leds: { call: () => ({ leds: leds() }) },
 		block_devices: { call: () => ({ devices: block_devices() }) },
 		mount_points: { call: () => ({ mounts: mount_points() }) },
-		usb_devices: { call: () => ({ devices: usb_devices() }) }
+		usb_devices: { call: () => ({ devices: usb_devices() }) },
+		backup_create: { call: () => backup_create() },
+		backup_status: { call: () => backup_status() },
+		backup_restore: { call: () => backup_restore() }
 	})
 };

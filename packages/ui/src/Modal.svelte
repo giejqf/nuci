@@ -27,8 +27,15 @@
 
 	$effect(() => {
 		if (!dialog) return;
-		if (open && !dialog.open) dialog.showModal?.();
-		if (!open && dialog.open) dialog.close();
+		// Fall back to the open attribute where showModal() is missing (old engines, jsdom).
+		if (open && !dialog.open) {
+			if (typeof dialog.showModal === 'function') dialog.showModal();
+			else dialog.setAttribute('open', '');
+		}
+		if (!open && dialog.open) {
+			if (typeof dialog.close === 'function') dialog.close();
+			else dialog.removeAttribute('open');
+		}
 	});
 
 	function close() {

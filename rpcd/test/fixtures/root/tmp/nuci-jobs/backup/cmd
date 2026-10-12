@@ -1,0 +1,1 @@
+/sbin/sysupgrade -b /tmp/nuci-backup.tar.gz

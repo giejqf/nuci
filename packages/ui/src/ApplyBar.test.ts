@@ -46,6 +46,17 @@ describe('ApplyBar', () => {
 		await waitFor(() => expect(screen.queryByTestId('apply-bar')).toBeNull());
 	});
 
+	it('closes the review when the route changes', async () => {
+		host({ ctx: { uci: store, apply: { probe: async () => true } }, component: ApplyBar });
+		store.set('system', '@system[0]', 'hostname', 'x');
+		await waitFor(() => expect(screen.getByTestId('apply-review')).toBeTruthy());
+		await fireEvent.click(screen.getByTestId('apply-review'));
+		const dialog = screen.getByTestId('apply-review-modal') as HTMLDialogElement;
+		await waitFor(() => expect(dialog.open).toBe(true));
+		window.dispatchEvent(new HashChangeEvent('hashchange'));
+		await waitFor(() => expect(dialog.open).toBe(false));
+	});
+
 	it('reverts local and saved changes', async () => {
 		host({ ctx: { uci: store, apply: { probe: async () => true } }, component: ApplyBar });
 		store.set('system', '@system[0]', 'hostname', 'a');

@@ -43,3 +43,28 @@ export async function probe(): Promise<boolean> {
 		return false;
 	}
 }
+
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/**
+ * After a reboot or flash: wait until the router stops answering, then until
+ * it answers again. Resolves true once it is back, false on timeout.
+ */
+export async function waitForRestart(
+	onPhase?: (phase: 'going-down' | 'down' | 'up') => void,
+	{ downTimeoutMs = 90_000, upTimeoutMs = 600_000 } = {},
+): Promise<boolean> {
+	onPhase?.('going-down');
+	const t0 = Date.now();
+	while (Date.now() - t0 < downTimeoutMs && (await probe())) await sleep(1000);
+	onPhase?.('down');
+	const t1 = Date.now();
+	while (Date.now() - t1 < upTimeoutMs) {
+		if (await probe()) {
+			onPhase?.('up');
+			return true;
+		}
+		await sleep(2000);
+	}
+	return false;
+}

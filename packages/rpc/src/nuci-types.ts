@@ -180,3 +180,47 @@ export interface ProcessList {
 
 /** Signals nuci.status signal accepts. */
 export const SIGNALS = { HUP: 1, INT: 2, KILL: 9, TERM: 15, CONT: 18, STOP: 19 } as const;
+
+export interface PackageInfo {
+	name: string;
+	version: string;
+	description?: string;
+	/** Bytes */
+	installed_size?: number;
+	license?: string;
+	url?: string;
+	depends?: string[];
+	installed?: boolean;
+}
+
+export interface InstalledPackages {
+	packages: PackageInfo[];
+	/** Names with a newer version available (after `update`). */
+	upgradable: string[];
+}
+
+export interface PackagePage {
+	total: number;
+	offset: number;
+	packages: PackageInfo[];
+}
+
+export interface JobStatus {
+	/** Job name, e.g. "pkg" or "backup". */
+	name: string;
+	running: boolean;
+	/** Command line as run (argv joined), when a job ran. */
+	command?: string;
+	started?: number;
+	finished?: number;
+	/** Exit code once finished. */
+	rc?: number;
+	/** Tail of the job's output. */
+	log?: string;
+}
+
+export interface BackupStatus extends JobStatus {
+	/** Path of the archive once created. */
+	path?: string;
+	size?: number;
+}

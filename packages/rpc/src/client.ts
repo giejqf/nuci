@@ -8,6 +8,9 @@
 import { JsonRpcCode, RpcError } from './errors';
 
 export const NULL_SESSION = '00000000000000000000000000000000';
+
+/** uhttpd-mod-ubus rejects bodies over 64 KiB; batches are split below this. */
+export const MAX_REQUEST_BYTES = 60_000;
 export const SESSION_STORAGE_KEY = 'nuci.session';
 
 export type Args = Record<string, unknown>;
@@ -184,13 +187,29 @@ export class RpcClient {
 		this.#scheduled = false;
 		if (!batch.length) return;
 
-		const body = batch.map((p) => ({
-			jsonrpc: '2.0',
-			id: p.id,
-			method: 'call',
-			params: [p.sid, p.object, p.method, p.args],
-		}));
+		// Split into requests that stay under uhttpd's body limit.
+		const groups: { calls: Pending[]; bodies: unknown[]; size: number }[] = [];
+		for (const p of batch) {
+			const body = {
+				jsonrpc: '2.0',
+				id: p.id,
+				method: 'call',
+				params: [p.sid, p.object, p.method, p.args],
+			};
+			const size = JSON.stringify(body).length + 1;
+			const last = groups.at(-1);
+			if (last && last.size + size <= MAX_REQUEST_BYTES) {
+				last.calls.push(p);
+				last.bodies.push(body);
+				last.size += size;
+			} else {
+				groups.push({ calls: [p], bodies: [body], size: size + 2 });
+			}
+		}
+		await Promise.all(groups.map((g) => this.#send(g.calls, g.bodies)));
+	}
 
+	async #send(batch: Pending[], body: unknown[]): Promise<void> {
 		let replies: JsonRpcReply[];
 		try {
 			replies = await this.#post(batch.length === 1 ? body[0] : body);

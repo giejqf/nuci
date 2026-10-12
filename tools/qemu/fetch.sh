@@ -13,10 +13,12 @@ case "$TARGET" in
 	*) die "unsupported target $TARGET" ;;
 esac
 OUT="$IMAGES_DIR/base-$VERSION$SUFFIX.img"
+# The compressed combined image doubles as the sysupgrade image (e2e firmware tests).
+SYSUPGRADE="$IMAGES_DIR/sysupgrade-$VERSION$SUFFIX.img.gz"
 BASE_URL="${OPENWRT_MIRROR:-https://downloads.openwrt.org}/releases/$VERSION/targets/$TARGET"
 
 mkdir -p "$IMAGES_DIR"
-if [ -s "$OUT" ]; then
+if [ -s "$OUT" ] && [ -s "$SYSUPGRADE" ]; then
 	log "$OUT already present"
 	exit 0
 fi
@@ -32,8 +34,11 @@ actual="$(sha256sum "$tmp/$FILE" | awk '{print $1}')"
 [ "$expected" = "$actual" ] || die "sha256 mismatch for $FILE"
 log "sha256 ok"
 # The combined image has trailing padding that makes gzip exit 2; that is expected.
-rc=0
-gzip -dc "$tmp/$FILE" > "$tmp/base.img" 2>/dev/null || rc=$?
-[ "$rc" -eq 0 ] || [ "$rc" -eq 2 ] || die "gzip failed ($rc)"
-mv "$tmp/base.img" "$OUT"
-log "wrote $OUT"
+cp "$tmp/$FILE" "$SYSUPGRADE"
+if [ ! -s "$OUT" ]; then
+	rc=0
+	gzip -dc "$tmp/$FILE" > "$tmp/base.img" 2>/dev/null || rc=$?
+	[ "$rc" -eq 0 ] || [ "$rc" -eq 2 ] || die "gzip failed ($rc)"
+	mv "$tmp/base.img" "$OUT"
+fi
+log "wrote $OUT and $SYSUPGRADE"

@@ -1,0 +1,35 @@
+#!/bin/sh
+# SPDX-License-Identifier: Apache-2.0
+#
+# run-job NAME COMMAND [ARGS...]
+# Run a long command detached from rpcd (which is single-threaded) and keep
+# its state in /tmp/nuci-jobs/NAME/ for nuci.* status methods. Exits 16
+# (EBUSY) if a job with that name is still running. Arguments are passed
+# through "$@" and never re-parsed by the shell.
+
+name="$1"
+shift
+case "$name" in
+	''|*[!a-z0-9-]*) exit 22 ;;
+esac
+[ $# -gt 0 ] || exit 22
+
+dir="/tmp/nuci-jobs/$name"
+mkdir -p "$dir"
+
+if [ -f "$dir/pid" ] && kill -0 "$(cat "$dir/pid")" 2>/dev/null; then
+	exit 16
+fi
+
+rm -f "$dir/rc" "$dir/finished" "$dir/log"
+printf '%s\n' "$*" > "$dir/cmd"
+date +%s > "$dir/started"
+
+(
+	"$@" > "$dir/log" 2>&1
+	echo $? > "$dir/rc"
+	date +%s > "$dir/finished"
+	rm -f "$dir/pid"
+) </dev/null >/dev/null 2>&1 &
+echo $! > "$dir/pid"
+exit 0

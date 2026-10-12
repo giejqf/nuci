@@ -115,6 +115,38 @@
 		["nuci.system", "mount_points", {}],
 		["nuci.system", "usb_devices", {}],
 		["nuci.dhcp", "leases", {}],
-		["nuci.dhcp", "hosts", {}]
+		["nuci.dhcp", "hosts", {}],
+		["nuci.pkg", "list_installed", {}],
+		[
+			"nuci.pkg",
+			"list_available",
+			{
+				"offset": 0,
+				"limit": 5
+			}
+		],
+		[
+			"nuci.pkg",
+			"search",
+			{
+				"query": "tree"
+			}
+		],
+		[
+			"nuci.pkg",
+			"search",
+			{
+				"query": "x"
+			}
+		],
+		[
+			"nuci.pkg",
+			"info",
+			{
+				"name": "dnsmasq"
+			}
+		],
+		["nuci.pkg", "job_status", {}],
+		["nuci.system", "backup_status", {}]
 	]
 }

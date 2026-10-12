@@ -29,6 +29,7 @@ export {
 } from './events';
 export type * from './nuci-types';
 export { SIGNALS } from './nuci-types';
+export { downloadFile, UPLOAD_CHUNK, uploadFile } from './upload';
 export type * from './types';
 
 export interface Rpc extends Api {

@@ -36,6 +36,24 @@ describe('RpcClient', () => {
 		]);
 	});
 
+	it('splits batches that would exceed the 64 KiB request limit', async () => {
+		const m = mockFetch((_s, object) => ({ object }));
+		const c = new RpcClient({ fetch: m.fetch, storage: null });
+		const big = 'x'.repeat(25_000);
+		const results = await Promise.all(
+			[1, 2, 3, 4, 5].map((i) => c.call(`o${i}`, 'm', { big })),
+		);
+		expect(results.map((r) => (r as { object: string }).object)).toEqual([
+			'o1',
+			'o2',
+			'o3',
+			'o4',
+			'o5',
+		]);
+		expect(m.requests.length).toBe(3);
+		for (const r of m.requests) expect(JSON.stringify(r).length).toBeLessThan(65_536);
+	});
+
 	it('maps ubus status codes and JSON-RPC errors to RpcError', async () => {
 		const m = mockFetch((_s, object) =>
 			object === 'ubus'

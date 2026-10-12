@@ -32,6 +32,7 @@ if [ "$RPCD" = 1 ]; then
 	lab_put /usr/share/rpcd/ucode "$REPO_ROOT"/rpcd/ucode/nuci-*.uc
 	lab_put /usr/share/ucode/nuci "$REPO_ROOT"/rpcd/lib/nuci/*.uc
 	lab_put /usr/share/rpcd/acl.d "$REPO_ROOT"/rpcd/acl.d/nuci-*.json
+	lab_put /usr/libexec/nuci "$REPO_ROOT"/rpcd/libexec/run-job
 	lab_ssh '/etc/init.d/rpcd restart'
 fi
 if [ "$SERVER" = 1 ]; then

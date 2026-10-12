@@ -133,12 +133,21 @@
 				],
 				"rc": [
 					"list"
+				],
+				"file": [
+					"read",
+					"stat"
 				]
 			},
 			"uci": [
 				"system",
 				"nuci"
-			]
+			],
+			"file": {
+				"/etc/rc.local": [
+					"read"
+				]
+			}
 		},
 		"write": {
 			"ubus": {
@@ -150,12 +159,20 @@
 				],
 				"system": [
 					"reboot"
+				],
+				"file": [
+					"write"
 				]
 			},
 			"uci": [
 				"system",
 				"nuci"
-			]
+			],
+			"file": {
+				"/etc/rc.local": [
+					"write"
+				]
+			}
 		}
 	},
 	"nuci-network": {
@@ -173,6 +190,123 @@
 				"dhcp",
 				"wireless"
 			]
+		}
+	},
+	"nuci-admin": {
+		"description": "NuCI: Administration (root password, SSH, web server)",
+		"read": {
+			"ubus": {
+				"file": [
+					"read",
+					"stat"
+				]
+			},
+			"uci": [
+				"dropbear",
+				"uhttpd",
+				"network"
+			],
+			"file": {
+				"/etc/dropbear/authorized_keys": [
+					"read"
+				]
+			}
+		},
+		"write": {
+			"ubus": {
+				"rpc-sys": [
+					"password_set"
+				],
+				"file": [
+					"write",
+					"remove"
+				],
+				"rc": [
+					"init"
+				]
+			},
+			"uci": [
+				"dropbear",
+				"uhttpd"
+			],
+			"file": {
+				"/etc/dropbear/authorized_keys": [
+					"write"
+				],
+				"/etc/uhttpd.crt": [
+					"write"
+				],
+				"/etc/uhttpd.key": [
+					"write"
+				]
+			}
+		}
+	},
+	"nuci-software": {
+		"description": "NuCI: Software (apk packages)",
+		"read": {
+			"ubus": {
+				"nuci.pkg": [
+					"list_installed",
+					"list_available",
+					"search",
+					"info",
+					"job_status"
+				]
+			}
+		},
+		"write": {
+			"ubus": {
+				"nuci.pkg": [
+					"update",
+					"add",
+					"del"
+				]
+			}
+		}
+	},
+	"nuci-backup": {
+		"description": "NuCI: Backup, restore and firmware upgrade",
+		"read": {
+			"ubus": {
+				"nuci.system": [
+					"backup_status"
+				],
+				"file": [
+					"read",
+					"stat"
+				]
+			},
+			"file": {
+				"/tmp/nuci-backup.tar.gz": [
+					"read"
+				]
+			}
+		},
+		"write": {
+			"ubus": {
+				"nuci.system": [
+					"backup_create",
+					"backup_restore"
+				],
+				"file": [
+					"write",
+					"remove"
+				],
+				"system": [
+					"validate_firmware_image",
+					"sysupgrade",
+					"reboot"
+				]
+			},
+			"file": {
+				"/tmp/nuci-restore.tar.gz": [
+					"write"
+				],
+				"/tmp/firmware.bin": [
+					"write"
+				]
+			}
 		}
 	}
 }

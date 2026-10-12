@@ -14,7 +14,10 @@
 		"leds": {},
 		"block_devices": {},
 		"mount_points": {},
-		"usb_devices": {}
+		"usb_devices": {},
+		"backup_create": {},
+		"backup_status": {},
+		"backup_restore": {}
 	},
 	"calls": [
 		{
@@ -450,7 +453,7 @@
 			"args": {},
 			"status": 0,
 			"result": {
-				"localtime": 1791762174,
+				"localtime": 1791768239,
 				"zonename": "UTC",
 				"timezone": "GMT0"
 			}
@@ -511,8 +514,8 @@
 					{
 						"device": "tmpfs",
 						"size": 247224,
-						"used": 1884,
-						"avail": 245340,
+						"used": 1988,
+						"avail": 245236,
 						"mount": "/tmp",
 						"type": "tmpfs",
 						"options": [
@@ -525,8 +528,8 @@
 					{
 						"device": "/dev/loop0",
 						"size": 88517,
-						"used": 377,
-						"avail": 81107,
+						"used": 701,
+						"avail": 80783,
 						"mount": "/overlay",
 						"type": "ext4",
 						"options": [
@@ -537,8 +540,8 @@
 					{
 						"device": "overlayfs:/overlay",
 						"size": 88517,
-						"used": 377,
-						"avail": 81107,
+						"used": 701,
+						"avail": 80783,
 						"mount": "/",
 						"type": "overlay",
 						"options": [
@@ -600,6 +603,22 @@
 			"status": 0,
 			"result": {
 				"devices": []
+			}
+		},
+		{
+			"method": "backup_status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"name": "backup",
+				"running": false,
+				"command": "/sbin/sysupgrade -b /tmp/nuci-backup.tar.gz",
+				"started": 1791768175,
+				"log": "Mon Oct 12 01:22:58 GMT 2026 upgrade: Saving config files...\n",
+				"finished": 1791768187,
+				"rc": 0,
+				"path": "/tmp/nuci-backup.tar.gz",
+				"size": 8898
 			}
 		}
 	]

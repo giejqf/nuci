@@ -27,7 +27,7 @@ endef
 
 define Build/Prepare
 	$(INSTALL_DIR) $(PKG_BUILD_DIR)
-	$(CP) $(NUCI_SRC)/rpcd/ucode $(NUCI_SRC)/rpcd/lib $(PKG_BUILD_DIR)/
+	$(CP) $(NUCI_SRC)/rpcd/ucode $(NUCI_SRC)/rpcd/lib $(NUCI_SRC)/rpcd/libexec $(PKG_BUILD_DIR)/
 endef
 
 define Build/Compile
@@ -38,6 +38,8 @@ define Package/rpcd-mod-nuci/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/ucode/nuci-*.uc $(1)/usr/share/rpcd/ucode/
 	$(INSTALL_DIR) $(1)/usr/share/ucode/nuci
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/lib/nuci/*.uc $(1)/usr/share/ucode/nuci/
+	$(INSTALL_DIR) $(1)/usr/libexec/nuci
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libexec/run-job $(1)/usr/libexec/nuci/run-job
 endef
 
 define Package/rpcd-mod-nuci/postinst

@@ -8,6 +8,11 @@ import type { RpcClient } from './client';
 import { RpcError } from './errors';
 import type {
 	AppManifest,
+	BackupStatus,
+	InstalledPackages,
+	JobStatus,
+	PackageInfo,
+	PackagePage,
 	ConntrackSummary,
 	ProcessList,
 	WifiDeviceStats,
@@ -271,6 +276,11 @@ export function createApi(client: RpcClient) {
 			},
 		},
 
+		rpcSys: {
+			passwordSet: (user: string, password: string) =>
+				call('rpc-sys', 'password_set', { user, password }),
+		},
+
 		dhcp: {
 			ipv6leases: () =>
 				call<{ device: Record<string, { leases: Dhcp6Lease[] }> }>('dhcp', 'ipv6leases'),
@@ -314,6 +324,29 @@ export function createApi(client: RpcClient) {
 					(await call<{ mounts: MountPoint[] }>('nuci.system', 'mount_points')).mounts,
 				usbDevices: async () =>
 					(await call<{ devices: UsbDevice[] }>('nuci.system', 'usb_devices')).devices,
+			},
+			pkg: {
+				listInstalled: () => call<InstalledPackages>('nuci.pkg', 'list_installed'),
+				listAvailable: (offset = 0, limit = 100) =>
+					call<PackagePage>('nuci.pkg', 'list_available', { offset, limit }),
+				search: async (query: string) =>
+					(await call<{ packages: PackageInfo[] }>('nuci.pkg', 'search', { query }))
+						.packages,
+				info: (name: string) => call<PackageInfo>('nuci.pkg', 'info', { name }),
+				update: () => call<JobStatus>('nuci.pkg', 'update'),
+				add: (packages: string[], upgrade = false) =>
+					call<JobStatus>(
+						'nuci.pkg',
+						'add',
+						upgrade ? { packages, upgrade } : { packages },
+					),
+				del: (packages: string[]) => call<JobStatus>('nuci.pkg', 'del', { packages }),
+				jobStatus: () => call<JobStatus>('nuci.pkg', 'job_status'),
+			},
+			backup: {
+				create: () => call<BackupStatus>('nuci.system', 'backup_create'),
+				status: () => call<BackupStatus>('nuci.system', 'backup_status'),
+				restore: () => call<JobStatus>('nuci.system', 'backup_restore'),
 			},
 			dhcp: {
 				leases: async () =>

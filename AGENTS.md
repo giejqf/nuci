@@ -208,6 +208,10 @@ packages/app-sdk              public API for future nuci-app-*: manifest schema,
   navigable tables/forms; `aria-live` for apply status.
 - **Bundle budget:** ≤ 250 KB gzipped for shell + login + Status overview;
   each page chunk ≤ 80 KB gzipped. CI fails over budget.
+- **Request size:** uhttpd-mod-ubus rejects `/ubus` bodies over 64 KiB
+  (`UH_UBUS_MAX_POST_SIZE`), and rpcd's `file.read` refuses files ≥ 256 KiB.
+  `@nuci/rpc` splits batches below the limit; uploads use 45 KiB `file.write`
+  chunks (no cgi-io).
 - **No runtime network access other than `/ubus`** (no CDNs, no fonts fetched).
 
 ---
