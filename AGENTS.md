@@ -640,6 +640,11 @@ next phase's pages before the previous phase's exit criteria are met.
 - **Exit:** tagged `v0.2.0` (pushed only with the maintainer's go-ahead),
   feed installs `nuci` and each app on stock 25.12 images; the real-device
   install from Phase 6 is done or explicitly waived by the maintainer.
+- **Status:** tagged 2026-10-12. Final packages validated on QEMU
+  armsr/armv8 (signed-feed install of `nuci` and the four apps on a stock
+  image; full e2e, accessibility and perf against the Image Builder image);
+  x86/64 passed the full suite during development. The real-device install
+  was waived by the maintainer for 0.2.
 
 ---
 
