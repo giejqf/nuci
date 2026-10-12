@@ -73,6 +73,7 @@ jobs:
         env:
           NUCI_E2E_SYNC: '0'
           NUCI_E2E_DOCKER: '0'
+          NUCI_E2E_PERF: '1'
           NUCI_TARGET: armsr/armv8
       - name: Upload report and serial log
         if: failure()

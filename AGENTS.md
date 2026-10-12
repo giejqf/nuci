@@ -411,7 +411,7 @@ and the public key; `release.yml` publishes them on `v*` tags using the
 | `@nuci/uci` | Vitest | staging semantics, diff generation, apply/confirm/rollback state machine |
 | `@nuci/ui` | Vitest + `@testing-library/svelte` | field ↔ uci binding, validation display |
 | Pages | Playwright against QEMU | login, each v1 page renders real data, a save/apply round-trip per config group, rollback when LAN IP change is not confirmed |
-| Perf | `pnpm size` + Lighthouse in e2e (nightly) | bundle budgets, TTI on a throttled profile |
+| Perf | `pnpm size` + `e2e/tests/perf.spec.ts` (nightly, `NUCI_E2E_PERF=1`) | bundle budgets; login interactive ≤ 4 s and overview ≤ 6 s after login under Lighthouse's mobile throttling (4× CPU, 1.6 Mbit/s, 150 ms RTT) applied through CDP, so no second browser driver is needed |
 
 Contract fixtures in `docs/ubus-contracts/` are recorded from a real 25.12 router
 with `tools/record-ubus.sh` and are the source of truth for mocks. Refresh them
