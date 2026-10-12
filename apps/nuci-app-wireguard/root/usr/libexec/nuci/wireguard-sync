@@ -1,0 +1,50 @@
+#!/usr/bin/ucode
+// SPDX-License-Identifier: Apache-2.0
+//
+// netifd applies WireGuard peers only when an interface is set up; a config
+// reload does not restart a tunnel whose peers changed. Compare the configured
+// peers (wireguard_<iface> sections) with the running ones and restart only
+// the tunnels that differ. Run by /etc/init.d/nuci-wireguard on network config
+// changes (procd reload trigger).
+
+'use strict';
+
+import { cursor } from 'uci';
+import { popen } from 'fs';
+
+const NAME_RE = /^[A-Za-z0-9_]{1,15}$/;
+
+function run(cmd) {
+	let p = popen(cmd, 'r');
+	if (!p) return '';
+	let out = p.read('all');
+	p.close();
+	return out ?? '';
+}
+
+function sorted_list(v) {
+	return join(',', sort(type(v) == 'array' ? v : (v ? split(v, ' ') : [])));
+}
+
+let uci = cursor();
+uci.foreach('network', 'interface', (s) => {
+	let name = s['.name'];
+	if (s.proto != 'wireguard' || !match(name, NAME_RE) || s.disabled == '1') return;
+
+	let want = [];
+	uci.foreach('network', `wireguard_${name}`, (p) => {
+		if (p.disabled != '1' && p.public_key)
+			push(want, `${p.public_key} ${sorted_list(p.allowed_ips)}`);
+	});
+
+	// Names are checked against NAME_RE above, so the command needs no quoting.
+	let have = [];
+	for (let line in split(run(`wg show ${name} allowed-ips 2>/dev/null`), '\n')) {
+		let f = split(line, '\t');
+		if (length(f) == 2)
+			push(have, `${f[0]} ${f[1] == '(none)' ? '' : join(',', sort(split(f[1], ' ')))}`);
+	}
+
+	if (join('\n', sort(want)) != join('\n', sort(have)))
+		system([ 'ifup', name ]);
+});

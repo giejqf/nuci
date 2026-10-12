@@ -1,0 +1,9 @@
+{
+	"id": "wireguard",
+	"title": "WireGuard",
+	"icon": "ShieldCheck",
+	"entry": "apps/wireguard/index.js",
+	"version": "0.2.0",
+	"menu": { "group": "network", "order": 80 },
+	"acls": ["nuci-app-wireguard"]
+}

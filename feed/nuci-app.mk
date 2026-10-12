@@ -7,8 +7,9 @@
 #   manifest.json         -> /usr/share/nuci/apps/<id>.json
 #   dist/index.js         -> /www/nuci/apps/<id>/index.js
 #   rpcd/ucode/*.uc       -> /usr/share/rpcd/ucode/      (optional)
-#   rpcd/lib/*.uc         -> /usr/share/ucode/nuci/app/  (optional)
+#   rpcd/lib/nuci/app/*.uc -> /usr/share/ucode/nuci/app/ (optional, nuci.app.<name>)
 #   rpcd/acl.d/*.json     -> /usr/share/rpcd/acl.d/      (optional)
+#   root/...              -> / as is (optional: init scripts, helpers)
 
 PKG_NAME:=nuci-app-$(NUCI_APP_ID)
 PKG_LICENSE:=Apache-2.0
@@ -32,6 +33,7 @@ define Build/Prepare
 	$(INSTALL_DIR) $(PKG_BUILD_DIR)
 	$(CP) $(NUCI_APP_SRC)/manifest.json $(NUCI_APP_SRC)/dist/index.js $(PKG_BUILD_DIR)/
 	[ ! -d $(NUCI_APP_SRC)/rpcd ] || $(CP) $(NUCI_APP_SRC)/rpcd $(PKG_BUILD_DIR)/
+	[ ! -d $(NUCI_APP_SRC)/root ] || $(CP) $(NUCI_APP_SRC)/root $(PKG_BUILD_DIR)/
 endef
 
 define Build/Compile
@@ -45,9 +47,12 @@ define Package/$(PKG_NAME)/install
 		$(INSTALL_DIR) $(1)/usr/share/rpcd/ucode; \
 		$(INSTALL_DATA) $(PKG_BUILD_DIR)/rpcd/ucode/*.uc $(1)/usr/share/rpcd/ucode/; \
 	fi
-	if [ -d $(PKG_BUILD_DIR)/rpcd/lib ]; then \
+	if [ -d $(PKG_BUILD_DIR)/rpcd/lib/nuci/app ]; then \
 		$(INSTALL_DIR) $(1)/usr/share/ucode/nuci/app; \
-		$(INSTALL_DATA) $(PKG_BUILD_DIR)/rpcd/lib/*.uc $(1)/usr/share/ucode/nuci/app/; \
+		$(INSTALL_DATA) $(PKG_BUILD_DIR)/rpcd/lib/nuci/app/*.uc $(1)/usr/share/ucode/nuci/app/; \
+	fi
+	if [ -d $(PKG_BUILD_DIR)/root ]; then \
+		$(CP) $(PKG_BUILD_DIR)/root/. $(1)/; \
 	fi
 	if [ -d $(PKG_BUILD_DIR)/rpcd/acl.d ]; then \
 		$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d; \

@@ -26,7 +26,7 @@ cp "$HELLO/manifest.json" "$HELLO/dist/hello.json"
 lab_put /usr/share/nuci/apps "$HELLO/dist/hello.json"
 lab_put /www/nuci/apps/hello "$HELLO/dist/index.js"
 
-export NUCI_ROOT_PASSWORD NUCI_HTTP_PORT
+export NUCI_ROOT_PASSWORD NUCI_HTTP_PORT NUCI_UPNP_PORT
 cd "$REPO/e2e"
 
 # Realtime transports to test (Phase 2 exit: the suite passes with SSE and,
@@ -51,7 +51,7 @@ else
 	echo "[e2e] running Playwright $PW_VERSION in its container" >&2
 	RUN=(docker run --rm --network host --ipc host --init
 		--user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}"
-		-e NUCI_ROOT_PASSWORD -e NUCI_HTTP_PORT -e NUCI_E2E_TRANSPORT -e NUCI_TARGET -e NUCI_E2E_PERF
+		-e NUCI_ROOT_PASSWORD -e NUCI_HTTP_PORT -e NUCI_UPNP_PORT -e NUCI_E2E_TRANSPORT -e NUCI_TARGET -e NUCI_E2E_PERF
 		-v "$REPO:$REPO" -w "$REPO/e2e"
 		"mcr.microsoft.com/playwright:v$PW_VERSION-noble"
 		node "$REPO/e2e/node_modules/@playwright/test/cli.js" test)
@@ -63,6 +63,6 @@ for NUCI_E2E_TRANSPORT in $TRANSPORTS; do
 	export NUCI_E2E_TRANSPORT
 	echo "[e2e] transport: $NUCI_E2E_TRANSPORT" >&2
 	if [ "$NUCI_E2E_TRANSPORT" = poll ]; then set_handler off; else set_handler on; fi
-	"${RUN[@]}" --output "test-results/$NUCI_E2E_TRANSPORT" "$@" || rc=1
+	"${RUN[@]}" --output "test-results/${NUCI_LAB_NAME:-nuci}/$NUCI_E2E_TRANSPORT" "$@" || rc=1
 done
 exit "$rc"

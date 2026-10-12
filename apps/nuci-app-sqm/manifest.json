@@ -1,0 +1,12 @@
+{
+	"id": "sqm",
+	"title": "SQM QoS",
+	"icon": "Gauge",
+	"entry": "apps/sqm/index.js",
+	"version": "0.2.0",
+	"menu": {
+		"group": "network",
+		"order": 85
+	},
+	"acls": ["nuci-app-sqm"]
+}

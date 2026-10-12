@@ -1,0 +1,12 @@
+{
+	"nuci-app-upnp": {
+		"description": "NuCI app: UPnP and NAT-PMP",
+		"read": {
+			"ubus": { "nuci.upnp": ["status"] },
+			"uci": ["upnpd", "network"]
+		},
+		"write": {
+			"uci": ["upnpd"]
+		}
+	}
+}

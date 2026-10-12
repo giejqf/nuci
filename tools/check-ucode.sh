@@ -6,23 +6,34 @@ set -eu
 cd "$(dirname "$0")/.."
 command -v ucode >/dev/null || { echo "ucode not found (see AGENTS.md §6)" >&2; exit 1; }
 DYN="dynlink=ubus,dynlink=uci,dynlink=uloop"
+APPLIBS=""
+for d in "$PWD"/apps/nuci-app-*/rpcd/lib; do [ -d "$d" ] && APPLIBS="$APPLIBS -L $d"; done
 rc=0
-for f in rpcd/ucode/*.uc rpcd/test/*.test.uc; do
+for f in rpcd/ucode/*.uc rpcd/test/*.test.uc apps/nuci-app-*/rpcd/ucode/*.uc apps/nuci-app-*/rpcd/test/*.test.uc; do
 	[ -f "$f" ] || continue
-	ucode -L "$PWD/rpcd/lib" -L "$PWD/rpcd/test" -c"$DYN" -o /dev/null "$f" || { echo "syntax error: $f" >&2; rc=1; }
+	# shellcheck disable=SC2086
+	ucode -L "$PWD/rpcd/lib" $APPLIBS -L "$PWD/rpcd/test" -c"$DYN" -o /dev/null "$f" || { echo "syntax error: $f" >&2; rc=1; }
 done
 # Shared libraries are modules: compile an importer for each one.
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
-for f in rpcd/lib/nuci/*.uc rpcd/test/harness.uc; do
+for f in rpcd/lib/nuci/*.uc rpcd/test/harness.uc apps/nuci-app-*/rpcd/lib/nuci/app/*.uc; do
 	[ -f "$f" ] || continue
 	case "$f" in
 		rpcd/lib/*) mod="nuci.$(basename "$f" .uc)" ;;
+		apps/*) mod="nuci.app.$(basename "$f" .uc)" ;;
 		*) mod="$(basename "$f" .uc)" ;;
 	esac
 	printf "import * as m from '%s';\n" "$mod" > "$tmp/check.uc"
-	ucode -L "$PWD/rpcd/lib" -L "$PWD/rpcd/test" -c"$DYN" -o /dev/null "$tmp/check.uc" ||
+	# shellcheck disable=SC2086
+	ucode -L "$PWD/rpcd/lib" $APPLIBS -L "$PWD/rpcd/test" -c"$DYN" -o /dev/null "$tmp/check.uc" ||
 		{ echo "syntax error: $f" >&2; rc=1; }
+done
+# ucode helper scripts shipped by apps (#!/usr/bin/ucode).
+for f in apps/nuci-app-*/root/usr/libexec/nuci/*; do
+	[ -f "$f" ] && head -1 "$f" | grep -q '^#!/usr/bin/ucode' || continue
+	# shellcheck disable=SC2086
+	ucode -L "$PWD/rpcd/lib" $APPLIBS -c"$DYN" -o /dev/null "$f" || { echo "syntax error: $f" >&2; rc=1; }
 done
 # uhttpd-mod-ucode compiles handlers in template mode.
 for f in server/*.uc; do

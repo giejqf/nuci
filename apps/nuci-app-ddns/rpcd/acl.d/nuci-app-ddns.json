@@ -1,0 +1,13 @@
+{
+	"nuci-app-ddns": {
+		"description": "NuCI app: Dynamic DNS",
+		"read": {
+			"ubus": { "nuci.ddns": ["providers", "status", "log", "update_status"] },
+			"uci": ["ddns", "network"]
+		},
+		"write": {
+			"ubus": { "nuci.ddns": ["update"] },
+			"uci": ["ddns"]
+		}
+	}
+}

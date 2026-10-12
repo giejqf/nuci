@@ -1,0 +1,35 @@
+{
+	"nuci-app-wireguard": {
+		"description": "NuCI app: WireGuard tunnels and peers",
+		"read": {
+			"ubus": {
+				"nuci.wireguard": [
+					"status"
+				],
+				"network.interface": [
+					"dump"
+				],
+				"network": [
+					"get_proto_handlers"
+				]
+			},
+			"uci": [
+				"network",
+				"firewall"
+			]
+		},
+		"write": {
+			"ubus": {
+				"nuci.wireguard": [
+					"genkey",
+					"genpsk",
+					"pubkey"
+				]
+			},
+			"uci": [
+				"network",
+				"firewall"
+			]
+		}
+	}
+}

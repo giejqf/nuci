@@ -1,0 +1,12 @@
+{
+	"id": "ddns",
+	"title": "Dynamic DNS",
+	"icon": "Globe",
+	"entry": "apps/ddns/index.js",
+	"version": "0.2.0",
+	"menu": {
+		"group": "services",
+		"order": 20
+	},
+	"acls": ["nuci-app-ddns"]
+}

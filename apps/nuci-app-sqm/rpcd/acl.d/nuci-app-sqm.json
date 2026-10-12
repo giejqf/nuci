@@ -1,0 +1,12 @@
+{
+	"nuci-app-sqm": {
+		"description": "NuCI app: Smart queue management (SQM)",
+		"read": {
+			"ubus": { "nuci.sqm": ["status"] },
+			"uci": ["sqm", "network"]
+		},
+		"write": {
+			"uci": ["sqm"]
+		}
+	}
+}

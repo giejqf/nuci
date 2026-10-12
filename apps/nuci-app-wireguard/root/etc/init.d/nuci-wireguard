@@ -1,0 +1,24 @@
+#!/bin/sh /etc/rc.common
+# SPDX-License-Identifier: Apache-2.0
+#
+# Re-apply WireGuard peers after network config changes (see
+# /usr/libexec/nuci/wireguard-sync). No daemon: only a procd reload trigger.
+
+START=99
+USE_PROCD=1
+
+start_service() {
+	# A short-lived instance keeps the service (and its trigger) registered.
+	procd_open_instance
+	procd_set_param command /bin/sh -c 'sleep 2; exec /usr/libexec/nuci/wireguard-sync'
+	procd_close_instance
+}
+
+reload_service() {
+	# netifd reloads the network at the same time; let it create the tunnels first.
+	( sleep 2; /usr/libexec/nuci/wireguard-sync ) &
+}
+
+service_triggers() {
+	procd_add_reload_trigger network
+}

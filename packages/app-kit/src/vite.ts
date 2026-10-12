@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// Vite config for a nuci-app: one ES module (dist/index.js) with its CSS
-// inlined, `@nuci/i18n` routed to the host (ADR-0004).
+// Vite config for a nuci-app: one minified ES module (dist/index.js) with its
+// CSS inlined, `@nuci/i18n` routed to the host (ADR-0004).
 
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
@@ -29,16 +29,24 @@ export function nuciApp({ root }: NuciAppOptions): UserConfig {
 			],
 		},
 		build: {
-			lib: {
-				entry: `${root}/src/index.ts`,
-				formats: ['es'],
-				fileName: () => 'index.js',
+			// An app entry only registers pages (no exports), so it is built as an
+			// application chunk: library mode keeps ES output's whitespace.
+			rollupOptions: {
+				input: `${root}/src/index.ts`,
+				output: {
+					format: 'es',
+					entryFileNames: 'index.js',
+					codeSplitting: false,
+				},
+				preserveEntrySignatures: false,
 			},
 			outDir: `${root}/dist`,
 			emptyOutDir: true,
 			target: 'es2022',
 			sourcemap: false,
 			cssCodeSplit: false,
+			assetsInlineLimit: 0,
+			minify: true,
 		},
 	};
 }

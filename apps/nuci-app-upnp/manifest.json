@@ -1,0 +1,12 @@
+{
+	"id": "upnp",
+	"title": "UPnP",
+	"icon": "Router",
+	"entry": "apps/upnp/index.js",
+	"version": "0.2.0",
+	"menu": {
+		"group": "services",
+		"order": 30
+	},
+	"acls": ["nuci-app-upnp"]
+}
