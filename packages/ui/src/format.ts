@@ -57,3 +57,28 @@ export function formatDateTime(epochSeconds: number | null | undefined): string 
 	if (epochSeconds == null) return '—';
 	return new Date(epochSeconds * 1000).toLocaleString(getLocale());
 }
+
+/** Compress an IPv6 address (RFC 5952: drop leading zeros, longest zero run → ::). */
+export function formatAddress(addr: string): string {
+	if (!addr.includes(':')) return addr;
+	const groups = addr.toLowerCase().split(':');
+	if (groups.length !== 8 || addr.includes('::')) return addr.toLowerCase();
+	const short = groups.map((g) => g.replace(/^0+(?=.)/, ''));
+	let best = -1;
+	let bestLen = 1;
+	for (let i = 0; i < 8;) {
+		if (short[i] !== '0') {
+			i++;
+			continue;
+		}
+		let j = i;
+		while (j < 8 && short[j] === '0') j++;
+		if (j - i > bestLen) {
+			best = i;
+			bestLen = j - i;
+		}
+		i = j;
+	}
+	if (best < 0) return short.join(':');
+	return `${short.slice(0, best).join(':')}::${short.slice(best + bestLen).join(':')}`;
+}

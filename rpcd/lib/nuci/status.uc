@@ -65,6 +65,12 @@ function parse_net_dev(text) {
 	return out;
 }
 
+function cpu_total(text) {
+	let c = parse_cpu(text);
+
+	return c ? c.user + c.nice + c.system + c.idle + c.iowait + c.irq + c.softirq + c.steal : 0;
+}
+
 function realtime(ctx) {
 	ctx = context(ctx);
 
@@ -184,10 +190,37 @@ function parse_dmesg(text) {
 	return out;
 }
 
-function kernel_log(ctx) {
+// Kernel log entries, optionally only those after `after` seconds since boot.
+function kernel_log(ctx, after) {
 	ctx = context(ctx);
 
-	return parse_dmesg(ctx.run([ 'dmesg', '-r' ]));
+	let log = parse_dmesg(ctx.run([ 'dmesg', '-r' ]));
+
+	return (after == null) ? log : filter(log, e => e.time > after);
+}
+
+// System log (logd) entries with id > after; `lines` bounds the read.
+function syslog(ctx, after, lines) {
+	ctx = context(ctx);
+
+	let res = ctx.ubus?.call('log', 'read', { lines: lines ?? 200, stream: false, oneshot: true });
+
+	return filter(res?.log ?? [], e => after == null || e.id > after);
+}
+
+const SIGNALS = { '1': 'HUP', '2': 'INT', '9': 'KILL', '15': 'TERM', '18': 'CONT', '19': 'STOP' };
+
+// Send `sig` to `pid`. Returns 0 on success or a ubus status code.
+function signal(ctx, pid, sig) {
+	ctx = context(ctx);
+
+	if (type(pid) != 'int' || pid <= 1 || !(`${sig}` in SIGNALS))
+		return 2; // INVALID_ARGUMENT
+
+	if (read(ctx, `/proc/${pid}/stat`) == null)
+		return 4; // NOT_FOUND
+
+	return (ctx.run([ 'kill', `-${sig}`, `${pid}` ]) != null) ? 0 : 9;
 }
 
 // /proc/net/nf_conntrack -> entries (original direction, both directions' counters summed)
@@ -234,8 +267,36 @@ function conntrack(ctx) {
 	return parse_conntrack(read(ctx, '/proc/net/nf_conntrack'));
 }
 
+// Connection counts by protocol (cheap: only the protocol column is parsed).
+function conntrack_summary(ctx) {
+	ctx = context(ctx);
+
+	let out = { total: 0, tcp: 0, udp: 0, icmp: 0, other: 0 };
+
+	for (let l in lines(read(ctx, '/proc/net/nf_conntrack'))) {
+		let m = match(l, /^\S+\s+\S+\s+(\S+)/);
+
+		if (!m)
+			continue;
+
+		out.total++;
+
+		let p = (m[1] == 'icmpv6') ? 'icmp' : m[1];
+
+		if (p in out && p != 'total')
+			out[p]++;
+		else
+			out.other++;
+	}
+
+	out.max = read_int(ctx, '/proc/sys/net/netfilter/nf_conntrack_max') ?? 0;
+
+	return out;
+}
+
 export {
 	parse_loadavg, parse_meminfo, parse_cpu, parse_net_dev, realtime,
 	parse_passwd, parse_proc_stat, parse_proc_status, processes,
-	parse_dmesg, kernel_log, parse_conntrack, conntrack
+	parse_dmesg, kernel_log, parse_conntrack, conntrack, conntrack_summary,
+	cpu_total, syslog, signal, SIGNALS
 };

@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # One-time uhttpd integration for NuCI (ADR-0001).
 
-PREFIX='/nuci/events=/usr/share/nuci/events.uc'
-
-if ! uci -q get uhttpd.main.ucode_prefix | grep -qF "$PREFIX"; then
-	uci add_list uhttpd.main.ucode_prefix="$PREFIX"
-fi
+for PREFIX in '/nuci/events=/usr/share/nuci/events.uc' '/nuci/probe=/usr/share/nuci/probe.uc'; do
+	if ! uci -q get uhttpd.main.ucode_prefix | grep -qF "$PREFIX"; then
+		uci add_list uhttpd.main.ucode_prefix="$PREFIX"
+	fi
+done
 
 # Each SSE stream holds a script slot; the stock limit of 3 is too tight.
 max="$(uci -q get uhttpd.main.max_requests)"

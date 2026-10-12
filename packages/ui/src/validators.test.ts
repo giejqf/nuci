@@ -42,3 +42,17 @@ describe('validators', () => {
 		expect(all(required, ipv4)('')).toBe('validate.required');
 	});
 });
+
+import { formatAddress } from './format';
+
+describe('formatAddress', () => {
+	it('compresses expanded IPv6 and leaves IPv4 alone', () => {
+		expect(formatAddress('fe80:0000:0000:0000:5054:00ff:fe12:3457')).toBe(
+			'fe80::5054:ff:fe12:3457',
+		);
+		expect(formatAddress('ff02:0000:0000:0000:0000:0000:0001:0002')).toBe('ff02::1:2');
+		expect(formatAddress('2001:0db8:0000:0001:0000:0000:0000:0001')).toBe('2001:db8:0:1::1');
+		expect(formatAddress('0000:0000:0000:0000:0000:0000:0000:0001')).toBe('::1');
+		expect(formatAddress('192.168.1.1')).toBe('192.168.1.1');
+	});
+});

@@ -137,7 +137,8 @@
 	const tooltipLeft = $derived(active === null ? 0 : x(times[active]!));
 </script>
 
-<figure class="flex flex-col gap-2" data-testid={testid}>
+<!-- w-full + min-w-0: the width must come from the card, not from the SVG it sizes. -->
+<figure class="flex w-full min-w-0 flex-col gap-2" data-testid={testid}>
 	{#if series.length >= 2}
 		<ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm" aria-label={t('chart.legend')}>
 			{#each series as s (s.id)}
@@ -161,7 +162,7 @@
 			{/each}
 		</ul>
 	{/if}
-	<div class="relative" bind:clientWidth={width}>
+	<div class="relative w-full" bind:clientWidth={width}>
 		<!-- Focusable image: arrow keys move the crosshair; the table view carries the same values. -->
 		<!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
 		<svg

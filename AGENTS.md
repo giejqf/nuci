@@ -81,8 +81,9 @@ uhttpd ─┬─mod-ubus──▶  ubus  ──▶  rpcd  ──▶  stock objec
         │                          └──rpcd-mod-ucode──▶  nuci.* objects
         │                                                 (/usr/share/rpcd/ucode/nuci-*.uc)
         └─mod-ucode──▶  /usr/share/nuci/events.uc   SSE handler: validates sid via
-                                                    session.access, then streams
-                                                    stats/log events every N seconds
+                     │                              session.access, then streams
+                     │                              stats/log events every N seconds
+                     └─▶ /usr/share/nuci/probe.uc   apply probe (ADR-0002)
 ACLs: /usr/share/rpcd/acl.d/nuci-*.json
 ```
 
@@ -161,7 +162,8 @@ packages/app-sdk              public API for future nuci-app-*: manifest schema,
   review view (what LuCI calls "unsaved changes"), and the apply protocol
   (ADR-0002): *Save* pushes staged edits into the session's uci delta
   (`uci.set/add/delete/...`), then `uci.apply {rollback: true, timeout: 90}`
-  (which snapshots and commits that delta) → hold-off → probe connectivity →
+  (which snapshots and commits that delta) → hold-off → probe until it has
+  stayed good for a settle window (10 s for network/wireless/firewall/dhcp) →
   `uci.confirm`; without a confirm the router rolls back automatically. Never
   call `uci.commit` first: it would leave nothing to roll back. Svelte 5 stores
   (`$state`) wrap this for the UI.
@@ -189,7 +191,10 @@ packages/app-sdk              public API for future nuci-app-*: manifest schema,
   `dhcp` goes through the rollback protocol; the UI shows a countdown and, if
   the LAN IP changed, probes the new address (static image, since `/ubus` is
   same-origin only) and hands the session over to it for the confirm
-  (ADR-0002).
+  (ADR-0002). The probe is `/nuci/probe` (`server/probe.uc`), which checks
+  that the address the connection arrived on is still assigned — a reused
+  keep-alive connection survives an address change, so reachability alone
+  is not evidence.
 - **Realtime:** `@nuci/rpc` exposes `events.subscribe(stream, handler)`, backed
   by one `EventSource` per tab to `/nuci/events`. If the connection fails or the
   handler is not installed, the same API transparently switches to ubus polling

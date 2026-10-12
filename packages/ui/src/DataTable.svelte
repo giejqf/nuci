@@ -3,7 +3,7 @@
 	Sortable, filterable table. Columns render `row[key]` unless a `cell`
 	snippet is given; sort headers are buttons (keyboard accessible).
 -->
-<script lang="ts" generics="Row extends Record<string, unknown>">
+<script lang="ts" generics="Row extends object">
 	import type { Snippet } from 'svelte';
 	import { ArrowDown, ArrowUp, ArrowUpDown } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
@@ -49,7 +49,7 @@
 
 	const valueOf = (row: Row, c: Column): string | number => {
 		if (c.value) return c.value(row);
-		const v = row[c.key];
+		const v = (row as Record<string, unknown>)[c.key];
 		return typeof v === 'number' ? v : v == null ? '' : String(v);
 	};
 

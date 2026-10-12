@@ -5,11 +5,23 @@
 // subscribe() and never learn which transport is active. Nothing runs while
 // the tab is hidden.
 
-import type { RealtimeStats } from './nuci-types';
+import type {
+	ConntrackSummary,
+	KernelLogEntry,
+	RealtimeStats,
+	WifiDeviceStats,
+} from './nuci-types';
+import type { LogEntry } from './types';
 
 export interface StreamPayloads {
 	heartbeat: { t: number; uptime: number };
 	stats: RealtimeStats;
+	/** New logd entries after the `after` cursor (entry id). */
+	syslog: { entries: LogEntry[] };
+	/** New kernel log entries after the `after` cursor (seconds since boot). */
+	kernlog: { entries: KernelLogEntry[] };
+	conntrack: ConntrackSummary;
+	wifi: Record<string, WifiDeviceStats>;
 }
 
 export type StreamName = keyof StreamPayloads | (string & {});

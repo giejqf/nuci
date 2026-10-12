@@ -2,7 +2,8 @@
 //
 // NuCI Server-Sent Events handler for uhttpd-mod-ucode (D18, ADR-0001).
 //
-// GET /nuci/events?sid=<ubus_rpc_session>&streams=heartbeat,stats[&interval=2][&last=<id>]
+// GET /nuci/events?sid=<ubus_rpc_session>&streams=stats,syslog,...[&interval=2][&last=<id>]
+//     [&syslog.after=<log id>][&kernlog.after=<seconds since boot>]
 //
 // uhttpd forks one process per request and SIGKILLs it after the global
 // script_timeout, so every stream is bounded: it ends cleanly before the
@@ -15,15 +16,56 @@
 
 import { connect } from 'ubus';
 import { cursor } from 'uci';
-import { realtime } from 'nuci.status';
+import { realtime, syslog, kernel_log, conntrack_summary } from 'nuci.status';
+import { wifi_stats } from 'nuci.wifi';
 
 const SID_RE = /^[0-9a-f]{32}$/;
 const NULL_SID = '00000000000000000000000000000000';
-// Stream name -> collector. Collectors are shared with the nuci.* plugins.
+// Stream name -> collector(state) returning a payload, or null to skip this
+// tick. `state` persists per stream for the life of the connection (cursors).
+// Collectors are shared with the nuci.* plugins.
 const COLLECTORS = {
-	heartbeat: (start) => ({ t: time(), uptime: time() - start }),
+	heartbeat: (st) => ({ t: time(), uptime: time() - st.start }),
 	stats: () => realtime(),
+	syslog: (st) => {
+		let entries = syslog({ ubus: st.bus }, st.after);
+
+		if (!length(entries))
+			return null;
+
+		st.after = entries[-1].id;
+		return { entries };
+	},
+	kernlog: (st) => {
+		let entries = kernel_log(null, st.after);
+
+		if (!length(entries))
+			return null;
+
+		st.after = entries[-1].time;
+		return { entries };
+	},
+	conntrack: () => conntrack_summary(),
+	wifi: (st) => wifi_stats({ ubus: st.bus }),
 };
+
+// Initial cursor: the client's `<stream>.after`, else "now" (only new entries).
+function initial_state(name, q, bus, start) {
+	let st = { start, bus };
+
+	if (name == 'syslog') {
+		let after = q['syslog.after'];
+
+		st.after = match(after ?? '', /^-?[0-9]+$/) ? +after : (syslog({ ubus: bus }, null, 1)[-1]?.id ?? -1);
+	}
+	else if (name == 'kernlog') {
+		let after = q['kernlog.after'];
+
+		st.after = match(after ?? '', /^[0-9]+(\.[0-9]+)?$/) ? +after : (kernel_log()[-1]?.time ?? -1);
+	}
+
+	return st;
+}
 
 function parse_query(qs) {
 	let out = {};
@@ -105,10 +147,24 @@ global.handle_request = function(env) {
 	uhttpd.flush();
 
 	let ticks = 0;
+	let states = {};
+
+	for (let s in streams)
+		states[s] = initial_state(s, q, bus, start);
 
 	while (time() - start < lifetime) {
-		for (let s in streams)
-			send_event(s, ++id, COLLECTORS[s](start));
+		for (let s in streams) {
+			let payload = COLLECTORS[s](states[s]);
+
+			if (payload != null)
+				send_event(s, ++id, payload);
+		}
+
+		// Keep idle connections (e.g. a quiet log) visibly alive.
+		if (ticks % 10 == 9) {
+			uhttpd.send(': keepalive\n\n');
+			uhttpd.flush();
+		}
 
 		// Re-check the session every 10 ticks so a logout ends the stream.
 		if (++ticks % 10 == 0 && !bus.call('session', 'access', {

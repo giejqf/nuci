@@ -3,9 +3,10 @@
 
 import { readfile } from 'fs';
 import { test, eq, ok, here, done } from 'harness';
-import { run_stub } from 'stubs';
+import { run_stub, ubus_stub } from 'stubs';
 import {
-	realtime, processes, kernel_log, conntrack, parse_conntrack, parse_dmesg, parse_proc_stat
+	realtime, processes, kernel_log, conntrack, parse_conntrack, parse_dmesg, parse_proc_stat,
+	conntrack_summary, cpu_total, syslog, signal
 } from 'nuci.status';
 
 const ROOT = here() + '/fixtures/root';
@@ -66,6 +67,40 @@ test('conntrack uses the original direction and sums counters', () => {
 		src: '192.168.1.2', dst: '192.168.1.1', sport: 50000, dport: 22
 	} ]);
 	eq(length(parse_conntrack(line + '\n' + line + '\n' + line, 2)), 2);
+});
+
+test('kernel_log filters by time cursor', () => {
+	let c = { run: run_stub(null, { 'dmesg -r': '<6>[    1.000000] a\n<6>[    2.500000] b\n<4>[   10.250000] c\n' }) };
+	eq(map(kernel_log(c), e => e.msg), [ 'a', 'b', 'c' ]);
+	eq(map(kernel_log(c, 2.5), e => e.msg), [ 'c' ]);
+	eq(kernel_log(c, 10.25), []);
+});
+
+test('syslog returns logd entries after the cursor', () => {
+	let ubus = ubus_stub({ 'log.read': { log: [ { id: 5, msg: 'a' }, { id: 6, msg: 'b' }, { id: 7, msg: 'c' } ] } });
+	eq(map(syslog({ ubus }, 5), e => e.id), [ 6, 7 ]);
+	eq(length(syslog({ ubus })), 3);
+	eq(ubus.calls[0], [ 'log', 'read', { lines: 200, stream: false, oneshot: true } ]);
+});
+
+test('conntrack_summary counts by protocol', () => {
+	eq(conntrack_summary(ctx), { total: 3, tcp: 2, udp: 1, icmp: 0, other: 0, max: 31232 });
+});
+
+test('cpu_total sums all jiffy columns', () => {
+	eq(cpu_total('cpu  1 2 3 4 5 6 7 8 0 0\n'), 36);
+});
+
+test('signal validates pid and signal and calls kill without a shell', () => {
+	let ran = [];
+	let c = { root: ROOT, run: (argv) => { push(ran, argv); return ''; } };
+	eq(signal(c, 2561, 15), 0);
+	eq(ran, [ [ 'kill', '-15', '2561' ] ]);
+	eq(signal(c, 1, 15), 2, 'pid 1 refused');
+	eq(signal(c, 2561, 3), 2, 'signal not in allowlist');
+	eq(signal(c, '2561', 15), 2, 'pid must be an integer');
+	eq(signal(c, 99999, 9), 4, 'missing process');
+	eq(length(ran), 1);
 });
 
 done();

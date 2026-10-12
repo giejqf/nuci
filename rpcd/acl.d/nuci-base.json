@@ -3,7 +3,9 @@
 		"description": "NuCI: pre-login board info for the login screen",
 		"read": {
 			"ubus": {
-				"system": ["board"]
+				"system": [
+					"board"
+				]
 			}
 		}
 	},
@@ -11,23 +13,49 @@
 		"description": "NuCI: shell, session, installed apps, heartbeat stream",
 		"read": {
 			"ubus": {
-				"session": ["access", "destroy", "list"],
-				"system": ["board", "info"],
-				"nuci.apps": ["list"]
+				"session": [
+					"access",
+					"destroy",
+					"list"
+				],
+				"system": [
+					"board",
+					"info"
+				],
+				"nuci.apps": [
+					"list"
+				]
 			},
-			"nuci-events": ["heartbeat"]
+			"nuci-events": [
+				"heartbeat"
+			]
 		}
 	},
 	"nuci-uci": {
 		"description": "NuCI: uci staging and the apply/confirm/rollback protocol (per-config access is granted by the area groups)",
 		"read": {
 			"ubus": {
-				"uci": ["configs", "get", "state", "changes"]
+				"uci": [
+					"configs",
+					"get",
+					"state",
+					"changes"
+				]
 			}
 		},
 		"write": {
 			"ubus": {
-				"uci": ["set", "add", "delete", "rename", "order", "revert", "apply", "confirm", "rollback"]
+				"uci": [
+					"set",
+					"add",
+					"delete",
+					"rename",
+					"order",
+					"revert",
+					"apply",
+					"confirm",
+					"rollback"
+				]
 			}
 		}
 	},
@@ -35,18 +63,60 @@
 		"description": "NuCI: Status pages (overview, logs, processes, realtime graphs)",
 		"read": {
 			"ubus": {
-				"network.interface": ["dump"],
-				"network.interface.*": ["status"],
-				"network.device": ["status"],
-				"network.wireless": ["status"],
-				"iwinfo": ["devices", "info", "assoclist"],
-				"dhcp": ["ipv6leases"],
-				"log": ["read"],
-				"nuci.status": ["realtime", "processes", "kernel_log", "conntrack"],
-				"nuci.dhcp": ["leases", "hosts"]
+				"network.interface": [
+					"dump"
+				],
+				"network.interface.*": [
+					"status"
+				],
+				"network.device": [
+					"status"
+				],
+				"network.wireless": [
+					"status"
+				],
+				"iwinfo": [
+					"devices",
+					"info",
+					"assoclist"
+				],
+				"dhcp": [
+					"ipv6leases"
+				],
+				"log": [
+					"read"
+				],
+				"nuci.status": [
+					"realtime",
+					"processes",
+					"kernel_log",
+					"conntrack",
+					"conntrack_summary"
+				],
+				"nuci.dhcp": [
+					"leases",
+					"hosts"
+				]
 			},
-			"nuci-events": ["stats", "syslog", "kernlog", "conntrack", "wifi"],
-			"uci": ["dhcp", "network", "wireless"]
+			"nuci-events": [
+				"stats",
+				"syslog",
+				"kernlog",
+				"conntrack",
+				"wifi"
+			],
+			"uci": [
+				"dhcp",
+				"network",
+				"wireless"
+			]
+		},
+		"write": {
+			"ubus": {
+				"nuci.status": [
+					"signal"
+				]
+			}
 		}
 	},
 	"nuci-system": {
@@ -61,26 +131,48 @@
 					"mount_points",
 					"usb_devices"
 				],
-				"rc": ["list"]
+				"rc": [
+					"list"
+				]
 			},
-			"uci": ["system", "nuci"]
+			"uci": [
+				"system",
+				"nuci"
+			]
 		},
 		"write": {
 			"ubus": {
-				"nuci.system": ["set_localtime"],
-				"rc": ["init"],
-				"system": ["reboot"]
+				"nuci.system": [
+					"set_localtime"
+				],
+				"rc": [
+					"init"
+				],
+				"system": [
+					"reboot"
+				]
 			},
-			"uci": ["system", "nuci"]
+			"uci": [
+				"system",
+				"nuci"
+			]
 		}
 	},
 	"nuci-network": {
 		"description": "NuCI: Network pages",
 		"read": {
-			"uci": ["network", "dhcp", "wireless"]
+			"uci": [
+				"network",
+				"dhcp",
+				"wireless"
+			]
 		},
 		"write": {
-			"uci": ["network", "dhcp", "wireless"]
+			"uci": [
+				"network",
+				"dhcp",
+				"wireless"
+			]
 		}
 	}
 }

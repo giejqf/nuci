@@ -4,7 +4,7 @@
 	import { ApplyBar, setNuciContext, Toaster } from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { appHost } from '../apps/host.svelte';
-	import { probe, uci } from '../lib/services';
+	import { probe, rpc, uci } from '../lib/services';
 	import { session } from '../lib/session.svelte';
 	import { router } from '../router/router.svelte';
 	import { DEFAULT_PATH, routes } from '../router/routes';
@@ -23,9 +23,14 @@
 	let drawer = $state(false);
 
 	onMount(() => {
+		// Pages never see the transport; expose it on <html> for diagnostics and e2e.
+		const offTransport = rpc.events.onTransportChange(
+			(tr) => (document.documentElement.dataset.transport = tr),
+		);
 		if (!router.path) router.navigate(DEFAULT_PATH, true);
 		void uci.refreshPending().catch(() => {});
 		void appHost.load();
+		return offTransport;
 	});
 
 	const match = $derived(router.match(routes));

@@ -36,6 +36,38 @@ export const routes: PageRoute[] = [
 		acl: 'nuci-status',
 		load: () => import('../pages/status/Overview.svelte'),
 	},
+	{
+		path: 'status/syslog',
+		title: 'nav.status.syslog',
+		group: 'status',
+		order: 20,
+		acl: 'nuci-status',
+		load: () => import('../pages/status/SystemLog.svelte'),
+	},
+	{
+		path: 'status/kernlog',
+		title: 'nav.status.kernlog',
+		group: 'status',
+		order: 30,
+		acl: 'nuci-status',
+		load: () => import('../pages/status/KernelLog.svelte'),
+	},
+	{
+		path: 'status/processes',
+		title: 'nav.status.processes',
+		group: 'status',
+		order: 40,
+		acl: 'nuci-status',
+		load: () => import('../pages/status/Processes.svelte'),
+	},
+	{
+		path: 'status/realtime',
+		title: 'nav.status.realtime',
+		group: 'status',
+		order: 50,
+		acl: 'nuci-status',
+		load: () => import('../pages/status/Realtime.svelte'),
+	},
 ];
 
 export const DEFAULT_PATH = 'status/overview';

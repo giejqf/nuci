@@ -26,6 +26,12 @@ export interface ApplyOptions {
 	holdoffMs?: number;
 	/** Delay between probes (default 1000 ms). */
 	probeIntervalMs?: number;
+	/**
+	 * How long the probe must keep succeeding before we confirm. Any failure
+	 * restarts the window. Default: 10 s when network/wireless/firewall/dhcp
+	 * changed (their reload can take seconds to start), else 2 s.
+	 */
+	settleMs?: number;
 	/** How long to wait for the router after a rollback (default 60 000 ms). */
 	recoveryMs?: number;
 	/** Resolves true when the router answers at the address in use. */
@@ -41,6 +47,9 @@ export interface ApplyOptions {
 }
 
 const NO_DATA = 5;
+
+/** Configs whose reload can cut connectivity. */
+export const NETWORK_CONFIGS = new Set(['network', 'wireless', 'firewall', 'dhcp']);
 
 function ubusCode(e: unknown): number | undefined {
 	return e instanceof RpcError && e.kind === 'ubus' ? e.code : undefined;
@@ -84,9 +93,21 @@ export async function applyChanges(model: UciModel, opts: ApplyOptions): Promise
 	emit({ phase: 'confirming', remaining: remaining() });
 	await sleep(opts.holdoffMs ?? 5000);
 
+	// Confirm only once the probe has kept succeeding for the settle window:
+	// a reload that has not started yet must not be mistaken for success.
+	// model.pending still lists what was just applied (refreshed only after the outcome).
+	const risky = Object.keys(model.pending).some((c) => NETWORK_CONFIGS.has(c));
+	const settleMs = opts.settleMs ?? (risky ? 10_000 : 2_000);
+	let okSince: number | null = null;
 	while (now() < deadline) {
 		emit({ phase: 'confirming', remaining: remaining() });
-		if ((await safe(opts.probe)) && (await (opts.shouldConfirm?.() ?? true))) {
+		if (await safe(opts.probe)) okSince ??= now();
+		else okSince = null;
+		if (
+			okSince !== null &&
+			now() - okSince >= settleMs &&
+			(await (opts.shouldConfirm?.() ?? true))
+		) {
 			try {
 				await model.api.confirm();
 				await refresh(model);

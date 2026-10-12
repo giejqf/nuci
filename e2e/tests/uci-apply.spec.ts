@@ -3,7 +3,7 @@
 // Drives @nuci/rpc + @nuci/uci directly; the System/Network pages come later.
 
 import { expect, test } from '@playwright/test';
-import { createRpc, RpcClient } from '../../packages/rpc/src/index.ts';
+import { createRpc } from '../../packages/rpc/src/index.ts';
 import { applyChanges } from '../../packages/uci/src/apply.ts';
 import { UciModel } from '../../packages/uci/src/model.ts';
 import { rootPassword } from '../lib/router';
@@ -13,12 +13,17 @@ const base = `http://127.0.0.1:${process.env.NUCI_HTTP_PORT ?? '8080'}`;
 async function setup() {
 	const rpc = createRpc({ endpoint: `${base}/ubus`, storage: null });
 	await rpc.session.login('root', rootPassword());
-	const prober = new RpcClient({ endpoint: `${base}/ubus`, storage: null, timeoutMs: 2000 });
-	const probe = () =>
-		prober.callAnonymous('system', 'board').then(
-			() => true,
-			() => false,
-		);
+	// Same probe as the web app: a reused keep-alive connection survives an
+	// address change, so ask the router whether this connection's address is
+	// still assigned (ADR-0002).
+	const probe = async () => {
+		try {
+			const res = await fetch(`${base}/nuci/probe`, { signal: AbortSignal.timeout(2000) });
+			return res.ok && ((await res.json()) as { ok?: boolean }).ok === true;
+		} catch {
+			return false;
+		}
+	};
 	return { rpc, model: new UciModel(rpc.uci), probe };
 }
 
@@ -92,4 +97,27 @@ test('LAN address change without confirm rolls back', async () => {
 	expect(lan['ipv4-address']?.[0]?.address).toBe('192.168.1.1');
 	await fresh.session.logout();
 	await rpc.session.logout().catch(() => {});
+});
+
+test('a LAN change that locks the browser out is never confirmed, even by an eager UI', async () => {
+	test.setTimeout(240_000);
+	const { model, probe } = await setup();
+	await model.load('network');
+	const original = model.get('network', 'lan', 'ipaddr');
+
+	// Default ApplyBar behaviour: confirm as soon as the probe succeeds. A
+	// reused keep-alive connection must not count (ADR-0002 addendum).
+	model.set('network', 'lan', 'ipaddr', ['192.168.1.20/24']);
+	const result = await applyChanges(model, {
+		probe,
+		timeout: 30,
+		holdoffMs: 2000,
+		recoveryMs: 120_000,
+	});
+	expect(result.phase).toBe('rolled-back');
+
+	const fresh = createRpc({ endpoint: `${base}/ubus`, storage: null });
+	await fresh.session.login('root', rootPassword());
+	expect(await fresh.uci.get('network', 'lan', 'ipaddr')).toEqual(original);
+	await fresh.session.logout();
 });

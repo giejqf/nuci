@@ -55,6 +55,31 @@ sequence would disable rollback:
    `history.replaceState`. "Apply unchecked" (`rollback: false`) remains
    available for deliberate changes.
 
+## Addendum (Phase 2): probing must not trust reused connections
+
+The first rollback e2e pass under SSE failed: after an unconfirmed LAN address
+change the probe *never* failed, although new connections were refused from
+~5 s after `apply` until the rollback at ~36 s (measured with `curl`). The
+probe reused an HTTP keep-alive connection, and Linux keeps delivering to an
+established socket after its local address is removed (TCP early demux).
+Browsers pool connections the same way, so a reachability probe could confirm
+a configuration that locks out every new client.
+
+The probe is therefore `/nuci/probe`, a `uhttpd-mod-ucode` handler that
+answers `{ ok }` = "the router-side address of *this* connection
+(`SERVER_ADDR`) is still assigned" (`ip -o addr show`). It works through NAT,
+port forwards and DNS names because it checks the router end of the
+connection. When the handler is missing (404) the client falls back to plain
+reachability (`system.board`).
+
+A second finding from the same suite: with the default "confirm on first good
+probe", an eager confirm landed 3.5 s after `apply`, *before* netifd had
+reloaded (~5 s under TCG), and the lab was locked out for good. A fixed
+hold-off cannot rule this out on slow devices. The client therefore confirms
+only after the probe has kept succeeding for a **settle window**: 10 s when
+`network`, `wireless`, `firewall` or `dhcp` changed, 2 s otherwise; any failed
+probe restarts the window. e2e covers both the unconfirmed and the eager case.
+
 ## Consequences
 
 - AGENTS.md §3.2/§3.3 describe this protocol.

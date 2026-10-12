@@ -8,8 +8,15 @@
 	"signature": {
 		"realtime": {},
 		"processes": {},
-		"kernel_log": {},
-		"conntrack": {}
+		"kernel_log": {
+			"after": "String"
+		},
+		"conntrack": {},
+		"conntrack_summary": {},
+		"signal": {
+			"pid": "Integer",
+			"signal": "Integer"
+		}
 	},
 	"calls": [
 		{
@@ -17,59 +24,59 @@
 			"args": {},
 			"status": 0,
 			"result": {
-				"uptime": 3713.33,
+				"uptime": 2746.98,
 				"load": [
-					0.23,
-					0.06,
-					0.02
+					0.42,
+					0.1,
+					0.1
 				],
 				"cpu": {
-					"user": 18323,
+					"user": 17256,
 					"nice": 0,
-					"system": 10702,
-					"idle": 341600,
-					"iowait": 59,
+					"system": 10078,
+					"idle": 246726,
+					"iowait": 46,
 					"irq": 0,
-					"softirq": 558,
+					"softirq": 492,
 					"steal": 0
 				},
 				"memory": {
 					"total": 506314752,
-					"free": 434565120,
-					"available": 423809024,
-					"buffers": 3371008,
-					"cached": 26488832,
+					"free": 435056640,
+					"available": 424566784,
+					"buffers": 3612672,
+					"cached": 26677248,
 					"swap_total": 0,
 					"swap_free": 0
 				},
 				"interfaces": {
 					"lo": {
-						"rx_bytes": 20870,
-						"rx_packets": 186,
-						"tx_bytes": 20870,
-						"tx_packets": 186
+						"rx_bytes": 16462,
+						"rx_packets": 119,
+						"tx_bytes": 16462,
+						"tx_packets": 119
 					},
 					"eth0": {
-						"rx_bytes": 1056913,
-						"rx_packets": 5453,
-						"tx_bytes": 803809,
-						"tx_packets": 4433
+						"rx_bytes": 1893306,
+						"rx_packets": 6920,
+						"tx_bytes": 4447944,
+						"tx_packets": 5576
 					},
 					"eth1": {
-						"rx_bytes": 3370626,
-						"rx_packets": 2648,
-						"tx_bytes": 69058,
-						"tx_packets": 885
+						"rx_bytes": 1694487,
+						"rx_packets": 1370,
+						"tx_bytes": 41858,
+						"tx_packets": 520
 					},
 					"br-lan": {
-						"rx_bytes": 963751,
-						"rx_packets": 5033,
-						"tx_bytes": 799035,
-						"tx_packets": 4422
+						"rx_bytes": 840719,
+						"rx_packets": 2362,
+						"tx_bytes": 1924537,
+						"tx_packets": 2202
 					}
 				},
 				"conntrack": {
-					"count": 11,
+					"count": 15,
 					"max": 31232
 				}
 			}
@@ -85,9 +92,9 @@
 						"ppid": 0,
 						"user": "root",
 						"state": "S",
-						"rss": 1184,
-						"vsz": 1576,
-						"cpu_ticks": 804,
+						"rss": 1192,
+						"vsz": 1592,
+						"cpu_ticks": 764,
 						"command": "/sbin/procd"
 					},
 					{
@@ -97,7 +104,7 @@
 						"state": "S",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 5,
+						"cpu_ticks": 4,
 						"command": "[kthreadd]"
 					},
 					{
@@ -167,7 +174,7 @@
 						"state": "I",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 9,
+						"cpu_ticks": 144,
 						"command": "[kworker/0:0-events]"
 					},
 					{
@@ -207,7 +214,7 @@
 						"state": "S",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 226,
+						"cpu_ticks": 250,
 						"command": "[ksoftirqd/0]"
 					},
 					{
@@ -217,7 +224,7 @@
 						"state": "I",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 881,
+						"cpu_ticks": 819,
 						"command": "[rcu_sched]"
 					},
 					{
@@ -307,7 +314,7 @@
 						"state": "S",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 111,
+						"cpu_ticks": 87,
 						"command": "[kcompactd0]"
 					},
 					{
@@ -387,7 +394,7 @@
 						"state": "I",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 23,
+						"cpu_ticks": 21,
 						"command": "[kworker/0:1H-kblockd]"
 					},
 					{
@@ -419,6 +426,16 @@
 						"vsz": 0,
 						"cpu_ticks": 0,
 						"command": "[watchdogd]"
+					},
+					{
+						"pid": 38,
+						"ppid": 2,
+						"user": "root",
+						"state": "I",
+						"rss": 0,
+						"vsz": 0,
+						"cpu_ticks": 204,
+						"command": "[kworker/u4:2-events_power_efficient]"
 					},
 					{
 						"pid": 43,
@@ -631,17 +648,7 @@
 						"command": "[kworker/R-kvub300c]"
 					},
 					{
-						"pid": 306,
-						"ppid": 2,
-						"user": "root",
-						"state": "I",
-						"rss": 0,
-						"vsz": 0,
-						"cpu_ticks": 80,
-						"command": "[kworker/u4:5-events_power_efficient]"
-					},
-					{
-						"pid": 375,
+						"pid": 373,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
@@ -651,7 +658,7 @@
 						"command": "[kworker/R-kvub300p]"
 					},
 					{
-						"pid": 376,
+						"pid": 374,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
@@ -661,7 +668,7 @@
 						"command": "[kworker/R-kvub300d]"
 					},
 					{
-						"pid": 383,
+						"pid": 381,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
@@ -671,7 +678,7 @@
 						"command": "[kworker/R-mld]"
 					},
 					{
-						"pid": 393,
+						"pid": 391,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
@@ -681,7 +688,7 @@
 						"command": "[kworker/R-ipv6_addrconf]"
 					},
 					{
-						"pid": 394,
+						"pid": 392,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
@@ -691,27 +698,17 @@
 						"command": "[kworker/R-kstrp]"
 					},
 					{
-						"pid": 453,
-						"ppid": 2,
-						"user": "root",
-						"state": "I",
-						"rss": 0,
-						"vsz": 0,
-						"cpu_ticks": 370,
-						"command": "[kworker/0:2-events]"
-					},
-					{
-						"pid": 885,
+						"pid": 884,
 						"ppid": 2,
 						"user": "root",
 						"state": "S",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 38,
+						"cpu_ticks": 37,
 						"command": "[jbd2/loop0-8]"
 					},
 					{
-						"pid": 886,
+						"pid": 885,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
@@ -721,7 +718,7 @@
 						"command": "[kworker/R-ext4-rsv-conversion]"
 					},
 					{
-						"pid": 932,
+						"pid": 931,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
@@ -735,9 +732,9 @@
 						"ppid": 1,
 						"user": "ubus",
 						"state": "S",
-						"rss": 880,
+						"rss": 896,
 						"vsz": 1068,
-						"cpu_ticks": 273,
+						"cpu_ticks": 287,
 						"command": "/sbin/ubusd"
 					},
 					{
@@ -745,7 +742,7 @@
 						"ppid": 1,
 						"user": "root",
 						"state": "S",
-						"rss": 684,
+						"rss": 688,
 						"vsz": 840,
 						"cpu_ticks": 4,
 						"command": "/sbin/askfirst /usr/libexec/login.sh"
@@ -755,9 +752,9 @@
 						"ppid": 1,
 						"user": "root",
 						"state": "S",
-						"rss": 684,
+						"rss": 688,
 						"vsz": 840,
-						"cpu_ticks": 3,
+						"cpu_ticks": 2,
 						"command": "/sbin/askfirst /usr/libexec/login.sh"
 					},
 					{
@@ -765,9 +762,9 @@
 						"ppid": 1,
 						"user": "root",
 						"state": "S",
-						"rss": 764,
+						"rss": 740,
 						"vsz": 920,
-						"cpu_ticks": 125,
+						"cpu_ticks": 120,
 						"command": "/sbin/urngd"
 					},
 					{
@@ -795,9 +792,9 @@
 						"ppid": 1,
 						"user": "logd",
 						"state": "S",
-						"rss": 1004,
-						"vsz": 1692,
-						"cpu_ticks": 479,
+						"rss": 988,
+						"vsz": 1688,
+						"cpu_ticks": 328,
 						"command": "/sbin/logd -S 128"
 					},
 					{
@@ -805,9 +802,9 @@
 						"ppid": 1,
 						"user": "root",
 						"state": "S",
-						"rss": 856,
+						"rss": 848,
 						"vsz": 1036,
-						"cpu_ticks": 173,
+						"cpu_ticks": 102,
 						"command": "/usr/sbin/dropbear -F -P /var/run/dropbear.main.pid -p 22 -K 300 -T 3"
 					},
 					{
@@ -815,9 +812,9 @@
 						"ppid": 1,
 						"user": "root",
 						"state": "S",
-						"rss": 1732,
-						"vsz": 2236,
-						"cpu_ticks": 455,
+						"rss": 1760,
+						"vsz": 2240,
+						"cpu_ticks": 475,
 						"command": "/sbin/netifd"
 					},
 					{
@@ -825,122 +822,123 @@
 						"ppid": 1,
 						"user": "root",
 						"state": "S",
-						"rss": 1040,
-						"vsz": 1288,
-						"cpu_ticks": 228,
+						"rss": 1052,
+						"vsz": 1412,
+						"cpu_ticks": 244,
 						"command": "/usr/sbin/odhcpd"
 					},
 					{
-						"pid": 2181,
+						"pid": 2060,
+						"ppid": 2,
+						"user": "root",
+						"state": "I",
+						"rss": 0,
+						"vsz": 0,
+						"cpu_ticks": 158,
+						"command": "[kworker/0:3-events]"
+					},
+					{
+						"pid": 2179,
 						"ppid": 1892,
 						"user": "root",
 						"state": "S",
-						"rss": 928,
+						"rss": 936,
 						"vsz": 1224,
-						"cpu_ticks": 8,
-						"command": "udhcpc -p /var/run/udhcpc-eth1.pid -s /lib/netifd/dhcp.script -f -t 0 -i eth1 -x hostname:OpenWrt -x 0x3d:ff6f1799c80004f8bf5cd1b6a740efa30575b485f16ef3 -R -O 121"
+						"cpu_ticks": 5,
+						"command": "udhcpc -p /var/run/udhcpc-eth1.pid -s /lib/netifd/dhcp.script -f -t 0 -i eth1 -x hostname:OpenWrt -x 0x3d:ff6f1799c80004e11607dd317b415daebc47743220c957 -R -O 121"
 					},
 					{
-						"pid": 2216,
+						"pid": 2217,
 						"ppid": 1892,
 						"user": "root",
 						"state": "S",
-						"rss": 852,
+						"rss": 840,
 						"vsz": 1068,
-						"cpu_ticks": 44,
-						"command": "odhcp6c -s /lib/netifd/dhcpv6.script -P0 -c0004f8bf5cd1b6a740efa30575b485f16ef3 -t120 eth1"
+						"cpu_ticks": 33,
+						"command": "odhcp6c -s /lib/netifd/dhcpv6.script -P0 -c0004e11607dd317b415daebc47743220c957 -t120 eth1"
 					},
 					{
-						"pid": 2551,
+						"pid": 2559,
+						"ppid": 1,
+						"user": "root",
+						"state": "S",
+						"rss": 1024,
+						"vsz": 2260,
+						"cpu_ticks": 9,
+						"command": "/sbin/ujail -t 5 -n dnsmasq -u -l -r /bin/ubus -r /etc/TZ -r /etc/dnsmasq.conf -r /etc/ethers -r /etc/group -r /etc/hosts -r /etc/passwd -w /tmp/dhcp.leases -r /tmp/dnsmasq.cfg01411c.d -r /tmp/hosts -r /tmp/resolv.conf.d -r /usr/bin/env -r /usr/bin/jshn -r /usr/lib/dnsmasq/dhcp-script.sh -r /usr/share/dnsmasq/dhcpbogushostname.conf -r /usr/share/dnsmasq/rfc6761.conf -r /usr/share/dnsmasq/trust-anchors.conf -r /usr/share/libubox/jshn.sh -r /var/etc/dnsmasq.conf.cfg01411c -w /var/run/dnsmasq/ -- /usr/sbin/dnsmasq -C /var/etc/dnsmasq.conf.cfg01411c -k -x /var/run/dnsmasq/dnsmasq.cfg01411c.pid"
+					},
+					{
+						"pid": 2566,
+						"ppid": 2559,
+						"user": "dnsmasq",
+						"state": "S",
+						"rss": 1172,
+						"vsz": 1388,
+						"cpu_ticks": 78,
+						"command": "/usr/sbin/dnsmasq -C /var/etc/dnsmasq.conf.cfg01411c -k -x /var/run/dnsmasq/dnsmasq.cfg01411c.pid"
+					},
+					{
+						"pid": 3043,
 						"ppid": 1,
 						"user": "root",
 						"state": "S",
 						"rss": 1020,
 						"vsz": 2260,
-						"cpu_ticks": 16,
-						"command": "/sbin/ujail -t 5 -n dnsmasq -u -l -r /bin/ubus -r /etc/TZ -r /etc/dnsmasq.conf -r /etc/ethers -r /etc/group -r /etc/hosts -r /etc/passwd -w /tmp/dhcp.leases -r /tmp/dnsmasq.cfg01411c.d -r /tmp/hosts -r /tmp/resolv.conf.d -r /usr/bin/env -r /usr/bin/jshn -r /usr/lib/dnsmasq/dhcp-script.sh -r /usr/share/dnsmasq/dhcpbogushostname.conf -r /usr/share/dnsmasq/rfc6761.conf -r /usr/share/dnsmasq/trust-anchors.conf -r /usr/share/libubox/jshn.sh -r /var/etc/dnsmasq.conf.cfg01411c -w /var/run/dnsmasq/ -- /usr/sbin/dnsmasq -C /var/etc/dnsmasq.conf.cfg01411c -k -x /var/run/dnsmasq/dnsmasq.cfg01411c.pid"
-					},
-					{
-						"pid": 2561,
-						"ppid": 2551,
-						"user": "dnsmasq",
-						"state": "S",
-						"rss": 1168,
-						"vsz": 1384,
-						"cpu_ticks": 57,
-						"command": "/usr/sbin/dnsmasq -C /var/etc/dnsmasq.conf.cfg01411c -k -x /var/run/dnsmasq/dnsmasq.cfg01411c.pid"
-					},
-					{
-						"pid": 3035,
-						"ppid": 1,
-						"user": "root",
-						"state": "S",
-						"rss": 1016,
-						"vsz": 2260,
-						"cpu_ticks": 15,
+						"cpu_ticks": 18,
 						"command": "/sbin/ujail -t 5 -n ntpd -U ntp -G ntp -C /etc/capabilities/ntpd.json -c -u -r /bin/ubus -r /usr/bin/env -r /usr/bin/jshn -r /usr/sbin/ntpd-hotplug -r /usr/share/libubox/jshn.sh -- /usr/sbin/ntpd -n -N -S /usr/sbin/ntpd-hotplug -p 0.openwrt.pool.ntp.org -p 1.openwrt.pool.ntp.org -p 2.openwrt.pool.ntp.org -p 3.openwrt.pool.ntp.org"
 					},
 					{
-						"pid": 3052,
-						"ppid": 3035,
+						"pid": 3073,
+						"ppid": 3043,
 						"user": "ntp",
 						"state": "S",
-						"rss": 908,
+						"rss": 896,
 						"vsz": 1224,
-						"cpu_ticks": 82,
+						"cpu_ticks": 65,
 						"command": "/usr/sbin/ntpd -n -N -S /usr/sbin/ntpd-hotplug -p 0.openwrt.pool.ntp.org -p 1.openwrt.pool.ntp.org -p 2.openwrt.pool.ntp.org -p 3.openwrt.pool.ntp.org"
 					},
 					{
-						"pid": 4974,
+						"pid": 3792,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 96,
-						"command": "[kworker/u4:2-events_power_efficient]"
+						"cpu_ticks": 140,
+						"command": "[kworker/u4:3-ext4-rsv-conversion]"
 					},
 					{
-						"pid": 5087,
-						"ppid": 1,
-						"user": "root",
-						"state": "S",
-						"rss": 2104,
-						"vsz": 2408,
-						"cpu_ticks": 149,
-						"command": "/usr/sbin/uhttpd -f -h /www -r OpenWrt -x /cgi-bin -u /ubus -o /nuci/events -O /usr/share/nuci/events.uc -t 60 -T 30 -k 20 -A 1 -n 6 -N 100 -R -p 0.0.0.0:80 -p [::]:80 -C /etc/uhttpd.crt -K /etc/uhttpd.key -s 0.0.0.0:443 -s [::]:443"
-					},
-					{
-						"pid": 5728,
+						"pid": 4330,
 						"ppid": 2,
 						"user": "root",
 						"state": "I",
 						"rss": 0,
 						"vsz": 0,
-						"cpu_ticks": 4,
-						"command": "[kworker/u4:0-events_power_efficient]"
+						"cpu_ticks": 42,
+						"command": "[kworker/u4:0-ipv6_addrconf]"
 					},
 					{
-						"pid": 5768,
-						"ppid": 2,
-						"user": "root",
-						"state": "I",
-						"rss": 0,
-						"vsz": 0,
-						"cpu_ticks": 20,
-						"command": "[kworker/0:1-events]"
-					},
-					{
-						"pid": 5855,
+						"pid": 6146,
 						"ppid": 1,
 						"user": "root",
 						"state": "R",
-						"rss": 2248,
-						"vsz": 2520,
-						"cpu_ticks": 298,
+						"rss": 2212,
+						"vsz": 2500,
+						"cpu_ticks": 320,
 						"command": "/sbin/rpcd -s /var/run/ubus/ubus.sock -t 30"
+					},
+					{
+						"pid": 6277,
+						"ppid": 1,
+						"user": "root",
+						"state": "S",
+						"rss": 2240,
+						"vsz": 2532,
+						"cpu_ticks": 36,
+						"command": "/usr/sbin/uhttpd -f -h /www -r OpenWrt -x /cgi-bin -u /ubus -o /nuci/events -O /usr/share/nuci/events.uc -t 60 -T 30 -k 20 -A 1 -n 6 -N 100 -R -p 0.0.0.0:80 -p [::]:80 -C /etc/uhttpd.crt -K /etc/uhttpd.key -s 0.0.0.0:443 -s [::]:443"
 					}
-				]
+				],
+				"total_ticks": 274904
 			}
 		},
 		{
@@ -1529,1804 +1527,1954 @@
 						"time": 0.1,
 						"facility": 0,
 						"priority": 6,
-						"msg": "tsc: Detected 997.655 MHz processor"
+						"msg": "tsc: Detected 997.863 MHz processor"
 					},
 					{
-						"time": 0.000872,
+						"time": 0.000748,
 						"facility": 0,
 						"priority": 6,
-						"msg": "clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x1cc2dfb9231, max_idle_ns: 881590586798 ns"
+						"msg": "clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x1cc4689b960, max_idle_ns: 881590410621 ns"
 					},
 					{
-						"time": 0.003607,
+						"time": 0.003799,
 						"facility": 0,
 						"priority": 6,
-						"msg": "Calibrating delay loop (skipped), value calculated using timer frequency.. 1995.31 BogoMIPS (lpj=9976550)"
+						"msg": "Calibrating delay loop (skipped), value calculated using timer frequency.. 1995.72 BogoMIPS (lpj=9978630)"
 					},
 					{
-						"time": 0.019679,
+						"time": 0.019423,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Last level iTLB entries: 4KB 0, 2MB 0, 4MB 0"
 					},
 					{
-						"time": 0.020901,
+						"time": 0.020842,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Last level dTLB entries: 4KB 0, 2MB 0, 4MB 0, 1GB 0"
 					},
 					{
-						"time": 0.024125,
+						"time": 0.024316,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Spectre V1 : Mitigation: usercopy/swapgs barriers and __user pointer sanitization"
 					},
 					{
-						"time": 0.026326,
+						"time": 0.026794,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Spectre V2 : Mitigation: Retpolines"
 					},
 					{
-						"time": 0.027354,
+						"time": 0.027881,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Spectre V2 : Spectre v2 / SpectreRSB: Filling RSB on context switch and VMEXIT"
 					},
 					{
-						"time": 0.029269,
+						"time": 0.030042,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Speculative Store Bypass: Vulnerable"
 					},
 					{
-						"time": 0.032477,
+						"time": 0.036586,
 						"facility": 0,
 						"priority": 6,
 						"msg": "x86/fpu: x87 FPU will use FXSAVE"
 					},
 					{
-						"time": 0.633817,
+						"time": 0.595958,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Freeing SMP alternatives memory: 40K"
 					},
 					{
-						"time": 0.636603,
+						"time": 0.598869,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pid_max: default: 32768 minimum: 301"
 					},
 					{
-						"time": 0.6798,
+						"time": 0.641578,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)"
 					},
 					{
-						"time": 0.681999,
+						"time": 0.64406,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)"
 					},
 					{
-						"time": 0.883335,
+						"time": 0.843402,
 						"facility": 0,
 						"priority": 6,
 						"msg": "smpboot: CPU0: AMD QEMU Virtual CPU version 2.5+ (family: 0x6, model: 0x6, stepping: 0x3)"
 					},
 					{
-						"time": 0.903537,
+						"time": 0.860604,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Performance Events: PMU not available due to virtualization, using software events only."
 					},
 					{
-						"time": 0.908252,
+						"time": 0.865595,
 						"facility": 0,
 						"priority": 6,
 						"msg": "signal: max sigframe size: 1040"
 					},
 					{
-						"time": 0.913755,
+						"time": 0.87053,
 						"facility": 0,
 						"priority": 6,
 						"msg": "rcu: Hierarchical SRCU implementation."
 					},
 					{
-						"time": 0.914993,
+						"time": 0.871994,
 						"facility": 0,
 						"priority": 6,
 						"msg": "rcu: \tMax phase no-delay instances is 1000."
 					},
 					{
-						"time": 0.932558,
+						"time": 0.889994,
 						"facility": 0,
 						"priority": 6,
 						"msg": "smp: Bringing up secondary CPUs ..."
 					},
 					{
-						"time": 0.936917,
+						"time": 0.89493,
 						"facility": 0,
 						"priority": 6,
 						"msg": "smp: Brought up 1 node, 1 CPU"
 					},
 					{
-						"time": 0.938113,
+						"time": 0.896305,
 						"facility": 0,
 						"priority": 6,
-						"msg": "smpboot: Total of 1 processors activated (1995.31 BogoMIPS)"
+						"msg": "smpboot: Total of 1 processors activated (1995.72 BogoMIPS)"
 					},
 					{
-						"time": 0.955694,
+						"time": 0.912948,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Memory: 489152K/523752K available (14336K kernel code, 1177K rwdata, 2552K rodata, 1492K init, 1304K bss, 32340K reserved, 0K cma-reserved)"
 					},
 					{
-						"time": 0.988587,
+						"time": 0.94495,
 						"facility": 0,
 						"priority": 6,
 						"msg": "clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns"
 					},
 					{
-						"time": 0.991726,
+						"time": 0.948456,
 						"facility": 0,
 						"priority": 6,
 						"msg": "futex hash table entries: 256 (order: 2, 16384 bytes, linear)"
 					},
 					{
-						"time": 1.004752,
+						"time": 0.96004,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pinctrl core: initialized pinctrl subsystem"
 					},
 					{
-						"time": 1.043335,
+						"time": 0.996618,
 						"facility": 0,
 						"priority": 6,
 						"msg": "NET: Registered PF_NETLINK/PF_ROUTE protocol family"
 					},
 					{
-						"time": 1.061562,
+						"time": 1.012406,
 						"facility": 0,
 						"priority": 6,
 						"msg": "thermal_sys: Registered thermal governor 'step_wise'"
 					},
 					{
-						"time": 1.061709,
+						"time": 1.012578,
 						"facility": 0,
 						"priority": 6,
 						"msg": "thermal_sys: Registered thermal governor 'user_space'"
 					},
 					{
-						"time": 1.065426,
+						"time": 1.015628,
 						"facility": 0,
 						"priority": 6,
 						"msg": "cpuidle: using governor ladder"
 					},
 					{
-						"time": 1.07186,
+						"time": 1.021225,
 						"facility": 0,
 						"priority": 6,
 						"msg": "acpiphp: ACPI Hot Plug PCI Controller Driver version: 0.5"
 					},
 					{
-						"time": 1.083902,
+						"time": 1.033334,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI: ECAM [mem 0xb0000000-0xbfffffff] (base 0xb0000000) for domain 0000 [bus 00-ff]"
 					},
 					{
-						"time": 1.088129,
+						"time": 1.036576,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI: ECAM [mem 0xb0000000-0xbfffffff] reserved as E820 entry"
 					},
 					{
-						"time": 1.093595,
+						"time": 1.041443,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI: Using configuration type 1 for base access"
 					},
 					{
-						"time": 1.192379,
+						"time": 1.134279,
 						"facility": 0,
 						"priority": 6,
 						"msg": "cryptd: max_cpu_qlen set to 1000"
 					},
 					{
-						"time": 1.210043,
+						"time": 1.149578,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: Added _OSI(Module Device)"
 					},
 					{
-						"time": 1.211572,
+						"time": 1.150921,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: Added _OSI(Processor Device)"
 					},
 					{
-						"time": 1.212841,
+						"time": 1.15205,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: Added _OSI(Processor Aggregator Device)"
 					},
 					{
-						"time": 1.267476,
+						"time": 1.202964,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: 1 ACPI AML tables successfully acquired and loaded"
 					},
 					{
-						"time": 1.317756,
+						"time": 1.247395,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: Interpreter enabled"
 					},
 					{
-						"time": 1.3204,
+						"time": 1.249952,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PM: (supports S0 S5)"
 					},
 					{
-						"time": 1.321389,
+						"time": 1.251091,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: Using IOAPIC for interrupt routing"
 					},
 					{
-						"time": 1.325286,
+						"time": 1.254974,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI: Using host bridge windows from ACPI; if necessary, use \"pci=nocrs\" and report a bug"
 					},
 					{
-						"time": 1.327455,
+						"time": 1.257294,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI: Using E820 reservations for host bridge windows"
 					},
 					{
-						"time": 1.332776,
+						"time": 1.262543,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: Enabled 1 GPEs in block 00 to 3F"
 					},
 					{
-						"time": 1.411618,
+						"time": 1.336457,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])"
 					},
 					{
-						"time": 1.414351,
+						"time": 1.339041,
 						"facility": 0,
 						"priority": 6,
 						"msg": "acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI HPX-Type3]"
 					},
 					{
-						"time": 1.419724,
+						"time": 1.344202,
 						"facility": 0,
 						"priority": 6,
 						"msg": "acpi PNP0A08:00: _OSC: platform does not support [LTR]"
 					},
 					{
-						"time": 1.423554,
+						"time": 1.347609,
 						"facility": 0,
 						"priority": 6,
 						"msg": "acpi PNP0A08:00: _OSC: OS now controls [PME AER PCIeCapability]"
 					},
 					{
-						"time": 1.434469,
+						"time": 1.358256,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI host bridge to bus 0000:00"
 					},
 					{
-						"time": 1.436134,
+						"time": 1.359941,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]"
 					},
 					{
-						"time": 1.437804,
+						"time": 1.361602,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]"
 					},
 					{
-						"time": 1.43928,
+						"time": 1.363046,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bffff window]"
 					},
 					{
-						"time": 1.440836,
+						"time": 1.363794,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: root bus resource [mem 0x20000000-0xafffffff window]"
 					},
 					{
-						"time": 1.442368,
+						"time": 1.365351,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: root bus resource [mem 0xc0000000-0xfebfffff window]"
 					},
 					{
-						"time": 1.443535,
+						"time": 1.366981,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: root bus resource [mem 0x100000000-0x8ffffffff window]"
 					},
 					{
-						"time": 1.445428,
+						"time": 1.368909,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: root bus resource [bus 00-ff]"
 					},
 					{
-						"time": 1.449264,
+						"time": 1.374248,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:00.0: [8086:29c0] type 00 class 0x060000 conventional PCI endpoint"
 					},
 					{
-						"time": 1.460752,
+						"time": 1.386056,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:01.0: [1234:1111] type 00 class 0x030000 conventional PCI endpoint"
 					},
 					{
-						"time": 1.465546,
+						"time": 1.392646,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:01.0: BAR 0 [mem 0xfd000000-0xfdffffff pref]"
 					},
 					{
-						"time": 1.475012,
+						"time": 1.399645,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:01.0: BAR 2 [mem 0xfeb90000-0xfeb90fff]"
 					},
 					{
-						"time": 1.485984,
+						"time": 1.411315,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:01.0: ROM [mem 0xfeb80000-0xfeb8ffff pref]"
 					},
 					{
-						"time": 1.488084,
+						"time": 1.414261,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:01.0: Video device with shadowed ROM at [mem 0x000c0000-0x000dffff]"
 					},
 					{
-						"time": 1.494218,
+						"time": 1.418196,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:02.0: [1af4:1000] type 00 class 0x020000 conventional PCI endpoint"
 					},
 					{
-						"time": 1.497878,
+						"time": 1.423234,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:02.0: BAR 0 [io  0xc0c0-0xc0df]"
 					},
 					{
-						"time": 1.507215,
+						"time": 1.431408,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:02.0: BAR 4 [mem 0xfe000000-0xfe003fff 64bit pref]"
 					},
 					{
-						"time": 1.512001,
+						"time": 1.436878,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:02.0: ROM [mem 0xfea80000-0xfeafffff pref]"
 					},
 					{
-						"time": 1.515768,
+						"time": 1.440277,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:03.0: [1af4:1000] type 00 class 0x020000 conventional PCI endpoint"
 					},
 					{
-						"time": 1.5189,
+						"time": 1.44442,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:03.0: BAR 0 [io  0xc0e0-0xc0ff]"
 					},
 					{
-						"time": 1.526573,
+						"time": 1.451086,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:03.0: BAR 4 [mem 0xfe004000-0xfe007fff 64bit pref]"
 					},
 					{
-						"time": 1.530418,
+						"time": 1.456475,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:03.0: ROM [mem 0xfeb00000-0xfeb7ffff pref]"
 					},
 					{
-						"time": 1.534998,
+						"time": 1.459981,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:04.0: [1af4:1001] type 00 class 0x010000 conventional PCI endpoint"
 					},
 					{
-						"time": 1.538411,
+						"time": 1.464575,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:04.0: BAR 0 [io  0xc000-0xc07f]"
 					},
 					{
-						"time": 1.541692,
+						"time": 1.467546,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:04.0: BAR 1 [mem 0xfeb91000-0xfeb91fff]"
 					},
 					{
-						"time": 1.548458,
+						"time": 1.47533,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:04.0: BAR 4 [mem 0xfe008000-0xfe00bfff 64bit pref]"
 					},
 					{
-						"time": 1.555849,
+						"time": 1.481498,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:1f.0: [8086:2918] type 00 class 0x060100 conventional PCI endpoint"
 					},
 					{
-						"time": 1.55856,
+						"time": 1.484934,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:1f.0: quirk: [io  0x0600-0x067f] claimed by ICH6 ACPI/GPIO/TCO"
 					},
 					{
-						"time": 1.562101,
+						"time": 1.488739,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:1f.2: [8086:2922] type 00 class 0x010601 conventional PCI endpoint"
 					},
 					{
-						"time": 1.569554,
+						"time": 1.500737,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:1f.2: BAR 4 [io  0xc100-0xc11f]"
 					},
 					{
-						"time": 1.575039,
+						"time": 1.503655,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:1f.2: BAR 5 [mem 0xfeb92000-0xfeb92fff]"
 					},
 					{
-						"time": 1.580888,
+						"time": 1.508053,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:1f.3: [8086:2930] type 00 class 0x0c0500 conventional PCI endpoint"
 					},
 					{
-						"time": 1.586545,
+						"time": 1.514794,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci 0000:00:1f.3: BAR 4 [io  0x0700-0x073f]"
 					},
 					{
-						"time": 1.591584,
+						"time": 1.519702,
 						"facility": 0,
 						"priority": 7,
 						"msg": "pci_bus 0000:00: on NUMA node 0"
 					},
 					{
-						"time": 1.607136,
+						"time": 1.534606,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKA configured for IRQ 10"
 					},
 					{
-						"time": 1.61028,
+						"time": 1.537796,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKB configured for IRQ 10"
 					},
 					{
-						"time": 1.612747,
+						"time": 1.540321,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKC configured for IRQ 11"
 					},
 					{
-						"time": 1.614794,
+						"time": 1.542701,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKD configured for IRQ 11"
 					},
 					{
-						"time": 1.617236,
+						"time": 1.544862,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKE configured for IRQ 10"
 					},
 					{
-						"time": 1.619681,
+						"time": 1.547363,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKF configured for IRQ 10"
 					},
 					{
-						"time": 1.622049,
+						"time": 1.549729,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKG configured for IRQ 11"
 					},
 					{
-						"time": 1.624684,
+						"time": 1.552159,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link LNKH configured for IRQ 11"
 					},
 					{
-						"time": 1.626263,
+						"time": 1.55408,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSIA configured for IRQ 16"
 					},
 					{
-						"time": 1.627734,
+						"time": 1.555637,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSIB configured for IRQ 17"
 					},
 					{
-						"time": 1.629141,
+						"time": 1.557091,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSIC configured for IRQ 18"
 					},
 					{
-						"time": 1.630603,
+						"time": 1.558526,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSID configured for IRQ 19"
 					},
 					{
-						"time": 1.632012,
+						"time": 1.560023,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSIE configured for IRQ 20"
 					},
 					{
-						"time": 1.63374,
+						"time": 1.561514,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSIF configured for IRQ 21"
 					},
 					{
-						"time": 1.635231,
+						"time": 1.563856,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSIG configured for IRQ 22"
 					},
 					{
-						"time": 1.636676,
+						"time": 1.565399,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: PCI: Interrupt link GSIH configured for IRQ 23"
 					},
 					{
-						"time": 1.64442,
+						"time": 1.571795,
 						"facility": 0,
 						"priority": 6,
 						"msg": "iommu: Default domain type: Translated"
 					},
 					{
-						"time": 1.645584,
+						"time": 1.573628,
 						"facility": 0,
 						"priority": 6,
 						"msg": "iommu: DMA domain TLB invalidation policy: lazy mode"
 					},
 					{
-						"time": 1.652771,
+						"time": 1.580841,
 						"facility": 0,
 						"priority": 5,
 						"msg": "SCSI subsystem initialized"
 					},
 					{
-						"time": 1.655336,
+						"time": 1.583619,
 						"facility": 0,
 						"priority": 7,
 						"msg": "libata version 3.00 loaded."
 					},
 					{
-						"time": 1.656775,
+						"time": 1.585106,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: bus type USB registered"
 					},
 					{
-						"time": 1.658517,
+						"time": 1.587027,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new interface driver usbfs"
 					},
 					{
-						"time": 1.660275,
+						"time": 1.588853,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new interface driver hub"
 					},
 					{
-						"time": 1.661687,
+						"time": 1.590358,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new device driver usb"
 					},
 					{
-						"time": 1.665114,
+						"time": 1.592372,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pps_core: LinuxPPS API ver. 1 registered"
 					},
 					{
-						"time": 1.66624,
+						"time": 1.593772,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>"
 					},
 					{
-						"time": 1.668245,
+						"time": 1.59586,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PTP clock support registered"
 					},
 					{
-						"time": 1.697688,
+						"time": 1.624796,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI: Using ACPI for IRQ routing"
 					},
 					{
-						"time": 1.707733,
+						"time": 1.635836,
 						"facility": 0,
 						"priority": 7,
 						"msg": "PCI: pci_cache_line_size set to 64 bytes"
 					},
 					{
-						"time": 1.708948,
+						"time": 1.637134,
 						"facility": 0,
 						"priority": 7,
 						"msg": "e820: reserve RAM buffer [mem 0x0009fc00-0x0009ffff]"
 					},
 					{
-						"time": 1.709358,
+						"time": 1.637562,
 						"facility": 0,
 						"priority": 7,
 						"msg": "e820: reserve RAM buffer [mem 0x1ffdc000-0x1fffffff]"
 					},
 					{
-						"time": 1.7146,
+						"time": 1.642736,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hpet: 3 channels of 0 reserved for per-cpu timers"
 					},
 					{
-						"time": 1.716555,
+						"time": 1.644305,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0"
 					},
 					{
-						"time": 1.717799,
+						"time": 1.645694,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hpet0: 3 comparators, 64-bit 100.000000 MHz counter"
 					},
 					{
-						"time": 1.726337,
+						"time": 1.655551,
 						"facility": 0,
 						"priority": 6,
 						"msg": "clocksource: Switched to clocksource tsc-early"
 					},
 					{
-						"time": 1.738568,
+						"time": 1.669435,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pnp: PnP ACPI init"
 					},
 					{
-						"time": 1.751043,
+						"time": 1.682127,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pnp: PnP ACPI: found 5 devices"
 					},
 					{
-						"time": 1.781081,
+						"time": 1.712845,
 						"facility": 0,
 						"priority": 6,
 						"msg": "clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns"
 					},
 					{
-						"time": 1.794566,
+						"time": 1.725716,
 						"facility": 0,
 						"priority": 6,
 						"msg": "NET: Registered PF_INET protocol family"
 					},
 					{
-						"time": 1.798195,
+						"time": 1.729473,
 						"facility": 0,
 						"priority": 6,
 						"msg": "IP idents hash table entries: 8192 (order: 4, 65536 bytes, linear)"
 					},
 					{
-						"time": 1.817803,
+						"time": 1.749403,
 						"facility": 0,
 						"priority": 6,
 						"msg": "tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes, linear)"
 					},
 					{
-						"time": 1.819812,
+						"time": 1.75168,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)"
 					},
 					{
-						"time": 1.821592,
+						"time": 1.753515,
 						"facility": 0,
 						"priority": 6,
 						"msg": "TCP established hash table entries: 4096 (order: 3, 32768 bytes, linear)"
 					},
 					{
-						"time": 1.823829,
+						"time": 1.755905,
 						"facility": 0,
 						"priority": 6,
 						"msg": "TCP bind hash table entries: 4096 (order: 5, 131072 bytes, linear)"
 					},
 					{
-						"time": 1.825847,
+						"time": 1.757961,
 						"facility": 0,
 						"priority": 6,
 						"msg": "TCP: Hash tables configured (established 4096 bind 4096)"
 					},
 					{
-						"time": 1.831555,
+						"time": 1.763868,
 						"facility": 0,
 						"priority": 6,
 						"msg": "MPTCP token hash table entries: 512 (order: 2, 12288 bytes, linear)"
 					},
 					{
-						"time": 1.834117,
+						"time": 1.76616,
 						"facility": 0,
 						"priority": 6,
 						"msg": "UDP hash table entries: 256 (order: 1, 8192 bytes, linear)"
 					},
 					{
-						"time": 1.835892,
+						"time": 1.768002,
 						"facility": 0,
 						"priority": 6,
 						"msg": "UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)"
 					},
 					{
-						"time": 1.840673,
+						"time": 1.772793,
 						"facility": 0,
 						"priority": 6,
 						"msg": "NET: Registered PF_UNIX/PF_LOCAL protocol family"
 					},
 					{
-						"time": 1.84728,
+						"time": 1.776503,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]"
 					},
 					{
-						"time": 1.848856,
+						"time": 1.777887,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]"
 					},
 					{
-						"time": 1.850251,
+						"time": 1.77923,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]"
 					},
 					{
-						"time": 1.851633,
+						"time": 1.780678,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: resource 7 [mem 0x20000000-0xafffffff window]"
 					},
 					{
-						"time": 1.853008,
+						"time": 1.782075,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: resource 8 [mem 0xc0000000-0xfebfffff window]"
 					},
 					{
-						"time": 1.854687,
+						"time": 1.783573,
 						"facility": 0,
 						"priority": 6,
 						"msg": "pci_bus 0000:00: resource 9 [mem 0x100000000-0x8ffffffff window]"
 					},
 					{
-						"time": 1.857404,
+						"time": 1.787502,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PCI: CLS 0 bytes, default 64"
 					},
 					{
-						"time": 1.905184,
+						"time": 1.832834,
 						"facility": 0,
 						"priority": 6,
 						"msg": "workingset: timestamp_bits=46 max_order=17 bucket_order=0"
 					},
 					{
-						"time": 1.939689,
+						"time": 1.866234,
 						"facility": 0,
 						"priority": 6,
 						"msg": "squashfs: version 4.0 (2009/01/31) Phillip Lougher"
 					},
 					{
-						"time": 1.956579,
+						"time": 1.881083,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Block layer SCSI generic (bsg) driver version 0.4 loaded (major 247)"
 					},
 					{
-						"time": 1.967238,
+						"time": 1.891955,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_vmbus: registering driver hyperv_fb"
 					},
 					{
-						"time": 1.975824,
+						"time": 1.900539,
 						"facility": 0,
 						"priority": 6,
 						"msg": "input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0"
 					},
 					{
-						"time": 1.999491,
+						"time": 1.920774,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: button: Power Button [PWRF]"
 					},
 					{
-						"time": 2.020528,
+						"time": 1.941007,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: \\_SB_.GSIG: Enabled at IRQ 22"
 					},
 					{
-						"time": 2.039543,
+						"time": 1.959342,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: \\_SB_.GSIH: Enabled at IRQ 23"
 					},
 					{
-						"time": 2.048348,
+						"time": 1.968466,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: \\_SB_.GSIE: Enabled at IRQ 20"
 					},
 					{
-						"time": 2.054698,
+						"time": 1.974463,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Serial: 8250/16550 driver, 16 ports, IRQ sharing enabled"
 					},
 					{
-						"time": 2.087866,
+						"time": 2.007544,
 						"facility": 0,
 						"priority": 6,
 						"msg": "00:04: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A"
 					},
 					{
-						"time": 2.147934,
+						"time": 2.071152,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Non-volatile memory driver v1.3"
 					},
 					{
-						"time": 2.149933,
+						"time": 2.073175,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Linux agpgart interface v0.103"
 					},
 					{
-						"time": 2.152892,
+						"time": 2.076663,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: bus type drm_connector registered"
 					},
 					{
-						"time": 2.159985,
+						"time": 2.083327,
 						"facility": 0,
 						"priority": 6,
 						"msg": "[drm] Found bochs VGA, ID 0xb0c0."
 					},
 					{
-						"time": 2.161038,
+						"time": 2.084814,
 						"facility": 0,
 						"priority": 6,
 						"msg": "[drm] Framebuffer size 16384 kB @ 0xfd000000, mmio @ 0xfeb90000."
 					},
 					{
-						"time": 2.175815,
+						"time": 2.098386,
 						"facility": 0,
 						"priority": 6,
 						"msg": "[drm] Found EDID data blob."
 					},
 					{
-						"time": 2.188235,
+						"time": 2.111364,
 						"facility": 0,
 						"priority": 6,
 						"msg": "[drm] Initialized bochs-drm 1.0.0 for 0000:00:01.0 on minor 0"
 					},
 					{
-						"time": 2.30423,
+						"time": 2.222825,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Console: switching to colour frame buffer device 128x48"
 					},
 					{
-						"time": 2.336591,
+						"time": 2.242804,
 						"facility": 0,
 						"priority": 6,
 						"msg": "bochs-drm 0000:00:01.0: [drm] fb0: bochs-drmdrmfb frame buffer device"
 					},
 					{
-						"time": 2.381151,
+						"time": 2.288622,
 						"facility": 0,
 						"priority": 6,
 						"msg": "loop: module loaded"
 					},
 					{
-						"time": 2.384549,
+						"time": 2.291555,
 						"facility": 0,
 						"priority": 6,
 						"msg": "virtio_blk virtio2: 1/0/0 default/read/poll queues"
 					},
 					{
-						"time": 2.413962,
+						"time": 2.321999,
 						"facility": 0,
 						"priority": 5,
 						"msg": "virtio_blk virtio2: [vda] 246784 512-byte logical blocks (126 MB/121 MiB)"
 					},
 					{
-						"time": 2.436143,
+						"time": 2.345429,
 						"facility": 0,
 						"priority": 6,
 						"msg": " vda: vda1 vda2"
 					},
 					{
-						"time": 2.442871,
+						"time": 2.352203,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Guest personality initialized and is inactive"
 					},
 					{
-						"time": 2.445701,
+						"time": 2.354979,
 						"facility": 0,
 						"priority": 6,
 						"msg": "VMCI host device registered (name=vmci, major=10, minor=256)"
 					},
 					{
-						"time": 2.447418,
+						"time": 2.356626,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Initialized host personality"
 					},
 					{
-						"time": 2.448992,
+						"time": 2.358123,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new interface driver rtsx_usb"
 					},
 					{
-						"time": 2.453217,
+						"time": 2.362275,
 						"facility": 0,
 						"priority": 5,
 						"msg": "lpc_ich 0000:00:1f.0: I/O space for GPIO uninitialized"
 					},
 					{
-						"time": 2.457132,
+						"time": 2.366017,
 						"facility": 0,
 						"priority": 6,
 						"msg": "VMware PVSCSI driver - version 1.0.7.0-k"
 					},
 					{
-						"time": 2.458797,
+						"time": 2.36759,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_vmbus: registering driver hv_storvsc"
 					},
 					{
-						"time": 2.477956,
+						"time": 2.386059,
 						"facility": 0,
 						"priority": 7,
 						"msg": "ahci 0000:00:1f.2: version 3.0"
 					},
 					{
-						"time": 2.482528,
+						"time": 2.390456,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ACPI: \\_SB_.GSIA: Enabled at IRQ 16"
 					},
 					{
-						"time": 2.497916,
+						"time": 2.405857,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ahci 0000:00:1f.2: AHCI vers 0001.0000, 32 command slots, 1.5 Gbps, SATA mode"
 					},
 					{
-						"time": 2.500102,
+						"time": 2.407953,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ahci 0000:00:1f.2: 6/6 ports implemented (port mask 0x3f)"
 					},
 					{
-						"time": 2.501963,
+						"time": 2.409831,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ahci 0000:00:1f.2: flags: 64bit ncq only "
 					},
 					{
-						"time": 2.52819,
+						"time": 2.434583,
 						"facility": 0,
 						"priority": 6,
 						"msg": "scsi host0: ahci"
 					},
 					{
-						"time": 2.535933,
+						"time": 2.443279,
 						"facility": 0,
 						"priority": 6,
 						"msg": "scsi host1: ahci"
 					},
 					{
-						"time": 2.540419,
+						"time": 2.448708,
 						"facility": 0,
 						"priority": 6,
 						"msg": "scsi host2: ahci"
 					},
 					{
-						"time": 2.545628,
+						"time": 2.453226,
 						"facility": 0,
 						"priority": 6,
 						"msg": "scsi host3: ahci"
 					},
 					{
-						"time": 2.549937,
+						"time": 2.459154,
 						"facility": 0,
 						"priority": 6,
 						"msg": "scsi host4: ahci"
 					},
 					{
-						"time": 2.555083,
+						"time": 2.463543,
 						"facility": 0,
 						"priority": 6,
 						"msg": "scsi host5: ahci"
 					},
 					{
-						"time": 2.558255,
+						"time": 2.467578,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata1: SATA max UDMA/133 abar m4096@0xfeb92000 port 0xfeb92100 irq 26 lpm-pol 1"
 					},
 					{
-						"time": 2.57039,
+						"time": 2.476135,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata2: SATA max UDMA/133 abar m4096@0xfeb92000 port 0xfeb92180 irq 26 lpm-pol 1"
 					},
 					{
-						"time": 2.576673,
+						"time": 2.482309,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata3: SATA max UDMA/133 abar m4096@0xfeb92000 port 0xfeb92200 irq 26 lpm-pol 1"
 					},
 					{
-						"time": 2.58178,
+						"time": 2.488472,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata4: SATA max UDMA/133 abar m4096@0xfeb92000 port 0xfeb92280 irq 26 lpm-pol 1"
 					},
 					{
-						"time": 2.587204,
+						"time": 2.494136,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata5: SATA max UDMA/133 abar m4096@0xfeb92000 port 0xfeb92300 irq 26 lpm-pol 1"
 					},
 					{
-						"time": 2.592139,
+						"time": 2.499334,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata6: SATA max UDMA/133 abar m4096@0xfeb92000 port 0xfeb92380 irq 26 lpm-pol 1"
 					},
 					{
-						"time": 2.619709,
+						"time": 2.529036,
 						"facility": 0,
 						"priority": 6,
 						"msg": "VMware vmxnet3 virtual NIC driver - version 1.9.0.0-k-NAPI"
 					},
 					{
-						"time": 2.625553,
+						"time": 2.535537,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_vmbus: registering driver hv_netvsc"
 					},
 					{
-						"time": 2.630385,
+						"time": 2.540658,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Fusion MPT base driver 3.04.20"
 					},
 					{
-						"time": 2.634847,
+						"time": 2.545285,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Copyright (c) 1999-2008 LSI Corporation"
 					},
 					{
-						"time": 2.639485,
+						"time": 2.551388,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Fusion MPT SPI Host driver 3.04.20"
 					},
 					{
-						"time": 2.644474,
+						"time": 2.556716,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Fusion MPT SAS Host driver 3.04.20"
 					},
 					{
-						"time": 2.652646,
+						"time": 2.565484,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new interface driver usb-storage"
 					},
 					{
-						"time": 2.659989,
+						"time": 2.572741,
 						"facility": 0,
 						"priority": 6,
 						"msg": "i8042: PNP: PS/2 Controller [PNP0303:KBD,PNP0f13:MOU] at 0x60,0x64 irq 1,12"
 					},
 					{
-						"time": 2.671051,
+						"time": 2.584358,
 						"facility": 0,
 						"priority": 6,
 						"msg": "serio: i8042 KBD port at 0x60,0x64 irq 1"
 					},
 					{
-						"time": 2.675695,
+						"time": 2.589113,
 						"facility": 0,
 						"priority": 6,
 						"msg": "serio: i8042 AUX port at 0x60,0x64 irq 12"
 					},
 					{
-						"time": 2.6801,
+						"time": 2.593952,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_vmbus: registering driver hyperv_keyboard"
 					},
 					{
-						"time": 2.68544,
+						"time": 2.599494,
 						"facility": 0,
 						"priority": 6,
 						"msg": "rtc_cmos 00:00: RTC can wake from S4"
 					},
 					{
-						"time": 2.697134,
+						"time": 2.610809,
 						"facility": 0,
 						"priority": 6,
 						"msg": "rtc_cmos 00:00: registered as rtc0"
 					},
 					{
-						"time": 2.702368,
+						"time": 2.616046,
 						"facility": 0,
 						"priority": 6,
-						"msg": "rtc_cmos 00:00: setting system clock to 2026-10-11T22:41:01 UTC (1791758461)"
+						"msg": "rtc_cmos 00:00: setting system clock to 2026-10-11T23:48:11 UTC (1791762491)"
 					},
 					{
-						"time": 2.70827,
+						"time": 2.62139,
 						"facility": 0,
 						"priority": 6,
 						"msg": "rtc_cmos 00:00: alarms up to one day, y3k, 114 bytes nvram, hpet irqs"
 					},
 					{
-						"time": 2.714712,
+						"time": 2.628517,
 						"facility": 0,
 						"priority": 3,
 						"msg": "intel_powerclamp: CPU does not support MWAIT"
 					},
 					{
-						"time": 2.71927,
+						"time": 2.633454,
 						"facility": 0,
 						"priority": 4,
 						"msg": "amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled"
 					},
 					{
-						"time": 2.724457,
+						"time": 2.638965,
 						"facility": 0,
 						"priority": 6,
 						"msg": "sdhci: Secure Digital Host Controller Interface driver"
 					},
 					{
-						"time": 2.7283,
+						"time": 2.643048,
 						"facility": 0,
 						"priority": 6,
 						"msg": "sdhci: Copyright(c) Pierre Ossman"
 					},
 					{
-						"time": 2.733106,
+						"time": 2.648614,
 						"facility": 0,
 						"priority": 6,
 						"msg": "VUB300 Driver rom wait states = 1C irqpoll timeout = 0400"
 					},
 					{
-						"time": 2.746689,
+						"time": 2.658526,
 						"facility": 0,
 						"priority": 6,
 						"msg": "input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input1"
 					},
 					{
-						"time": 2.8017,
+						"time": 2.708974,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new interface driver vub300"
 					},
 					{
-						"time": 2.806614,
+						"time": 2.714102,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new interface driver ushc"
 					},
 					{
-						"time": 2.823201,
+						"time": 2.728938,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hid: raw HID events driver (C) Jiri Kosina"
 					},
 					{
-						"time": 2.828781,
+						"time": 2.734578,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_vmbus: registering driver hid_hyperv"
 					},
 					{
-						"time": 2.834377,
+						"time": 2.740076,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbcore: registered new interface driver usbhid"
 					},
 					{
-						"time": 2.838011,
+						"time": 2.744075,
 						"facility": 0,
 						"priority": 6,
 						"msg": "usbhid: USB HID core driver"
 					},
 					{
-						"time": 2.841614,
+						"time": 2.747925,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_utils: Registering HyperV Utility Driver"
 					},
 					{
-						"time": 2.845382,
+						"time": 2.751478,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_vmbus: registering driver hv_utils"
 					},
 					{
-						"time": 2.848732,
+						"time": 2.755082,
 						"facility": 0,
 						"priority": 6,
 						"msg": "hv_vmbus: registering driver hv_balloon"
 					},
 					{
-						"time": 2.857348,
+						"time": 2.763979,
 						"facility": 0,
 						"priority": 6,
 						"msg": "NET: Registered PF_INET6 protocol family"
 					},
 					{
-						"time": 2.885617,
+						"time": 2.793427,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Segment Routing with IPv6"
 					},
 					{
-						"time": 2.889725,
+						"time": 2.79818,
 						"facility": 0,
 						"priority": 6,
 						"msg": "In-situ OAM (IOAM) with IPv6"
 					},
 					{
-						"time": 2.894503,
+						"time": 2.80294,
 						"facility": 0,
 						"priority": 6,
 						"msg": "NET: Registered PF_PACKET protocol family"
 					},
 					{
-						"time": 2.898937,
+						"time": 2.807975,
 						"facility": 0,
 						"priority": 6,
 						"msg": "bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this."
 					},
 					{
-						"time": 2.910805,
+						"time": 2.819899,
 						"facility": 0,
 						"priority": 6,
 						"msg": "8021q: 802.1Q VLAN Support v1.8"
 					},
 					{
-						"time": 2.916917,
+						"time": 2.826071,
 						"facility": 0,
 						"priority": 6,
 						"msg": "NET: Registered PF_VSOCK protocol family"
 					},
 					{
-						"time": 2.932174,
+						"time": 2.841726,
 						"facility": 0,
 						"priority": 6,
 						"msg": "IPI shorthand broadcast: enabled"
 					},
 					{
-						"time": 2.982973,
+						"time": 2.896088,
 						"facility": 0,
 						"priority": 6,
-						"msg": "sched_clock: Marking stable (3070238930, -96664027)->(2980763830, -7188927)"
+						"msg": "sched_clock: Marking stable (2990186463, -96439462)->(2897254533, -3507532)"
 					},
 					{
-						"time": 3.043728,
+						"time": 2.966995,
 						"facility": 0,
 						"priority": 6,
 						"msg": "tsc: Refined TSC clocksource calibration: 1000.001 MHz"
 					},
 					{
-						"time": 3.049348,
+						"time": 2.972751,
 						"facility": 0,
 						"priority": 6,
 						"msg": "clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0xe6a1810bf3, max_idle_ns: 440795249465 ns"
 					},
 					{
-						"time": 3.122198,
+						"time": 3.048322,
 						"facility": 0,
 						"priority": 6,
 						"msg": "clocksource: Switched to clocksource tsc"
 					},
 					{
-						"time": 3.139919,
-						"facility": 0,
-						"priority": 6,
-						"msg": "ata3: SATA link up 1.5 Gbps (SStatus 113 SControl 300)"
-					},
-					{
-						"time": 3.149853,
-						"facility": 0,
-						"priority": 4,
-						"msg": "ata3.00: LPM support broken, forcing max_power"
-					},
-					{
-						"time": 3.154477,
-						"facility": 0,
-						"priority": 6,
-						"msg": "ata3.00: ATAPI: QEMU DVD-ROM, 2.5+, max UDMA/100"
-					},
-					{
-						"time": 3.158611,
-						"facility": 0,
-						"priority": 6,
-						"msg": "ata3.00: applying bridge limits"
-					},
-					{
-						"time": 3.16617,
-						"facility": 0,
-						"priority": 4,
-						"msg": "ata3.00: LPM support broken, forcing max_power"
-					},
-					{
-						"time": 3.170369,
-						"facility": 0,
-						"priority": 6,
-						"msg": "ata3.00: configured for UDMA/100"
-					},
-					{
-						"time": 3.178431,
-						"facility": 0,
-						"priority": 6,
-						"msg": "ata5: SATA link down (SStatus 0 SControl 300)"
-					},
-					{
-						"time": 3.182571,
-						"facility": 0,
-						"priority": 6,
-						"msg": "ata4: SATA link down (SStatus 0 SControl 300)"
-					},
-					{
-						"time": 3.186921,
-						"facility": 0,
-						"priority": 6,
-						"msg": "ata6: SATA link down (SStatus 0 SControl 300)"
-					},
-					{
-						"time": 3.190804,
+						"time": 3.057428,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata1: SATA link down (SStatus 0 SControl 300)"
 					},
 					{
-						"time": 3.197483,
+						"time": 3.066555,
+						"facility": 0,
+						"priority": 6,
+						"msg": "ata4: SATA link down (SStatus 0 SControl 300)"
+					},
+					{
+						"time": 3.07105,
+						"facility": 0,
+						"priority": 6,
+						"msg": "ata5: SATA link down (SStatus 0 SControl 300)"
+					},
+					{
+						"time": 3.076116,
+						"facility": 0,
+						"priority": 6,
+						"msg": "ata3: SATA link up 1.5 Gbps (SStatus 113 SControl 300)"
+					},
+					{
+						"time": 3.085105,
+						"facility": 0,
+						"priority": 4,
+						"msg": "ata3.00: LPM support broken, forcing max_power"
+					},
+					{
+						"time": 3.089656,
+						"facility": 0,
+						"priority": 6,
+						"msg": "ata3.00: ATAPI: QEMU DVD-ROM, 2.5+, max UDMA/100"
+					},
+					{
+						"time": 3.094118,
+						"facility": 0,
+						"priority": 6,
+						"msg": "ata3.00: applying bridge limits"
+					},
+					{
+						"time": 3.099995,
+						"facility": 0,
+						"priority": 4,
+						"msg": "ata3.00: LPM support broken, forcing max_power"
+					},
+					{
+						"time": 3.106041,
+						"facility": 0,
+						"priority": 6,
+						"msg": "ata3.00: configured for UDMA/100"
+					},
+					{
+						"time": 3.112187,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ata2: SATA link down (SStatus 0 SControl 300)"
 					},
 					{
-						"time": 3.217786,
+						"time": 3.131302,
 						"facility": 0,
 						"priority": 5,
 						"msg": "scsi 2:0:0:0: CD-ROM            QEMU     QEMU DVD-ROM     2.5+ PQ: 0 ANSI: 5"
 					},
 					{
-						"time": 3.288799,
+						"time": 3.14884,
+						"facility": 0,
+						"priority": 6,
+						"msg": "ata6: SATA link down (SStatus 0 SControl 300)"
+					},
+					{
+						"time": 3.209041,
 						"facility": 0,
 						"priority": 6,
 						"msg": "sr 2:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray"
 					},
 					{
-						"time": 3.293951,
+						"time": 3.214646,
 						"facility": 0,
 						"priority": 6,
 						"msg": "cdrom: Uniform CD-ROM driver Revision: 3.20"
 					},
 					{
-						"time": 3.306751,
+						"time": 3.22751,
 						"facility": 0,
 						"priority": 6,
 						"msg": "sr 2:0:0:0: [sr0] Hmm, seems the drive doesn't support multisession CD's"
 					},
 					{
-						"time": 3.324105,
+						"time": 3.243147,
 						"facility": 0,
 						"priority": 7,
 						"msg": "sr 2:0:0:0: Attached scsi CD-ROM sr0"
 					},
 					{
-						"time": 3.33282,
+						"time": 3.252463,
 						"facility": 0,
 						"priority": 6,
 						"msg": "clk: Disabling unused clocks"
 					},
 					{
-						"time": 3.398555,
+						"time": 3.31998,
 						"facility": 0,
 						"priority": 6,
 						"msg": "VFS: Mounted root (squashfs filesystem) readonly on device 254:2."
 					},
 					{
-						"time": 3.479475,
+						"time": 3.38919,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Freeing unused kernel image (initmem) memory: 1492K"
 					},
 					{
-						"time": 3.48438,
+						"time": 3.394268,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Write protecting the kernel read-only data: 18432k"
 					},
 					{
-						"time": 3.498824,
+						"time": 3.406867,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Freeing unused kernel image (rodata/data gap) memory: 1544K"
 					},
 					{
-						"time": 3.505637,
+						"time": 3.412333,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Run /sbin/init as init process"
 					},
 					{
-						"time": 3.510199,
+						"time": 3.416448,
 						"facility": 0,
 						"priority": 7,
 						"msg": "  with arguments:"
 					},
 					{
-						"time": 3.5103,
+						"time": 3.416536,
 						"facility": 0,
 						"priority": 7,
 						"msg": "    /sbin/init"
 					},
 					{
-						"time": 3.510384,
+						"time": 3.416596,
 						"facility": 0,
 						"priority": 7,
 						"msg": "  with environment:"
 					},
 					{
-						"time": 3.510464,
+						"time": 3.416673,
 						"facility": 0,
 						"priority": 7,
 						"msg": "    HOME=/"
 					},
 					{
-						"time": 3.510501,
+						"time": 3.416728,
 						"facility": 0,
 						"priority": 7,
 						"msg": "    TERM=linux"
 					},
 					{
-						"time": 4.02482,
+						"time": 3.932202,
 						"facility": 1,
 						"priority": 6,
 						"msg": "init: Console is alive"
 					},
 					{
-						"time": 4.801489,
+						"time": 4.677703,
 						"facility": 1,
 						"priority": 6,
 						"msg": "kmodloader: loading kernel modules from /etc/modules-boot.d/*"
 					},
 					{
-						"time": 4.931692,
+						"time": 4.799567,
 						"facility": 0,
 						"priority": 4,
 						"msg": "button_hotplug: loading out-of-tree module taints kernel."
 					},
 					{
-						"time": 4.946617,
+						"time": 4.810282,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Button Hotplug driver version 0.4.1"
 					},
 					{
-						"time": 4.991624,
+						"time": 4.852723,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Intel(R) 2.5G Ethernet Linux Driver"
 					},
 					{
-						"time": 4.996198,
+						"time": 4.85748,
 						"facility": 0,
 						"priority": 6,
 						"msg": "Copyright(c) 2018 Intel Corporation."
 					},
 					{
-						"time": 5.021465,
+						"time": 4.882318,
 						"facility": 0,
 						"priority": 6,
 						"msg": "igb: Intel(R) Gigabit Ethernet Network Driver"
 					},
 					{
-						"time": 5.026168,
+						"time": 4.88722,
 						"facility": 0,
 						"priority": 6,
 						"msg": "igb: Copyright (c) 2007-2014 Intel Corporation."
 					},
 					{
-						"time": 5.058039,
+						"time": 4.917549,
 						"facility": 0,
 						"priority": 6,
 						"msg": "e1000e: Intel(R) PRO/1000 Network Driver"
 					},
 					{
-						"time": 5.062577,
+						"time": 4.922125,
 						"facility": 0,
 						"priority": 6,
 						"msg": "e1000e: Copyright(c) 1999 - 2015 Intel Corporation."
 					},
 					{
-						"time": 5.087549,
+						"time": 4.945517,
 						"facility": 1,
 						"priority": 6,
 						"msg": "kmodloader: done loading kernel modules from /etc/modules-boot.d/*"
 					},
 					{
-						"time": 5.11303,
+						"time": 4.97222,
 						"facility": 1,
 						"priority": 6,
 						"msg": "init: - preinit -"
 					},
 					{
-						"time": 8.934414,
+						"time": 8.754614,
 						"facility": 0,
 						"priority": 5,
 						"msg": "random: crng init done"
 					},
 					{
-						"time": 9.973753,
+						"time": 9.794479,
 						"facility": 0,
 						"priority": 6,
 						"msg": "8021q: adding VLAN 0 to HW filter on device eth0"
 					},
 					{
-						"time": 15.934175,
+						"time": 15.760536,
 						"facility": 0,
 						"priority": 6,
 						"msg": "loop0: detected capacity change from 0 to 212992"
 					},
 					{
-						"time": 16.004287,
+						"time": 15.824472,
 						"facility": 0,
 						"priority": 6,
 						"msg": "loop0: detected capacity change from 212992 to 200960"
 					},
 					{
-						"time": 16.037524,
+						"time": 15.854869,
 						"facility": 1,
 						"priority": 6,
 						"msg": "mount_root: overlay filesystem in /dev/loop0 has not been formatted yet"
 					},
 					{
-						"time": 16.722801,
+						"time": 16.565153,
 						"facility": 0,
 						"priority": 6,
-						"msg": "EXT4-fs (loop0): mounted filesystem 8ae4070d-1fe0-4298-9886-3cb37553414a r/w with ordered data mode. Quota mode: disabled."
+						"msg": "EXT4-fs (loop0): mounted filesystem 08575718-082b-49ad-afbd-37e3ab6039ce r/w with ordered data mode. Quota mode: disabled."
 					},
 					{
-						"time": 16.757983,
+						"time": 16.600506,
 						"facility": 1,
 						"priority": 6,
 						"msg": "mount_root: overlay filesystem has not been fully initialized yet"
 					},
 					{
-						"time": 16.796715,
+						"time": 16.637634,
 						"facility": 1,
 						"priority": 6,
 						"msg": "mount_root: switching to ext4 overlay"
 					},
 					{
-						"time": 16.84453,
+						"time": 16.68915,
 						"facility": 0,
 						"priority": 4,
 						"msg": "overlayfs: null uuid detected in lower fs '/', falling back to xino=off,index=off,nfs_export=off."
 					},
 					{
-						"time": 18.124991,
+						"time": 17.974722,
 						"facility": 0,
 						"priority": 6,
 						"msg": "EXT4-fs (vda1): mounted filesystem 84173db5-fa99-e35a-95c6-28613cc79ea9 r/w without journal. Quota mode: disabled."
 					},
 					{
-						"time": 18.187233,
+						"time": 18.031546,
 						"facility": 1,
 						"priority": 4,
 						"msg": "urandom-seed: Seed file not found (/etc/urandom.seed)"
 					},
 					{
-						"time": 18.510248,
+						"time": 18.365677,
 						"facility": 1,
 						"priority": 6,
 						"msg": "procd: - early -"
 					},
 					{
-						"time": 19.71309,
+						"time": 19.548756,
 						"facility": 1,
 						"priority": 6,
 						"msg": "procd: - ubus -"
 					},
 					{
-						"time": 19.939707,
+						"time": 19.764846,
 						"facility": 1,
 						"priority": 6,
 						"msg": "procd: - init -"
 					},
 					{
-						"time": 23.36196,
+						"time": 23.037341,
 						"facility": 1,
 						"priority": 6,
 						"msg": "urngd: v1.0.2 started."
 					},
 					{
-						"time": 24.357384,
+						"time": 24.084793,
 						"facility": 1,
 						"priority": 6,
 						"msg": "kmodloader: loading kernel modules from /etc/modules.d/*"
 					},
 					{
-						"time": 24.531865,
+						"time": 24.258497,
 						"facility": 0,
 						"priority": 6,
 						"msg": "e1000: Intel(R) PRO/1000 Network Driver"
 					},
 					{
-						"time": 24.538224,
+						"time": 24.264764,
 						"facility": 0,
 						"priority": 6,
 						"msg": "e1000: Copyright (c) 1999-2006 Intel Corporation."
 					},
 					{
-						"time": 24.573935,
+						"time": 24.299949,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ixgbe: Intel(R) 10 Gigabit PCI Express Network Driver"
 					},
 					{
-						"time": 24.579808,
+						"time": 24.306157,
 						"facility": 0,
 						"priority": 6,
 						"msg": "ixgbe: Copyright (c) 1999-2016 Intel Corporation."
 					},
 					{
-						"time": 24.645133,
+						"time": 24.370422,
 						"facility": 0,
 						"priority": 6,
 						"msg": "i2c_dev: i2c /dev entries driver"
 					},
 					{
-						"time": 25.04453,
+						"time": 24.772847,
 						"facility": 0,
 						"priority": 6,
 						"msg": "PPP generic driver version 2.4.2"
 					},
 					{
-						"time": 25.070289,
+						"time": 24.796274,
 						"facility": 0,
 						"priority": 6,
 						"msg": "NET: Registered PF_PPPOX protocol family"
 					},
 					{
-						"time": 25.576782,
+						"time": 25.311242,
 						"facility": 1,
 						"priority": 6,
 						"msg": "kmodloader: done loading kernel modules from /etc/modules.d/*"
 					},
 					{
-						"time": 63.874699,
+						"time": 63.886867,
 						"facility": 0,
 						"priority": 6,
 						"msg": "8021q: adding VLAN 0 to HW filter on device eth0"
 					},
 					{
-						"time": 63.997122,
+						"time": 64.084125,
 						"facility": 0,
 						"priority": 6,
 						"msg": "br-lan: port 1(eth0) entered blocking state"
 					},
 					{
-						"time": 64.006996,
+						"time": 64.094807,
 						"facility": 0,
 						"priority": 6,
 						"msg": "br-lan: port 1(eth0) entered disabled state"
 					},
 					{
-						"time": 64.016303,
+						"time": 64.101608,
 						"facility": 0,
 						"priority": 6,
 						"msg": "virtio_net virtio0 eth0: entered allmulticast mode"
 					},
 					{
-						"time": 64.028753,
+						"time": 64.112003,
 						"facility": 0,
 						"priority": 6,
 						"msg": "virtio_net virtio0 eth0: entered promiscuous mode"
 					},
 					{
-						"time": 64.546085,
+						"time": 64.603258,
 						"facility": 0,
 						"priority": 6,
 						"msg": "8021q: adding VLAN 0 to HW filter on device eth1"
 					},
 					{
-						"time": 64.7146,
+						"time": 64.695445,
 						"facility": 0,
 						"priority": 6,
 						"msg": "br-lan: port 1(eth0) entered blocking state"
 					},
 					{
-						"time": 64.720355,
+						"time": 64.700758,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered forwarding state"
+					},
+					{
+						"time": 1604.261389,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered disabled state"
+					},
+					{
+						"time": 1604.467894,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: left allmulticast mode"
+					},
+					{
+						"time": 1604.478683,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: left promiscuous mode"
+					},
+					{
+						"time": 1604.487738,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered disabled state"
+					},
+					{
+						"time": 1604.86097,
+						"facility": 0,
+						"priority": 6,
+						"msg": "8021q: adding VLAN 0 to HW filter on device eth0"
+					},
+					{
+						"time": 1604.90219,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered blocking state"
+					},
+					{
+						"time": 1604.90846,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered disabled state"
+					},
+					{
+						"time": 1604.913956,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: entered allmulticast mode"
+					},
+					{
+						"time": 1604.922436,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: entered promiscuous mode"
+					},
+					{
+						"time": 1605.355472,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered blocking state"
+					},
+					{
+						"time": 1605.362017,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered forwarding state"
+					},
+					{
+						"time": 1628.006486,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered disabled state"
+					},
+					{
+						"time": 1628.14264,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: left allmulticast mode"
+					},
+					{
+						"time": 1628.163158,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: left promiscuous mode"
+					},
+					{
+						"time": 1628.172262,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered disabled state"
+					},
+					{
+						"time": 1628.463585,
+						"facility": 0,
+						"priority": 6,
+						"msg": "8021q: adding VLAN 0 to HW filter on device eth0"
+					},
+					{
+						"time": 1628.490773,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered blocking state"
+					},
+					{
+						"time": 1628.496689,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered disabled state"
+					},
+					{
+						"time": 1628.501832,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: entered allmulticast mode"
+					},
+					{
+						"time": 1628.509329,
+						"facility": 0,
+						"priority": 6,
+						"msg": "virtio_net virtio0 eth0: entered promiscuous mode"
+					},
+					{
+						"time": 1629.075659,
+						"facility": 0,
+						"priority": 6,
+						"msg": "br-lan: port 1(eth0) entered blocking state"
+					},
+					{
+						"time": 1629.082089,
 						"facility": 0,
 						"priority": 6,
 						"msg": "br-lan: port 1(eth0) entered forwarding state"
 					}
 				]
 			}
+		},
+		{
+			"method": "kernel_log",
+			"args": {
+				"after": "99999.0"
+			},
+			"status": 0,
+			"result": {
+				"log": []
+			}
+		},
+		{
+			"method": "signal",
+			"args": {
+				"pid": 1,
+				"signal": 15
+			},
+			"status": 2
 		},
 		{
 			"method": "conntrack",
@@ -3337,71 +3485,109 @@
 					{
 						"family": "ipv4",
 						"protocol": "tcp",
-						"timeout": 110,
-						"bytes": 15765,
-						"packets": 45,
+						"timeout": 7439,
+						"bytes": 51589,
+						"packets": 93,
+						"state": "ESTABLISHED",
+						"src": "192.168.1.2",
+						"dst": "192.168.1.1",
+						"sport": 45994,
+						"dport": 80
+					},
+					{
+						"family": "ipv4",
+						"protocol": "tcp",
+						"timeout": 107,
+						"bytes": 15877,
+						"packets": 48,
 						"state": "TIME_WAIT",
 						"src": "192.168.1.2",
 						"dst": "192.168.1.1",
-						"sport": 49370,
+						"sport": 55926,
+						"dport": 22
+					},
+					{
+						"family": "ipv4",
+						"protocol": "tcp",
+						"timeout": 113,
+						"bytes": 5541,
+						"packets": 39,
+						"state": "TIME_WAIT",
+						"src": "192.168.1.2",
+						"dst": "192.168.1.1",
+						"sport": 55834,
 						"dport": 22
 					},
 					{
 						"family": "ipv4",
 						"protocol": "udp",
-						"timeout": 29,
+						"timeout": 48,
 						"bytes": 152,
 						"packets": 2,
 						"src": "10.0.2.15",
-						"dst": "77.74.199.25",
-						"sport": 39805,
+						"dst": "83.217.166.45",
+						"sport": 42718,
 						"dport": 123
-					},
-					{
-						"family": "ipv6",
-						"protocol": "udp",
-						"timeout": 25,
-						"bytes": 152,
-						"packets": 1,
-						"src": "fe80:0000:0000:0000:5054:00ff:fe12:3457",
-						"dst": "ff02:0000:0000:0000:0000:0000:0001:0002",
-						"sport": 546,
-						"dport": 547
 					},
 					{
 						"family": "ipv4",
 						"protocol": "tcp",
-						"timeout": 115,
-						"bytes": 7769,
-						"packets": 64,
+						"timeout": 104,
+						"bytes": 57073,
+						"packets": 51,
 						"state": "TIME_WAIT",
 						"src": "192.168.1.2",
 						"dst": "192.168.1.1",
-						"sport": 33454,
+						"sport": 55888,
+						"dport": 22
+					},
+					{
+						"family": "ipv4",
+						"protocol": "tcp",
+						"timeout": 108,
+						"bytes": 15837,
+						"packets": 47,
+						"state": "TIME_WAIT",
+						"src": "192.168.1.2",
+						"dst": "192.168.1.1",
+						"sport": 55810,
+						"dport": 22
+					},
+					{
+						"family": "ipv4",
+						"protocol": "tcp",
+						"timeout": 109,
+						"bytes": 15837,
+						"packets": 47,
+						"state": "TIME_WAIT",
+						"src": "192.168.1.2",
+						"dst": "192.168.1.1",
+						"sport": 55824,
+						"dport": 22
+					},
+					{
+						"family": "ipv4",
+						"protocol": "tcp",
+						"timeout": 103,
+						"bytes": 316097,
+						"packets": 107,
+						"state": "TIME_WAIT",
+						"src": "192.168.1.2",
+						"dst": "192.168.1.1",
+						"sport": 55868,
 						"dport": 22
 					},
 					{
 						"family": "ipv4",
 						"protocol": "tcp",
 						"timeout": 7439,
-						"bytes": 16896,
-						"packets": 60,
+						"bytes": 15741,
+						"packets": 54,
 						"state": "ESTABLISHED",
 						"src": "192.168.1.2",
 						"dst": "192.168.1.1",
-						"sport": 59898,
+						"sport": 46006,
 						"dport": 80
-					},
-					{
-						"family": "ipv4",
-						"protocol": "udp",
-						"timeout": 2,
-						"bytes": 152,
-						"packets": 2,
-						"src": "10.0.2.15",
-						"dst": "91.135.3.179",
-						"sport": 50536,
-						"dport": 123
 					},
 					{
 						"family": "ipv4",
@@ -3410,59 +3596,60 @@
 						"bytes": 152,
 						"packets": 2,
 						"src": "10.0.2.15",
-						"dst": "152.67.150.30",
-						"sport": 38064,
+						"dst": "178.79.158.157",
+						"sport": 41699,
 						"dport": 123
 					},
 					{
 						"family": "ipv4",
 						"protocol": "tcp",
-						"timeout": 109,
-						"bytes": 46557,
-						"packets": 45,
+						"timeout": 104,
+						"bytes": 15725,
+						"packets": 44,
 						"state": "TIME_WAIT",
 						"src": "192.168.1.2",
 						"dst": "192.168.1.1",
-						"sport": 49358,
+						"sport": 55902,
 						"dport": 22
 					},
 					{
 						"family": "ipv4",
 						"protocol": "tcp",
-						"timeout": 109,
-						"bytes": 15805,
-						"packets": 46,
+						"timeout": 103,
+						"bytes": 15605,
+						"packets": 41,
 						"state": "TIME_WAIT",
 						"src": "192.168.1.2",
 						"dst": "192.168.1.1",
-						"sport": 49346,
+						"sport": 55880,
 						"dport": 22
 					},
 					{
 						"family": "ipv4",
 						"protocol": "tcp",
-						"timeout": 112,
-						"bytes": 5361,
-						"packets": 43,
+						"timeout": 106,
+						"bytes": 5205,
+						"packets": 40,
 						"state": "TIME_WAIT",
 						"src": "192.168.1.2",
 						"dst": "192.168.1.1",
-						"sport": 49372,
+						"sport": 55918,
 						"dport": 22
-					},
-					{
-						"family": "ipv4",
-						"protocol": "tcp",
-						"timeout": 7439,
-						"bytes": 47500,
-						"packets": 82,
-						"state": "ESTABLISHED",
-						"src": "192.168.1.2",
-						"dst": "192.168.1.1",
-						"sport": 59904,
-						"dport": 80
 					}
 				]
+			}
+		},
+		{
+			"method": "conntrack_summary",
+			"args": {},
+			"status": 0,
+			"result": {
+				"total": 13,
+				"tcp": 11,
+				"udp": 2,
+				"icmp": 0,
+				"other": 0,
+				"max": 31232
 			}
 		}
 	]

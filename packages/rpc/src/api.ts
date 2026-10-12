@@ -8,6 +8,9 @@ import type { RpcClient } from './client';
 import { RpcError } from './errors';
 import type {
 	AppManifest,
+	ConntrackSummary,
+	ProcessList,
+	WifiDeviceStats,
 	BlockDevice,
 	ConntrackEntry,
 	DhcpLease,
@@ -16,7 +19,6 @@ import type {
 	Led,
 	LocalTime,
 	MountPoint,
-	ProcessInfo,
 	RealtimeStats,
 	UsbDevice,
 } from './nuci-types';
@@ -200,6 +202,56 @@ export function createApi(client: RpcClient) {
 			},
 		},
 
+		/** Per-device wireless stats, the same shape as the `wifi` stream. */
+		async wifiStats(): Promise<Record<string, WifiDeviceStats>> {
+			let devices: string[];
+			try {
+				devices = (await call<{ devices: string[] }>('iwinfo', 'devices')).devices;
+			} catch (e) {
+				if (e instanceof RpcError && e.isNotFound) return {};
+				throw e;
+			}
+			const rows = await Promise.all(
+				devices.map(async (device) => {
+					const [info, assoc] = await Promise.all([
+						call<IwinfoInfo>('iwinfo', 'info', { device }),
+						call<{ results: IwinfoStation[] }>('iwinfo', 'assoclist', { device }).catch(
+							() => ({ results: [] }),
+						),
+					]);
+					const {
+						ssid,
+						mode,
+						channel,
+						frequency,
+						signal,
+						noise,
+						bitrate,
+						quality,
+						quality_max,
+						txpower,
+					} = info;
+					return [
+						device,
+						{
+							ssid,
+							mode,
+							channel,
+							frequency,
+							signal,
+							noise,
+							bitrate,
+							quality,
+							quality_max,
+							txpower,
+							stations: assoc.results.length,
+						},
+					] as const;
+				}),
+			);
+			return Object.fromEntries(rows) as Record<string, WifiDeviceStats>;
+		},
+
 		iwinfo: {
 			devices: async () => (await call<{ devices: string[] }>('iwinfo', 'devices')).devices,
 			info: (device: string) => call<IwinfoInfo>('iwinfo', 'info', { device }),
@@ -230,11 +282,19 @@ export function createApi(client: RpcClient) {
 			},
 			status: {
 				realtime: () => call<RealtimeStats>('nuci.status', 'realtime'),
-				processes: async () =>
-					(await call<{ processes: ProcessInfo[] }>('nuci.status', 'processes'))
-						.processes,
-				kernelLog: async () =>
-					(await call<{ log: KernelLogEntry[] }>('nuci.status', 'kernel_log')).log,
+				processes: () => call<ProcessList>('nuci.status', 'processes'),
+				/** Kernel log, optionally only entries after `after` seconds since boot. */
+				kernelLog: async (after?: number) =>
+					(
+						await call<{ log: KernelLogEntry[] }>(
+							'nuci.status',
+							'kernel_log',
+							after === undefined ? {} : { after: after.toFixed(6) },
+						)
+					).log,
+				conntrackSummary: () => call<ConntrackSummary>('nuci.status', 'conntrack_summary'),
+				signal: (pid: number, signal: number) =>
+					call('nuci.status', 'signal', { pid, signal }),
 				conntrack: async () =>
 					(await call<{ connections: ConntrackEntry[] }>('nuci.status', 'conntrack'))
 						.connections,

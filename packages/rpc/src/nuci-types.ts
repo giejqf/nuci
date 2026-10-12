@@ -145,3 +145,38 @@ export interface KnownHost {
 	ipv4: string[];
 	ipv6: string[];
 }
+
+export interface ConntrackSummary {
+	total: number;
+	max: number;
+	tcp: number;
+	udp: number;
+	icmp: number;
+	other: number;
+}
+
+export interface WifiDeviceStats {
+	ssid?: string;
+	mode?: string;
+	channel?: number;
+	frequency?: number;
+	/** dBm */
+	signal?: number;
+	/** dBm */
+	noise?: number;
+	/** kbit/s */
+	bitrate?: number;
+	quality?: number;
+	quality_max?: number;
+	txpower?: number;
+	stations: number;
+}
+
+export interface ProcessList {
+	processes: ProcessInfo[];
+	/** Sum of all CPU jiffies in /proc/stat, for per-process CPU share between samples. */
+	total_ticks: number;
+}
+
+/** Signals nuci.status signal accepts. */
+export const SIGNALS = { HUP: 1, INT: 2, KILL: 9, TERM: 15, CONT: 18, STOP: 19 } as const;

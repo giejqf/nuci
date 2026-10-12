@@ -27,15 +27,41 @@ lab_put /www/nuci/apps/hello "$HELLO/dist/index.js"
 
 export NUCI_ROOT_PASSWORD NUCI_HTTP_PORT
 cd "$REPO/e2e"
+
+# Realtime transports to test (Phase 2 exit: the suite passes with SSE and,
+# with the handler disabled, with ubus polling).
+TRANSPORTS="${NUCI_E2E_TRANSPORTS:-sse poll}"
+EVENTS_PREFIX='/nuci/events=/usr/share/nuci/events.uc'
+
+set_handler() {
+	if [ "$1" = on ]; then
+		lab_ssh "uci -q get uhttpd.main.ucode_prefix | grep -qF '$EVENTS_PREFIX' || uci add_list uhttpd.main.ucode_prefix='$EVENTS_PREFIX'; uci commit uhttpd; /etc/init.d/uhttpd restart"
+	else
+		lab_ssh "uci -q del_list uhttpd.main.ucode_prefix='$EVENTS_PREFIX'; uci commit uhttpd; /etc/init.d/uhttpd restart"
+	fi
+	sleep 1
+}
+
 if [ "${NUCI_E2E_DOCKER:-auto}" != 1 ] && pnpm exec playwright install chromium >/dev/null 2>&1; then
-	exec pnpm exec playwright test "$@"
+	RUN=(pnpm exec playwright test)
+else
+	[ "${NUCI_E2E_DOCKER:-auto}" != 0 ] || { echo "playwright browsers unavailable" >&2; exit 1; }
+	PW_VERSION="$(node -p "require('@playwright/test/package.json').version")"
+	echo "[e2e] running Playwright $PW_VERSION in its container" >&2
+	RUN=(docker run --rm --network host --ipc host --init
+		--user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}"
+		-e NUCI_ROOT_PASSWORD -e NUCI_HTTP_PORT -e NUCI_E2E_TRANSPORT
+		-v "$REPO:$REPO" -w "$REPO/e2e"
+		"mcr.microsoft.com/playwright:v$PW_VERSION-noble"
+		node "$REPO/e2e/node_modules/@playwright/test/cli.js" test)
 fi
-[ "${NUCI_E2E_DOCKER:-auto}" != 0 ] || { echo "playwright browsers unavailable" >&2; exit 1; }
-PW_VERSION="$(node -p "require('@playwright/test/package.json').version")"
-echo "[e2e] running Playwright $PW_VERSION in its container" >&2
-exec docker run --rm --network host --ipc host --init \
-	--user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}" \
-	-e NUCI_ROOT_PASSWORD -e NUCI_HTTP_PORT \
-	-v "$REPO:$REPO" -w "$REPO/e2e" \
-	"mcr.microsoft.com/playwright:v$PW_VERSION-noble" \
-	node "$REPO/e2e/node_modules/@playwright/test/cli.js" test "$@"
+
+trap 'set_handler on' EXIT
+rc=0
+for NUCI_E2E_TRANSPORT in $TRANSPORTS; do
+	export NUCI_E2E_TRANSPORT
+	echo "[e2e] transport: $NUCI_E2E_TRANSPORT" >&2
+	if [ "$NUCI_E2E_TRANSPORT" = poll ]; then set_handler off; else set_handler on; fi
+	"${RUN[@]}" --output "test-results/$NUCI_E2E_TRANSPORT" "$@" || rc=1
+done
+exit "$rc"

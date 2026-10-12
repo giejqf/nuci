@@ -35,9 +35,9 @@ if [ "$RPCD" = 1 ]; then
 	lab_ssh '/etc/init.d/rpcd restart'
 fi
 if [ "$SERVER" = 1 ]; then
-	log "server: events.uc, nuci-base files, uhttpd integration"
+	log "server: events.uc, probe.uc, nuci-base files, uhttpd integration"
 	FILES="$REPO_ROOT/feed/nuci-base/files"
-	lab_put /usr/share/nuci "$REPO_ROOT/server/events.uc"
+	lab_put /usr/share/nuci "$REPO_ROOT/server/events.uc" "$REPO_ROOT/server/probe.uc"
 	lab_put /usr/libexec/nuci "$FILES/root-redirect.sh"
 	lab_put /tmp/nuci-sync "$FILES/nuci.config" "$FILES/nuci.init" "$FILES/nuci.uci-defaults"
 	lab_ssh 'set -e

@@ -28,7 +28,8 @@ endef
 
 define Package/nuci-base/description
   Static files of the NuCI single-page application served at /nuci/,
-  the /nuci/events Server-Sent Events handler, rpcd ACLs and the
+  the /nuci/events Server-Sent Events handler, the /nuci/probe apply
+  probe, rpcd ACLs and the
   optional / redirect.
 endef
 
@@ -42,7 +43,7 @@ define Build/Prepare
 	$(INSTALL_DIR) $(PKG_BUILD_DIR)
 	$(CP) $(NUCI_SRC)/apps/web/dist $(PKG_BUILD_DIR)/www
 	rm -rf $(PKG_BUILD_DIR)/www/.vite
-	$(CP) $(NUCI_SRC)/server/events.uc $(PKG_BUILD_DIR)/
+	$(CP) $(NUCI_SRC)/server/events.uc $(NUCI_SRC)/server/probe.uc $(PKG_BUILD_DIR)/
 	$(CP) $(NUCI_SRC)/rpcd/acl.d/nuci-base.json $(PKG_BUILD_DIR)/
 endef
 
@@ -54,6 +55,7 @@ define Package/nuci-base/install
 	$(CP) $(PKG_BUILD_DIR)/www/* $(1)/www/nuci/
 	$(INSTALL_DIR) $(1)/usr/share/nuci/apps
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/events.uc $(1)/usr/share/nuci/events.uc
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/probe.uc $(1)/usr/share/nuci/probe.uc
 	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/nuci-base.json $(1)/usr/share/rpcd/acl.d/
 	$(INSTALL_DIR) $(1)/etc/config
@@ -71,7 +73,9 @@ define Package/nuci-base/postrm
 [ -n "$${IPKG_INSTROOT}" ] && exit 0
 # Drop our redirect and uhttpd hook; leave everything else untouched.
 grep -q 'nuci-root-redirect' /www/index.html 2>/dev/null && rm -f /www/index.html
-uci -q del_list uhttpd.main.ucode_prefix='/nuci/events=/usr/share/nuci/events.uc' && uci commit uhttpd
+uci -q del_list uhttpd.main.ucode_prefix='/nuci/events=/usr/share/nuci/events.uc'
+uci -q del_list uhttpd.main.ucode_prefix='/nuci/probe=/usr/share/nuci/probe.uc'
+uci commit uhttpd
 /etc/init.d/uhttpd reload 2>/dev/null
 /etc/init.d/rpcd reload 2>/dev/null
 exit 0

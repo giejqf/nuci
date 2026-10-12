@@ -28,6 +28,7 @@ export {
 	type Transport,
 } from './events';
 export type * from './nuci-types';
+export { SIGNALS } from './nuci-types';
 export type * from './types';
 
 export interface Rpc extends Api {
@@ -52,6 +53,17 @@ export function createRpc(options: RpcOptions = {}): Rpc {
 				return { t: info.localtime, uptime: info.uptime };
 			},
 			stats: () => api.nuci.status.realtime(),
+			syslog: async (p) => {
+				const after = p.after === undefined ? -1 : Number(p.after);
+				return { entries: (await api.log.read(200)).filter((e) => e.id > after) };
+			},
+			kernlog: async (p) => ({
+				entries: await api.nuci.status.kernelLog(
+					p.after === undefined ? undefined : Number(p.after),
+				),
+			}),
+			conntrack: () => api.nuci.status.conntrackSummary(),
+			wifi: () => api.wifiStats(),
 			...options.events?.pollers,
 		},
 	});

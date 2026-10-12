@@ -4,6 +4,9 @@
 
 import { expect, test } from '@playwright/test';
 import { NULL_SID, rootPassword } from '../lib/router';
+import { TRANSPORT } from '../lib/transport';
+
+test.skip(TRANSPORT === 'poll', 'the SSE handler is disabled in the polling run');
 
 test('browser logs in via /ubus and receives an SSE event', async ({ page }) => {
 	await page.goto('/nuci/');

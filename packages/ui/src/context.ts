@@ -11,7 +11,7 @@ export interface NuciContext {
 	/** Whether the session may write `config` (ACL `uci` scope). */
 	canWrite?: (config: string) => boolean;
 	/** Connectivity probe and defaults for the apply protocol. */
-	apply?: Pick<ApplyOptions, 'probe' | 'timeout' | 'holdoffMs' | 'shouldConfirm'>;
+	apply?: Pick<ApplyOptions, 'probe' | 'timeout' | 'holdoffMs' | 'settleMs' | 'shouldConfirm'>;
 }
 
 const KEY = Symbol('nuci');

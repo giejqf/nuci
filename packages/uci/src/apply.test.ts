@@ -36,7 +36,7 @@ describe('applyChanges', () => {
 			rpcd.log.findIndex((l) => l[0] === 'apply'),
 		);
 		expect(rpcd.committed.system?.cfg01e48a?.hostname).toBe('router');
-		expect(probes).toBe(3);
+		expect(probes).toBe(5); // 2 failures, then 2 s of sustained success (non-network change)
 		expect([...new Set(phases)]).toEqual(['saving', 'applying', 'confirming', 'confirmed']);
 		expect(model.pendingCount).toBe(0);
 	});
@@ -123,6 +123,49 @@ describe('applyChanges', () => {
 		model.set('system', '@system[0]', 'hostname', 'y');
 		const state = await applyChanges(model, { ...clock(), probe: async () => true });
 		expect(state.phase).toBe('failed');
+	});
+
+	it('does not confirm a network change on a success that precedes the reload', async () => {
+		const c = clock();
+		model.set('network', 'lan', 'ipaddr', ['10.9.9.1/24']);
+		let applyAt = 0;
+		// Reachable for 3 s after the hold-off, then the reload cuts us off
+		// until the router rolls back at the deadline.
+		const state = await applyChanges(model, {
+			...c,
+			timeout: 30,
+			holdoffMs: 2000,
+			probe: async () => {
+				applyAt ||= c.now();
+				const dt = c.now() - applyAt;
+				if (dt < 3000) return true;
+				if (c.now() >= applyAt + 28_000) {
+					rpcd.fireRollback();
+					return true;
+				}
+				return false;
+			},
+		});
+		expect(state.phase).toBe('rolled-back');
+		expect(rpcd.log).not.toContainEqual(['confirm']);
+	});
+
+	it('uses a 10 s settle window for network configs and honours settleMs', async () => {
+		const c = clock();
+		model.set('network', 'lan', 'proto', 'dhcp');
+		const start = c.now();
+		let confirmedAt = 0;
+		const orig = rpcd.confirm.bind(rpcd);
+		rpcd.confirm = async () => ((confirmedAt = c.now()), orig());
+		expect(
+			(await applyChanges(model, { ...c, holdoffMs: 0, probe: async () => true })).phase,
+		).toBe('confirmed');
+		expect(confirmedAt - start).toBeGreaterThanOrEqual(10_000);
+
+		model.set('system', '@system[0]', 'hostname', 'quick');
+		const s2 = c.now();
+		await applyChanges(model, { ...c, holdoffMs: 0, settleMs: 0, probe: async () => true });
+		expect(confirmedAt - s2).toBeLessThan(1000);
 	});
 
 	it('clamps the timeout', () => {

@@ -17,7 +17,7 @@ describe('DataTable', () => {
 				{ key: 'name', label: 'Name', sortable: true },
 			],
 			rows,
-			rowKey: (r: Record<string, unknown>) => r.pid as number,
+			rowKey: (r: object) => (r as { pid: number }).pid,
 			filter: true,
 		});
 		const firstCol = () =>

@@ -27,7 +27,7 @@ describe('ApplyBar', () => {
 	it('saves into the session, then applies and confirms', async () => {
 		render(Toaster);
 		host({
-			ctx: { uci: store, apply: { probe: async () => true, holdoffMs: 0 } },
+			ctx: { uci: store, apply: { probe: async () => true, holdoffMs: 0, settleMs: 0 } },
 			component: ApplyBar,
 		});
 		store.set('system', '@system[0]', 'hostname', 'router');
