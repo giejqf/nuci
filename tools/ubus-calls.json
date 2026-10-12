@@ -157,6 +157,8 @@
 				"radio": "radio1"
 			}
 		],
-		["nuci.diag", "status", {}]
+		["nuci.diag", "status", {}],
+		["nuci.firewall", "preview", {}],
+		["nuci.firewall", "ruleset", {}]
 	]
 }

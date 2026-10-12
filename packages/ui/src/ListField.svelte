@@ -12,6 +12,8 @@
 		description?: string;
 		readonly?: boolean;
 		testid?: string;
+		/** Called with the new selection (also without uci binding). */
+		onchange?: (values: string[]) => void;
 	}
 	let {
 		label,
@@ -21,6 +23,7 @@
 		description,
 		readonly = false,
 		testid,
+		onchange,
 	}: Props = $props();
 
 	const binding = bindUci(() => uci);
@@ -34,6 +37,7 @@
 		const ordered = options.map((o) => o.value).filter((x) => next.includes(x));
 		if (binding && uci) binding.set(ordered);
 		else values = ordered;
+		onchange?.(ordered);
 	}
 </script>
 

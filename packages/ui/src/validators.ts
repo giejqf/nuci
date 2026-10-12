@@ -63,6 +63,27 @@ export function integer(min = -Infinity, max = Infinity): Validator {
 
 export const port: Validator = (v) => integer(1, 65535)(v) && 'validate.port';
 
+/** A port or a range "1000-2000". */
+export const portRange: Validator = (v) => {
+	if (v === '') return null;
+	const m = /^([0-9]+)(?:[-:]([0-9]+))?$/.exec(v);
+	if (!m) return 'validate.port_range';
+	const a = Number(m[1]);
+	const b = m[2] === undefined ? a : Number(m[2]);
+	return a >= 1 && b <= 65535 && a <= b ? null : 'validate.port_range';
+};
+
+/** IPv4/IPv6 address, optionally with a prefix ("10.0.0.0/8"). */
+export const ipOrCidr: Validator = (v) => {
+	if (v === '') return null;
+	const [ip = '', prefix, extra] = v.split('/');
+	if (extra !== undefined || ipaddr(ip)) return 'validate.ip_or_cidr';
+	const max = ip.includes(':') ? 128 : 32;
+	return prefix === undefined || (/^[0-9]{1,3}$/.test(prefix) && Number(prefix) <= max)
+		? null
+		: 'validate.ip_or_cidr';
+};
+
 /** Run validators in order; the first failure wins. */
 export function all(...vs: Validator[]): Validator {
 	return (v) => {

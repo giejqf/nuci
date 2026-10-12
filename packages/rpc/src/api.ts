@@ -375,6 +375,14 @@ export function createApi(client: RpcClient) {
 					call<JobStatus>('nuci.diag', 'nslookup', server ? { host, server } : { host }),
 				status: () => call<JobStatus>('nuci.diag', 'status'),
 			},
+			firewall: {
+				/** Ruleset fw4 would generate from the committed config. */
+				preview: () =>
+					call<{ text: string; truncated: boolean }>('nuci.firewall', 'preview'),
+				/** Live nftables ruleset. */
+				ruleset: () =>
+					call<{ text: string; truncated: boolean }>('nuci.firewall', 'ruleset'),
+			},
 			backup: {
 				create: () => call<BackupStatus>('nuci.system', 'backup_create'),
 				status: () => call<BackupStatus>('nuci.system', 'backup_status'),

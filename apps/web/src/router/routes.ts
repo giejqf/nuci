@@ -183,6 +183,46 @@ export const routes: PageRoute[] = [
 		acl: 'nuci-network',
 		load: () => import('../pages/network/Diagnostics.svelte'),
 	},
+	{
+		path: 'firewall/general',
+		title: 'nav.firewall.general',
+		group: 'firewall',
+		order: 10,
+		acl: 'nuci-firewall',
+		load: () => import('../pages/firewall/General.svelte'),
+	},
+	{
+		path: 'firewall/zones',
+		title: 'nav.firewall.zones',
+		group: 'firewall',
+		order: 20,
+		acl: 'nuci-firewall',
+		load: () => import('../pages/firewall/Zones.svelte'),
+	},
+	{
+		path: 'firewall/forwards',
+		title: 'nav.firewall.forwards',
+		group: 'firewall',
+		order: 30,
+		acl: 'nuci-firewall',
+		load: () => import('../pages/firewall/Forwards.svelte'),
+	},
+	{
+		path: 'firewall/rules',
+		title: 'nav.firewall.rules',
+		group: 'firewall',
+		order: 40,
+		acl: 'nuci-firewall',
+		load: () => import('../pages/firewall/Rules.svelte'),
+	},
+	{
+		path: 'firewall/nat',
+		title: 'nav.firewall.nat',
+		group: 'firewall',
+		order: 50,
+		acl: 'nuci-firewall',
+		load: () => import('../pages/firewall/Nat.svelte'),
+	},
 ];
 
 export const DEFAULT_PATH = 'status/overview';

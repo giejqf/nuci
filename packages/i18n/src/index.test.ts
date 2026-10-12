@@ -19,9 +19,9 @@ describe('t()', () => {
 	});
 
 	it('falls back to English per key', () => {
-		addCatalog('de', { 'app.tagline': 'Eine moderne Weboberfläche' });
+		addCatalog('de', { 'login.submit': 'Anmelden' });
 		setLocale('de');
-		expect(t('app.tagline')).toBe('Eine moderne Weboberfläche');
+		expect(t('login.submit')).toBe('Anmelden');
 		expect(t('app.name')).toBe('NuCI');
 	});
 });

@@ -356,5 +356,25 @@
 				]
 			}
 		}
+	},
+	"nuci-firewall": {
+		"description": "NuCI: Firewall pages (zones, forwards, rules, NAT, ruleset preview)",
+		"read": {
+			"ubus": {
+				"nuci.firewall": [
+					"preview",
+					"ruleset"
+				]
+			},
+			"uci": [
+				"firewall",
+				"network"
+			]
+		},
+		"write": {
+			"uci": [
+				"firewall"
+			]
+		}
 	}
 }

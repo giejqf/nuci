@@ -130,6 +130,7 @@ when the client disconnects, so it never pins a worker.
 | `nuci.diag` | `ping`, `traceroute`, `nslookup` (bounded args), `status` (output, polled) | busybox tools as a detached job |
 | `nuci.wifi` | `status` (netifd radio status), `assoc_list_enriched` (iwinfo + hostnames), `scan` wrapper (AP-only radios: `iw … scan ap-force`; idle radios: temporary managed interface) | `iwinfo` via deferred calls, `iw`, `nuci.dhcp` |
 | `nuci.apps` | `list` (installed nuci-app manifests) | `/usr/share/nuci/apps/*.json` |
+| `nuci.firewall` | `preview` (`fw4 -q print` of the saved config), `ruleset` (`nft list ruleset`); output bounded to 512 KiB with a `truncated` flag | `fw4`, `nft` |
 
 Rules for ucode plugins:
 
