@@ -58,6 +58,8 @@ jobs:
 
       - name: Boot and provision the lab (TCG, D14)
         run: |
+          # stock images: the sysupgrade image is the flash test's valid firmware
+          tools/qemu/fetch.sh "$OPENWRT_VERSION"
           tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION" --image "tools/qemu/images/nuci-$OPENWRT_VERSION.img"
           tools/qemu/provision.sh --wireless
 
