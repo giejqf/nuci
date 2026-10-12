@@ -43,8 +43,16 @@ describe('typed wrappers (25.12 fixtures)', () => {
 		expect(ifaces.map((i) => i.interface)).toContain('lan');
 	});
 
-	it('network.wireless is empty when the object does not exist', async () => {
-		await expect(api().api.network.wireless()).resolves.toEqual({});
+	it('network.wireless reads radio status through nuci.wifi', async () => {
+		const radios = await api().api.network.wireless();
+		expect(Object.keys(radios)).toEqual(['radio0', 'radio1']);
+		expect(radios.radio0?.config.band).toBe('2g');
+	});
+
+	it('network.wireless is empty when nuci.wifi is missing', async () => {
+		const m = mockFetch(() => ({ error: { code: -32000, message: 'Object not found' } }));
+		const a = createApi(new RpcClient({ fetch: m.fetch, storage: null }));
+		await expect(a.network.wireless()).resolves.toEqual({});
 	});
 
 	it('session.access returns an Acl', async () => {
