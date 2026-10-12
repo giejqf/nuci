@@ -3,6 +3,7 @@
 	import { LogOut, Menu } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
 	import { ThemeToggle } from '@nuci/ui';
+	import LanguageSelect from './LanguageSelect.svelte';
 	import { session } from '../lib/session.svelte';
 	import { uci } from '../lib/services';
 </script>
@@ -29,6 +30,7 @@
 				>{t('ui.apply.count', { count: uci.totalChanges })}</span
 			>
 		{/if}
+		<LanguageSelect />
 		<ThemeToggle />
 		<button
 			type="button"

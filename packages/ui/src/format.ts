@@ -35,14 +35,34 @@ export function formatDuration(seconds: number | null | undefined): string {
 	const h = Math.floor((s % 86400) / 3600);
 	const m = Math.floor((s % 3600) / 60);
 	const sec = s % 60;
-	const parts = d
-		? [`${d}d`, `${h}h`, `${m}m`]
+	const parts: [number, string][] = d
+		? [
+				[d, 'day'],
+				[h, 'hour'],
+				[m, 'minute'],
+			]
 		: h
-			? [`${h}h`, `${m}m`, `${sec}s`]
+			? [
+					[h, 'hour'],
+					[m, 'minute'],
+					[sec, 'second'],
+				]
 			: m
-				? [`${m}m`, `${sec}s`]
-				: [`${sec}s`];
-	return parts.join(' ');
+				? [
+						[m, 'minute'],
+						[sec, 'second'],
+					]
+				: [[sec, 'second']];
+	// Localised unit abbreviations ("3d 4h", "3 T. 4 Std.", "3天4小时").
+	return parts
+		.map(([n, unit]) =>
+			new Intl.NumberFormat(getLocale(), {
+				style: 'unit',
+				unit,
+				unitDisplay: 'narrow',
+			}).format(n),
+		)
+		.join(' ');
 }
 
 export function formatPercent(fraction: number | null | undefined, digits = 0): string {

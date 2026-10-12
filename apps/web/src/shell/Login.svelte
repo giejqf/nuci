@@ -4,6 +4,7 @@
 	import { t } from '@nuci/i18n';
 	import { isRpcError } from '@nuci/rpc';
 	import { ThemeToggle } from '@nuci/ui';
+	import LanguageSelect from './LanguageSelect.svelte';
 	import { session } from '../lib/session.svelte';
 
 	interface Props {
@@ -78,7 +79,9 @@
 	{@render form()}
 {:else}
 	<main class="flex min-h-screen items-center justify-center p-4">
-		<div class="absolute top-2 right-2"><ThemeToggle /></div>
+		<div class="absolute top-2 right-2 flex items-center gap-1">
+			<LanguageSelect /><ThemeToggle />
+		</div>
 		<div class="card bg-base-100 border-base-300 w-full max-w-sm border shadow-lg">
 			<div class="card-body">
 				<div class="mb-2 flex items-center gap-3">
