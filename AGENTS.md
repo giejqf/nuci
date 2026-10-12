@@ -30,6 +30,19 @@ everything a vanilla router install needs, and a clean extension model so
 mobile-native apps, themes beyond DaisyUI built-ins, non-root multi-user UX
 (ACLs are respected, but no user-management UI).
 
+**0.2 scope** (released 0.1.0 on 2026-10-12; plan in §9 Phases 7–12):
+
+| Area | Content |
+|------|---------|
+| Apps | First `nuci-app-*` packages: `wireguard`, `ddns`, `upnp`, `sqm`, built on `@nuci/app-sdk` 0.2 (configuration access through the host, ADR-0004) |
+| Translations | Complete `zh-CN` and `de` catalogs for core and apps, language switcher, locale-aware number/date formatting |
+| Users | Non-root rpcd users with ACL group assignment and a System → Users page (changes D17, ADR-0005) |
+| 0.1 limitations | Backups and firmware beyond the `/ubus` size limits (streaming handler), more interface protocols (`6in4`, `6rd`, `dslite`; WireGuard via its app), bridge VLAN filtering (DSA `bridge-vlan`) |
+
+**Non-goals for 0.2:** apps beyond the four above, themes beyond DaisyUI
+built-ins, languages beyond `en`/`zh-CN`/`de` (the catalogs stay open to
+contributions), mobile-native apps.
+
 **Hard rule:** no LuCI runtime dependency. Not `luci-base`, not `rpcd-mod-luci`,
 not the `luci` ubus object, not LuCI's JS. Reading LuCI source to learn ubus/uci
 semantics is fine; copying code is not.
@@ -503,6 +516,81 @@ next phase's pages before the previous phase's exit criteria are met.
   packaging and a signed feed published from GitHub Releases.
 - **Exit:** tagged `v0.1.0`, feed installable with `apk add nuci` on a stock
   25.12 x86/64 and one real device.
+- **Status:** tagged 2026-10-12. Validated on QEMU x86/64 and armsr/armv8
+  (signed-feed install on stock images); the real-device install is still
+  open and is carried into Phase 12.
+
+### Phase 7 — App platform 0.2
+- ADR-0004: apps stay islands (own UI runtime), but configuration goes
+  through the host. `HostContext.uci` exposes the host's staging model
+  framework-neutrally (`load`, `isLoaded`, `get`, `getBase`, `sections`,
+  `getSection`, `resolve`, `set`, `add`, `remove`, `order`, `canWrite`,
+  `busy`, `subscribe`); the host's ApplyBar applies app changes with the
+  rollback protocol. `@nuci/app-sdk` 0.2.0 is a minor, additive release.
+- `@nuci/uci`: a reactive adapter over `HostContext.uci` for apps that bundle
+  Svelte; `@nuci/ui`'s context depends on a `UciView` interface, not on
+  `UciStore`, so the same field components work in core and in apps.
+- App build tooling: shared Vite library config (single ES module + CSS,
+  DaisyUI without themes so the host's theme applies), an OpenWrt Makefile
+  template, workspace layout `apps/nuci-app-<id>/` (UI, manifest, optional
+  rpcd plugin and ACL) packaged as `feed/nuci-app-<id>/`.
+- Port the hello fixture to Svelte + `@nuci/ui` with a uci-bound field.
+- **Exit:** the hello app edits a uci option through `@nuci/ui` fields, the
+  change shows in the host's change review and applies with rollback on QEMU;
+  `docs/app-sdk.md` describes the 0.2 API.
+
+### Phase 8 — Lifting 0.1 limitations
+- Streaming transfer handler (`/nuci/transfer`, `uhttpd-mod-ucode`,
+  session-authenticated like `/nuci/events`): backup download of any size,
+  restore and firmware upload without 45 KiB `/ubus` chunks. Verify request
+  body access and limits under uhttpd first; record the result in an ADR.
+- Interface protocols `6in4`, `6rd`, `dslite` in `proto-registry.ts`, offered
+  only when installed (`nuci.network protocols` lists `/lib/netifd/proto`).
+- Devices: bridge VLAN filtering editor (`bridge-vlan` sections, port
+  tagging/PVID) with the rollback protocol.
+- **Exit:** e2e: a backup larger than 256 KiB downloads and restores; firmware
+  upload uses the stream; a `6in4` interface is created and accepted by
+  netifd; a VLAN-filtered test bridge applies (and an unconfirmed change on
+  `br-lan` rolls back).
+
+### Phase 9 — Users and ACLs
+- ADR-0005 amends D17: non-root users are supported. rpcd `login` sections
+  with ACL groups; roles are presets of `nuci-*` groups (administrator,
+  operator, read-only) plus custom selection. Passwords are hashed on the
+  router by a narrow `nuci.users` method (never stored in clear, never sent
+  back); root cannot be removed or demoted.
+- System → Users page; every page handles read-only and hidden states for
+  limited sessions; app ACL groups are offered for assignment.
+- **Exit:** e2e: create a read-only user, log in as it, see only permitted
+  pages with no write controls, and get permission errors server-side when
+  calling write methods directly; delete the user.
+
+### Phase 10 — First apps
+- `nuci-app-wireguard` (proto `wireguard` interfaces, peers, key generation
+  on the router, peer config + QR export), `nuci-app-ddns` (`ddns-scripts`),
+  `nuci-app-upnp` (`miniupnpd`, active redirects), `nuci-app-sqm`
+  (`sqm-scripts`). Each ships manifest, UI, ACL group, any `nuci.*` methods
+  with the usual tests/fixtures, and depends on the backing OpenWrt package.
+- **Exit:** e2e per app on QEMU: WireGuard tunnel between the lab router and a
+  peer comes up (handshake visible); DDNS service config round-trips and its
+  status is shown; a UPnP redirect requested by a client appears in the list;
+  SQM on wan creates the cake qdisc (`tc qdisc`).
+
+### Phase 11 — Translations
+- Complete `zh-CN` and `de` catalogs for core and the four apps; language
+  switcher (persisted like the theme); `Intl`-based formatting of numbers,
+  bytes, dates and durations; `lang` attribute; CI fails on missing keys
+  for shipped locales.
+- **Exit:** e2e runs the shell, Status overview and one page per group in
+  each language without missing-key fallbacks; size budget holds (catalogs
+  are lazy chunks).
+
+### Phase 12 — 0.2 release
+- Image Builder CI image with the apps, x86/64 and armsr/armv8 runs, perf and
+  accessibility checks for new pages, release notes, signed feed.
+- **Exit:** tagged `v0.2.0` (pushed only with the maintainer's go-ahead),
+  feed installs `nuci` and each app on stock 25.12 images; the real-device
+  install from Phase 6 is done or explicitly waived by the maintainer.
 
 ---
 
@@ -539,6 +627,8 @@ next phase's pages before the previous phase's exit criteria are met.
 
 ## 11. Open questions (answer and move to §2)
 
-- **Non-root users and user management** — deferred past 0.1 (D1); revisit
-  once nuci-app-* exists and needs scoped ACLs.
+- **Non-root users and user management** — scheduled for 0.2 (Phase 9);
+  becomes a §2 decision with ADR-0005.
+- **Transfer handler limits** — request body handling and maximum sizes under
+  `uhttpd-mod-ucode` to be verified in Phase 8.
 
