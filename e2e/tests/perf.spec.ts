@@ -7,7 +7,10 @@
 import { expect, test } from '@playwright/test';
 import { rootPassword } from '../lib/router';
 
-test.skip(process.env.NUCI_E2E_PERF !== '1', 'perf runs nightly (NUCI_E2E_PERF=1)');
+test.skip(
+	process.env.NUCI_E2E_PERF !== '1',
+	'perf runs with NUCI_E2E_PERF=1 (e2e.yml when the runner has KVM)',
+);
 
 /** Budgets in ms, measured from navigation start. */
 const LOGIN_INTERACTIVE = 4_000;

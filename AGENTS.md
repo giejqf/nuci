@@ -43,6 +43,15 @@ mobile-native apps, themes beyond DaisyUI built-ins, non-root multi-user UX
 built-ins, languages beyond `en`/`zh-CN`/`de` (the catalogs stay open to
 contributions), mobile-native apps.
 
+**0.3 scope** (released 0.2.0 on 2026-10-12; plan in §9 Phases 13–14, more
+phases are added as the maintainer schedules them, see §11):
+
+| Area | Content |
+|------|---------|
+| CI | GitHub Actions enabled: lint/unit/build/size on every push, the e2e suite on armsr/armv8 (`ubuntu-24.04-arm`), releases from tags with the signed feed |
+| Setup | First-run wizard: root password, internet connection, Wi-Fi, time zone; applied with the rollback protocol |
+| Design | A UI/UX design request (`docs/design/DesignRequest.md`) is out with a designer; its results become later phases |
+
 **Hard rule:** no LuCI runtime dependency. Not `luci-base`, not `rpcd-mod-luci`,
 not the `luci` ubus object, not LuCI's JS. Reading LuCI source to learn ubus/uci
 semantics is fine; copying code is not.
@@ -453,8 +462,11 @@ into the image (rule 10).
 `armsr-armv8-generic-squashfs-combined-efi` image and `QEMU_EFI.fd`
 (`qemu-efi-aarch64`); `-cpu cortex-a57` under TCG, `-accel kvm -cpu host` on
 aarch64 hosts. Run a second lab next to the x86 one with
-`NUCI_LAB_NAME=arm NUCI_HTTP_PORT=8081 NUCI_SSH_PORT=2223`. Nightly CI
-(`nightly.yml`) runs it on an arm64 runner.
+`NUCI_LAB_NAME=arm NUCI_HTTP_PORT=8081 NUCI_SSH_PORT=2223`. Since 0.3 the
+e2e suite is verified on armsr/armv8 only (maintainer decision, 2026-10-12):
+`e2e.yml` builds the packages and the armsr Image Builder image on an x86
+runner (the SDK and Image Builder ship x86_64 host tools only) and runs the
+suite on `ubuntu-24.04-arm`. The x86/64 lab stays supported for local use.
 
 **Release feed (Phase 6):** packages are architecture independent
 (`PKGARCH:=all`), so one feed serves every target. `tools/release.sh` writes
@@ -473,7 +485,7 @@ and the public key; `release.yml` publishes them on `v*` tags using the
 | `@nuci/uci` | Vitest | staging semantics, diff generation, apply/confirm/rollback state machine |
 | `@nuci/ui` | Vitest + `@testing-library/svelte` | field ↔ uci binding, validation display |
 | Pages | Playwright against QEMU | login, each v1 page renders real data, a save/apply round-trip per config group, rollback when LAN IP change is not confirmed |
-| Perf | `pnpm size` + `e2e/tests/perf.spec.ts` (nightly, `NUCI_E2E_PERF=1`) | bundle budgets; login interactive ≤ 4 s and overview ≤ 6 s after login under Lighthouse's mobile throttling (4× CPU, 1.6 Mbit/s, 150 ms RTT) applied through CDP, so no second browser driver is needed |
+| Perf | `pnpm size` + `e2e/tests/perf.spec.ts` (`e2e.yml` on armsr, `NUCI_E2E_PERF=1`) | bundle budgets; login interactive ≤ 4 s and overview ≤ 6 s after login under Lighthouse's mobile throttling (4× CPU, 1.6 Mbit/s, 150 ms RTT) applied through CDP, so no second browser driver is needed |
 
 Contract fixtures in `docs/ubus-contracts/` are recorded from a real 25.12 router
 with `tools/record-ubus.sh` and are the source of truth for mocks. Refresh them
@@ -648,6 +660,40 @@ next phase's pages before the previous phase's exit criteria are met.
 
 ---
 
+### Phase 13 — CI on GitHub Actions (0.3)
+- Actions enabled for the repository (they were off until 0.2.0).
+  `ci.yml` unchanged (hosted x86: lint, svelte-check, unit + ucode tests,
+  build, size). `e2e.yml` replaces the x86 TCG job and `nightly.yml`: packages
+  and the armsr image are built on `ubuntu-24.04`, the suite (both
+  transports, a11y, perf) runs on `ubuntu-24.04-arm` with KVM when the
+  runner exposes `/dev/kvm`, TCG otherwise. Runs on pushes to `main`, pull
+  requests and manually. `release.yml` publishes tags with the
+  `NUCI_FEED_KEY` secret (set by the maintainer).
+- **Exit:** `ci` and `e2e` green on `main`; the first tag pushed after the
+  secret exists produces a GitHub Release with an installable feed.
+
+### Phase 14 — First-run setup wizard (0.3)
+- A fresh OpenWrt router has no root password and rpcd then accepts any
+  password for root, so the client cannot tell from the login. New method
+  `nuci.system setup_status` → `{ root_password: bool }` (reads
+  `/etc/shadow`; ACL group `nuci-admin`). After login the shell opens
+  `#/setup` when root has no password; System → Setup wizard opens it any
+  time.
+- Steps: (1) root password (`rpc-sys password_set`, set immediately, required
+  to leave the wizard except by an explicit skip); (2) internet: the `wan`
+  interface as DHCP, static or PPPoE (offered when the handler is installed),
+  reusing `proto-registry.ts`; (3) Wi-Fi: per radio enable, country, SSID,
+  encryption (WPA2/WPA3), key; skipped without radios; (4) time zone and
+  hostname; (5) review of the staged changes → one apply through `@nuci/uci`
+  with the rollback protocol. Everything except the password is staged, so
+  the wizard can be left at any step without side effects.
+- **Exit:** e2e on a router whose root password was removed: the wizard
+  opens after login, sets the password, changes wan/Wi-Fi/time zone, the
+  apply confirms and the values are on the router; the wizard does not open
+  again; the same flow passes in `de` and `zh-CN` without missing keys.
+
+---
+
 ## 10. Rules for agents working in this repo
 
 1. **Verify on the target, not from memory.** ubus method names, ACL semantics,
@@ -682,5 +728,12 @@ next phase's pages before the previous phase's exit criteria are met.
 
 ## 11. Open questions (answer and move to §2)
 
-- None open. (Non-root users: decided in ADR-0006, D17.)
+- **0.3 beyond Phases 13–14** (proposed 2026-10-12, not yet scheduled by
+  the maintainer): which further apps (candidates: adblock or banip,
+  nlbwmon, statistics/collectd, mwan3, acme); attended sysupgrade (talks to
+  the external ASU build service — needs an ADR); restarting the network
+  service from the UI after a protocol is installed; transfers longer than
+  `script_timeout`; a sysupgrade test in QEMU; native arm64 builds via the
+  buildroot; UI changes from the design request.
+- (Non-root users: decided in ADR-0006, D17.)
 

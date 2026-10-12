@@ -1,20 +1,79 @@
 # SPDX-License-Identifier: Apache-2.0
+# e2e on armsr/armv8 (AGENTS.md §7, Phase 13). The SDK and the Image Builder
+# ship x86_64 host tools only, so packages and the lab image are built on an
+# x86 runner; the suite runs on an arm64 runner (KVM when available).
 name: e2e
 
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   OPENWRT_VERSION: 25.12.0
+  NUCI_TARGET: armsr/armv8
 
 jobs:
-  qemu-x86-64:
+  image:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Cache OpenWrt SDK
+        uses: actions/cache@v4
+        with:
+          path: tools/sdk/cache
+          key: openwrt-sdk-x86-64-${{ env.OPENWRT_VERSION }}
+      # nuci packages are architecture-independent (PKGARCH:=all)
+      - name: Build packages with the SDK
+        run: tools/sdk/build.sh
+        env:
+          NUCI_SDK_VERSION: ${{ env.OPENWRT_VERSION }}
+
+      - name: Cache Image Builder
+        uses: actions/cache@v4
+        with:
+          path: tools/imagebuilder/cache
+          key: openwrt-ib-armsr-armv8-${{ env.OPENWRT_VERSION }}
+      - name: Build the armsr lab image with the Image Builder
+        run: |
+          tools/imagebuilder/build.sh
+          zstd -q -T0 --rm "tools/qemu/images/nuci-$OPENWRT_VERSION-armv8.img"
+        env:
+          NUCI_IB_VERSION: ${{ env.OPENWRT_VERSION }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lab-image
+          path: tools/qemu/images/nuci-${{ env.OPENWRT_VERSION }}-armv8.img.zst
+          compression-level: 0
+          retention-days: 3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: feed
+          path: dist/feed/*.apk
+          retention-days: 7
+
+  armsr-armv8:
+    needs: image
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
@@ -27,40 +86,26 @@ jobs:
       - name: Install QEMU
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils socat zstd
+          sudo apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64 qemu-utils socat zstd
+          if [ -e /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm
+            echo "KVM available"
+            # Perf budgets assume a router-speed guest, not full emulation.
+            echo "NUCI_E2E_PERF=1" >> "$GITHUB_ENV"
+          else
+            echo "::notice::no /dev/kvm on this runner; the lab runs under TCG and perf checks are skipped"
+          fi
 
-      - name: Cache OpenWrt image
-        uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
+          name: lab-image
           path: tools/qemu/images
-          key: openwrt-x86-64-${{ env.OPENWRT_VERSION }}
-      - name: Cache OpenWrt SDK
-        uses: actions/cache@v4
-        with:
-          path: tools/sdk/cache
-          key: openwrt-sdk-x86-64-${{ env.OPENWRT_VERSION }}
-
-      - run: pnpm build
-      - name: Build packages with the SDK
-        run: tools/sdk/build.sh
-        env:
-          NUCI_SDK_VERSION: ${{ env.OPENWRT_VERSION }}
-
-      - name: Cache Image Builder
-        uses: actions/cache@v4
-        with:
-          path: tools/imagebuilder/cache
-          key: openwrt-ib-x86-64-${{ env.OPENWRT_VERSION }}
-      - name: Build the lab image with the Image Builder
-        run: tools/imagebuilder/build.sh
-        env:
-          NUCI_IB_VERSION: ${{ env.OPENWRT_VERSION }}
-
-      - name: Boot and provision the lab (TCG, D14)
+      - name: Boot and provision the lab
         run: |
+          zstd -q -d --rm "tools/qemu/images/nuci-$OPENWRT_VERSION-armv8.img.zst"
           # stock images: the sysupgrade image is the flash test's valid firmware
           tools/qemu/fetch.sh "$OPENWRT_VERSION"
-          tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION" --image "tools/qemu/images/nuci-$OPENWRT_VERSION.img"
+          tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION" --image "tools/qemu/images/nuci-$OPENWRT_VERSION-armv8.img"
           tools/qemu/provision.sh --wireless
 
       - name: Router serves NuCI, /ubus and /nuci/events
@@ -84,7 +129,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-report
+          name: e2e-armsr-report
           path: |
             e2e/playwright-report/
             e2e/test-results/
