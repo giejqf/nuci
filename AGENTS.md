@@ -151,7 +151,7 @@ when the client disconnects, so it never pins a worker.
 | Object | Methods | Backing |
 |--------|---------|---------|
 | `nuci.status` | `realtime` (load, mem, per-iface rx/tx counters, conntrack count), `processes`, `kernel_log` (`after` cursor), `conntrack`, `conntrack_summary`, `signal` | `/proc`, `dmesg`, `/proc/net/nf_conntrack`, `kill` |
-| `nuci.system` | `timezones`, `localtime`, `set_localtime`, `leds`, `block_devices`, `mount_points`, `usb_devices`, `backup_create`, `backup_status`, `backup_restore` | bundled zone table (`tools/gen-zoneinfo.mjs`; 25.12 has no `/usr/share/zoneinfo`), `/sys`, `block info` when block-mount is installed, `df` |
+| `nuci.system` | `timezones`, `localtime`, `set_localtime`, `leds`, `block_devices`, `mount_points`, `usb_devices`, `backup_create`, `backup_status`, `backup_restore`, `setup_status` | bundled zone table (`tools/gen-zoneinfo.mjs`; 25.12 has no `/usr/share/zoneinfo`), `/sys`, `block info` when block-mount is installed, `df` |
 | `nuci.dhcp` | `leases` (merged dnsmasq `/tmp/dhcp.leases` + odhcpd), `hosts` | files + ubus |
 | `nuci.pkg` | `list_installed`, `list_available`, `search`, `update`, `add`, `del`, `info`, `job_status` | `apk query --format json`; changes run as detached jobs (`run-job`) with a status dir |
 | `nuci.diag` | `ping`, `traceroute`, `nslookup` (bounded args), `status` (output, polled) | busybox tools as a detached job |

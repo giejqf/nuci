@@ -26,6 +26,10 @@ cp "$HELLO/manifest.json" "$HELLO/dist/hello.json"
 lab_put /usr/share/nuci/apps "$HELLO/dist/hello.json"
 lab_put /www/nuci/apps/hello "$HELLO/dist/index.js"
 
+# Test-only ACL for router setup/cleanup in specs (root's '*' includes it).
+lab_put /usr/share/rpcd/acl.d "$REPO/e2e/fixtures/rpcd/nuci-e2e.json"
+lab_ssh "/etc/init.d/rpcd reload"
+
 export NUCI_ROOT_PASSWORD NUCI_HTTP_PORT NUCI_UPNP_PORT
 cd "$REPO/e2e"
 

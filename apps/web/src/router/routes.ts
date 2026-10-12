@@ -71,6 +71,14 @@ export const routes: PageRoute[] = [
 		load: () => import('../pages/status/Realtime.svelte'),
 	},
 	{
+		path: 'system/setup',
+		title: 'nav.system.setup',
+		group: 'system',
+		order: 5,
+		acl: 'nuci-admin',
+		load: () => import('../pages/system/Setup.svelte'),
+	},
+	{
 		path: 'system/general',
 		title: 'nav.system.general',
 		group: 'system',
@@ -234,3 +242,4 @@ export const routes: PageRoute[] = [
 ];
 
 export const DEFAULT_PATH = 'status/overview';
+export const SETUP_PATH = 'system/setup';

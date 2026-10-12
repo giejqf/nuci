@@ -6,6 +6,7 @@
 <script lang="ts">
 	import { CircleCheck, Undo2, ListChecks, Save, LoaderCircle } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
+	import { applyStaged } from './apply';
 	import ChangeList from './ChangeList.svelte';
 	import { getNuciContext, hostStore } from './context';
 	import { forms } from './form.svelte';
@@ -59,20 +60,7 @@
 
 	async function apply(rollback = true) {
 		reviewing = false;
-		if (!ctx.apply) return;
-		const { prepare, done, ...base } = ctx.apply;
-		const extra = (await prepare?.()) ?? {};
-		const result = await uci.applyAll({ ...base, ...extra, rollback });
-		done?.();
-		if (result.phase === 'confirmed') toasts.success(t('ui.apply.confirmed'));
-		else if (result.phase === 'rolled-back') toasts.warning(t('ui.apply.rolled_back'));
-		else if (result.phase === 'failed')
-			toasts.error(
-				t('ui.apply.failed', {
-					error: String((result.error as Error)?.message ?? result.error),
-				}),
-			);
-		uci.resetApplyState();
+		await applyStaged(ctx, rollback);
 	}
 
 	async function revert() {

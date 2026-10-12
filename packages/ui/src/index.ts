@@ -4,6 +4,7 @@
 // page-specific uci layouts (AGENTS.md §10.3).
 
 export { default as ApplyBar } from './ApplyBar.svelte';
+export { applyStaged } from './apply';
 export { default as ChangeList } from './ChangeList.svelte';
 export { default as DataTable } from './DataTable.svelte';
 export { default as DynamicList } from './DynamicList.svelte';

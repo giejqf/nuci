@@ -253,6 +253,9 @@
 				"file": [
 					"read",
 					"stat"
+				],
+				"nuci.system": [
+					"setup_status"
 				]
 			},
 			"uci": [

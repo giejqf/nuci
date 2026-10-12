@@ -5,6 +5,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { rootPassword } from '../lib/router';
+import { slow } from '../lib/timing';
 
 const REPO = join(import.meta.dirname, '../..');
 const json = (p: string) =>
@@ -52,7 +53,7 @@ for (const [locale, expected] of [
 	['zh-CN', { lang: 'zh-CN', nav: '接口' }],
 ] as const) {
 	test(`${locale}: shell and one page per group are fully translated`, async ({ page }) => {
-		test.setTimeout(300_000);
+		test.setTimeout(slow(300_000));
 		// Only the first load: the switch back to English below must stick.
 		await page.addInitScript((l) => {
 			if (!localStorage.getItem('nuci.locale')) localStorage.setItem('nuci.locale', l);
@@ -70,6 +71,17 @@ for (const [locale, expected] of [
 			await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 			await page.waitForLoadState('networkidle').catch(() => {});
 			for (const k of await rawKeys(page)) problems.push(`${route}: ${k}`);
+		}
+		// Every step of the setup wizard (nothing is staged: the lab has a password).
+		await page.goto('/nuci/#/system/setup');
+		await expect(page.getByTestId('setup-password-ok')).toBeVisible();
+		for (;;) {
+			const step = await page.locator('[aria-current="step"]').innerText();
+			for (const k of await rawKeys(page)) problems.push(`system/setup (${step}): ${k}`);
+			const next = page.getByTestId('setup-next');
+			if (!(await next.count())) break;
+			await next.click();
+			await expect(page.locator('[aria-current="step"]')).not.toHaveText(step);
 		}
 		expect(problems, problems.join('\n')).toEqual([]);
 		// Switching back to English through the topbar.

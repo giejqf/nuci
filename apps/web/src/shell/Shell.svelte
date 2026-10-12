@@ -8,7 +8,7 @@
 	import { probe, rpc, uci } from '../lib/services';
 	import { session } from '../lib/session.svelte';
 	import { router } from '../router/router.svelte';
-	import { DEFAULT_PATH, routes } from '../router/routes';
+	import { DEFAULT_PATH, routes, SETUP_PATH } from '../router/routes';
 	import AppPage from './AppPage.svelte';
 	import Relogin from './Relogin.svelte';
 	import RouteView from './RouteView.svelte';
@@ -66,12 +66,28 @@
 
 	let drawer = $state(false);
 
+	// A router without a root password is fresh: open the setup wizard once
+	// per browser session (AGENTS.md Phase 14).
+	const SETUP_OFFERED = 'nuci.setup.offered';
+	async function offerSetup() {
+		if (!session.acl.canCall('nuci.system', 'setup_status')) return;
+		try {
+			if (sessionStorage.getItem(SETUP_OFFERED)) return;
+			if ((await rpc.nuci.system.setupStatus()).root_password) return;
+			sessionStorage.setItem(SETUP_OFFERED, '1');
+		} catch {
+			return;
+		}
+		router.navigate(SETUP_PATH);
+	}
+
 	onMount(() => {
 		// Pages never see the transport; expose it on <html> for diagnostics and e2e.
 		const offTransport = rpc.events.onTransportChange(
 			(tr) => (document.documentElement.dataset.transport = tr),
 		);
 		if (!router.path) router.navigate(DEFAULT_PATH, true);
+		void offerSetup();
 		void uci.refreshPending().catch(() => {});
 		void appHost.load();
 		return offTransport;
@@ -122,7 +138,8 @@
 					>{/if}
 			</div>
 		{/if}
-		<ApplyBar />
+		<!-- The wizard applies from its own review step. -->
+		{#if router.path !== SETUP_PATH}<ApplyBar />{/if}
 	</div>
 	<div class="drawer-side z-30">
 		<label for="nuci-drawer" class="drawer-overlay" aria-hidden="true"></label>

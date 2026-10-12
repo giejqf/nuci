@@ -256,7 +256,23 @@ function usb_devices(ctx) {
 	return out;
 }
 
+// First-run state for the setup wizard. A fresh image has no root password
+// (empty shadow field), and rpcd then accepts any password for root.
+function setup_status(ctx) {
+	ctx = context(ctx);
+
+	for (let l in lines(read(ctx, '/etc/shadow'))) {
+		let f = split(l, ':');
+
+		if (f[0] == 'root')
+			return { root_password: length(f[1] ?? '') > 0 };
+	}
+
+	return { root_password: true };
+}
+
 export {
+	setup_status,
 	backup_create, backup_status, backup_restore, BACKUP, RESTORE,
 	timezones, localtime, set_localtime, parse_trigger, leds, parse_block_info,
 	block_devices, parse_mounts, parse_df, mount_points, usb_devices

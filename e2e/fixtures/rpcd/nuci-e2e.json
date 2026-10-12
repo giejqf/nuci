@@ -1,0 +1,26 @@
+{
+	"nuci-e2e": {
+		"description": "Test-only (e2e/run.sh installs it on the lab, never packaged): router setup and cleanup for specs",
+		"write": {
+			"ubus": {
+				"file": [
+					"exec"
+				]
+			},
+			"file": {
+				"/bin/passwd": [
+					"exec"
+				],
+				"/bin/cp": [
+					"exec"
+				],
+				"/etc/init.d/network": [
+					"exec"
+				],
+				"/etc/init.d/system": [
+					"exec"
+				]
+			}
+		}
+	}
+}

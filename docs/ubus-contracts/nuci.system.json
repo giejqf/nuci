@@ -17,7 +17,8 @@
 		"usb_devices": {},
 		"backup_create": {},
 		"backup_status": {},
-		"backup_restore": {}
+		"backup_restore": {},
+		"setup_status": {}
 	},
 	"calls": [
 		{
@@ -627,6 +628,14 @@
 			"result": {
 				"name": "backup",
 				"running": false
+			}
+		},
+		{
+			"method": "setup_status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"root_password": true
 			}
 		}
 	]

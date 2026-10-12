@@ -4,7 +4,8 @@
 import { test, eq, ok, here, done } from 'harness';
 import { uci_stub } from 'stubs';
 import {
-	timezones, localtime, set_localtime, leds, block_devices, mount_points, usb_devices, parse_trigger
+	timezones, localtime, set_localtime, leds, block_devices, mount_points, usb_devices, parse_trigger,
+	setup_status
 } from 'nuci.system';
 
 const ROOT = here() + '/fixtures/root';
@@ -62,6 +63,15 @@ test('usb_devices lists devices with vendor ids', () => {
 		bus: 1, device: 2, vendor_id: '0bda', product_id: '8153',
 		manufacturer: 'Realtek', product: 'USB 10/100/1000 LAN', speed: '5000'
 	} ]);
+});
+
+test('setup_status reports whether root has a password', () => {
+	let at = (name) => setup_status({ root: here() + '/fixtures/setup/' + name });
+	eq(at('fresh'), { root_password: false });
+	eq(at('set'), { root_password: true });
+	// locked (no login possible) is not "unset"
+	eq(at('locked'), { root_password: true });
+	eq(at('missing'), { root_password: true });
 });
 
 done();

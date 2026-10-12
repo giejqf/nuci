@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// nuci.system — timezones, clock, LEDs, block devices, mounts, USB.
+// nuci.system — timezones, clock, LEDs, block devices, mounts, USB, backups,
+// first-run state.
 
 'use strict';
 
@@ -8,7 +9,7 @@ import { cursor } from 'uci';
 import { methods, STATUS } from 'nuci.rpc';
 import {
 	timezones, localtime, set_localtime, leds, block_devices, mount_points, usb_devices,
-	backup_create, backup_status, backup_restore
+	backup_create, backup_status, backup_restore, setup_status
 } from 'nuci.system';
 
 return {
@@ -31,6 +32,7 @@ return {
 		usb_devices: { call: () => ({ devices: usb_devices() }) },
 		backup_create: { call: () => backup_create() },
 		backup_status: { call: () => backup_status() },
-		backup_restore: { call: () => backup_restore() }
+		backup_restore: { call: () => backup_restore() },
+		setup_status: { call: () => setup_status() }
 	})
 };

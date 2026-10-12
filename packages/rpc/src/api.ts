@@ -352,6 +352,8 @@ export function createApi(client: RpcClient) {
 					(await call<{ mounts: MountPoint[] }>('nuci.system', 'mount_points')).mounts,
 				usbDevices: async () =>
 					(await call<{ devices: UsbDevice[] }>('nuci.system', 'usb_devices')).devices,
+				/** First-run state: a fresh router has no root password (setup wizard). */
+				setupStatus: () => call<{ root_password: boolean }>('nuci.system', 'setup_status'),
 			},
 			pkg: {
 				listInstalled: () => call<InstalledPackages>('nuci.pkg', 'list_installed'),
