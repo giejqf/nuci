@@ -133,7 +133,10 @@
 		>
 			<p class="text-sm" aria-live="polite">
 				<span class="font-mono">{job.command}</span>
-				{#if job.running}<span class="loading loading-dots loading-xs ml-2"></span>
+				{#if job.running}<span
+						class="loading loading-dots loading-xs ml-2"
+						aria-hidden="true"
+					></span>
 				{:else}<span
 						class="badge badge-sm {job.rc === 0 ? 'badge-success' : 'badge-error'} ml-2"
 						>{job.rc === 0
@@ -154,7 +157,11 @@
 			{#if active === 'installed'}
 				{#if loading}
 					<div class="flex justify-center p-8" role="status">
-						<span class="loading loading-spinner" aria-label={t('ui.loading')}></span>
+						<span
+							class="loading loading-spinner"
+							role="img"
+							aria-label={t('ui.loading')}
+						></span>
 					</div>
 				{:else}
 					<DataTable
@@ -215,7 +222,9 @@
 						type="submit"
 						disabled={query.trim().length < 2 || searching}
 					>
-						{#if searching}<span class="loading loading-spinner loading-xs"
+						{#if searching}<span
+								class="loading loading-spinner loading-xs"
+								aria-hidden="true"
 							></span>{:else}<Search size={16} aria-hidden="true" />{/if}{t(
 							'software.search',
 						)}

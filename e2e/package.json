@@ -1,6 +1,6 @@
 {
 	"name": "@nuci/e2e",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"license": "Apache-2.0",
@@ -9,6 +9,7 @@
 		"check": "tsc -p tsconfig.json"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "^4.13.0",
 		"@nuci/app-sdk": "workspace:*",
 		"@nuci/rpc": "workspace:*",
 		"@nuci/uci": "workspace:*",

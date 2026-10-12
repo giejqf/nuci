@@ -46,10 +46,19 @@ jobs:
         env:
           NUCI_SDK_VERSION: ${{ env.OPENWRT_VERSION }}
 
+      - name: Cache Image Builder
+        uses: actions/cache@v4
+        with:
+          path: tools/imagebuilder/cache
+          key: openwrt-ib-x86-64-${{ env.OPENWRT_VERSION }}
+      - name: Build the lab image with the Image Builder
+        run: tools/imagebuilder/build.sh
+        env:
+          NUCI_IB_VERSION: ${{ env.OPENWRT_VERSION }}
+
       - name: Boot and provision the lab (TCG, D14)
         run: |
-          tools/qemu/fetch.sh "$OPENWRT_VERSION"
-          tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION"
+          tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION" --image "tools/qemu/images/nuci-$OPENWRT_VERSION.img"
           tools/qemu/provision.sh --wireless
 
       - name: Router serves NuCI, /ubus and /nuci/events

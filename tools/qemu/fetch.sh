@@ -9,7 +9,7 @@ VERSION="${1:-$DEFAULT_VERSION}"
 TARGET="${NUCI_TARGET:-x86/64}"
 case "$TARGET" in
 	x86/64) FILE="openwrt-$VERSION-x86-64-generic-squashfs-combined.img.gz"; SUFFIX="" ;;
-	armsr/armv8) FILE="openwrt-$VERSION-armsr-armv8-generic-squashfs-combined.img.gz"; SUFFIX="-armv8" ;;
+	armsr/armv8) FILE="openwrt-$VERSION-armsr-armv8-generic-squashfs-combined-efi.img.gz"; SUFFIX="-armv8" ;;
 	*) die "unsupported target $TARGET" ;;
 esac
 OUT="$IMAGES_DIR/base-$VERSION$SUFFIX.img"

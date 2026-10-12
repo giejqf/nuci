@@ -1,0 +1,163 @@
+# Writing a nuci-app
+
+A `nuci-app-<id>` package adds pages to NuCI without touching the core. The
+contract is `@nuci/app-sdk` (semver-public from 0.1): a manifest, an ES module
+that registers pages, and rpcd ACLs for whatever the pages call.
+
+This guide uses the test-only app in `e2e/fixtures/nuci-app-hello/` as the
+running example; the e2e suite installs it and checks that it works.
+
+## How it fits together
+
+1. The package installs a **manifest** to `/usr/share/nuci/apps/<id>.json`
+   and an **entry module** under `/www/nuci/apps/<id>/`.
+2. After login, the SPA calls `nuci.apps list`, validates each manifest,
+   skips apps whose ACL groups the session lacks, and `import()`s the entry.
+3. The entry calls `registerPage()` for each page. The host adds the pages
+   to the sidebar and the hash router (`#/<group>/<page>`).
+4. When the route is opened, the host calls the page's `mount(target, host)`
+   with an empty element and a `HostContext`. The page renders into it with
+   any technology (plain DOM, its own Svelte, …) and returns an `unmount`
+   function.
+
+Pages are islands: an app bundles its own UI runtime and never shares the
+host's component instances, so host upgrades cannot break apps through
+internals. Everything an app may use from the host is on `HostContext`.
+
+## The manifest
+
+```json
+{
+	"id": "hello",
+	"title": "Hello",
+	"icon": "Smile",
+	"entry": "apps/hello/index.js",
+	"version": "1.0.0",
+	"menu": { "group": "services", "order": 50 },
+	"acls": ["nuci-app-hello"]
+}
+```
+
+| Field | Rules |
+|-------|-------|
+| `id` | `[a-z0-9][a-z0-9-]*`, at most 64 characters; also the package suffix |
+| `title` | Shown when a page has no title of its own |
+| `icon` | A Lucide icon name (optional) |
+| `entry` | Path of the ES module relative to `/nuci/`, ending in `.js`, no `..` |
+| `menu.group` | `status`, `system`, `network`, `firewall` or `services` (default) |
+| `menu.order` | Sort key inside the group (default 100) |
+| `acls` | rpcd ACL groups the session must hold (read) for the app to load |
+
+Invalid manifests are ignored. `parseManifest()` from the SDK applies the
+same rules, so you can validate yours in a unit test.
+
+## Registering pages
+
+```ts
+// SPDX-License-Identifier: Apache-2.0
+import { registerPage } from '@nuci/app-sdk';
+
+registerPage('hello', {
+	path: 'services/hello',
+	title: 'Hello',
+	async mount(target, host) {
+		host.addMessages('en', { 'hello.greeting': 'Hello from {name}' });
+		const board = await host.call<{ hostname: string }>('system', 'board');
+		const p = document.createElement('p');
+		p.textContent = host.t('hello.greeting', { name: board.hostname });
+		target.append(p);
+		return () => target.replaceChildren();
+	},
+});
+```
+
+`registerPage(appId, page)`:
+
+| Field | Meaning |
+|-------|---------|
+| `path` | Route below `#/`; must start with the page's group, e.g. `services/hello` |
+| `title` | Sidebar label and page heading |
+| `group`, `order` | Override the manifest's menu placement |
+| `acl` | ACL group required to show this page (default: the manifest's) |
+| `mount(target, host)` | Render into `target`; may be async; may return an unmount function |
+
+The host rejects paths outside the group and duplicate paths.
+
+## HostContext
+
+| Member | Use |
+|--------|-----|
+| `call(object, method, args?)` | ubus call with the current session (batched, re-login on expiry) |
+| `subscribe(stream, handler)` | Realtime streams (`stats`, `syslog`, `kernlog`, `conntrack`, `wifi`); SSE or polling is the host's choice; returns an unsubscribe function |
+| `t(key, params?)` / `addMessages(locale, messages)` | i18n; prefix your keys with your app id |
+| `hasAccess(group, perm?)` | Check an ACL group before offering an action |
+| `navigate(path)` | Go to a host route |
+| `theme` | `'light'` or `'dark'`; style with DaisyUI classes or your own CSS |
+| `sdkVersion` | The host's SDK version |
+
+Apps must not write uci directly with `uci.commit`. If an app edits
+configuration, stage it with `uci set/add/delete` through `call()` and let the
+user apply it from the host's apply bar, which runs the rollback protocol
+(see ADR-0002).
+
+## Server side
+
+If the app needs logic on the router, ship an rpcd ucode plugin
+(`/usr/share/rpcd/ucode/nuci-app-<id>.uc`) following the rules in
+AGENTS.md §3.1: one object per file, declared `args`, `UBUS_STATUS_*` codes on
+error, argv arrays only, no synchronous ubus calls into rpcd-hosted objects
+(use `conn.defer()`), and slow work as detached jobs.
+
+Ship an ACL file `/usr/share/rpcd/acl.d/nuci-app-<id>.json` with the narrowest
+grants the app needs, and list its group in the manifest's `acls`.
+
+## Packaging
+
+An OpenWrt package Makefile for an app (architecture independent):
+
+```make
+# SPDX-License-Identifier: Apache-2.0
+include $(TOPDIR)/rules.mk
+
+PKG_NAME:=nuci-app-hello
+PKG_VERSION:=1.0.0
+PKG_RELEASE:=1
+PKG_LICENSE:=Apache-2.0
+
+include $(INCLUDE_DIR)/package.mk
+
+define Package/nuci-app-hello
+  SECTION:=nuci
+  CATEGORY:=NuCI
+  TITLE:=NuCI hello app
+  DEPENDS:=+nuci-base
+  PKGARCH:=all
+endef
+
+define Build/Compile
+endef
+
+define Package/nuci-app-hello/install
+	$(INSTALL_DIR) $(1)/usr/share/nuci/apps $(1)/www/nuci/apps/hello
+	$(INSTALL_DATA) ./files/hello.json $(1)/usr/share/nuci/apps/hello.json
+	$(INSTALL_DATA) ./files/index.js $(1)/www/nuci/apps/hello/index.js
+endef
+
+$(eval $(call BuildPackage,nuci-app-hello))
+```
+
+Build the entry module as a single ES module (Vite library mode works; see
+`e2e/fixtures/nuci-app-hello/vite.config.ts`). `PKG_RELEASE` must be a plain
+integer (apk version rules).
+
+## Testing
+
+- Unit-test manifest validity with `parseManifest()`.
+- In the NuCI repo, `pnpm e2e` builds the hello fixture and installs it on the
+  QEMU lab (`e2e/run.sh`); copy that pattern for your app's e2e tests.
+
+## Compatibility
+
+`@nuci/app-sdk` follows semver from 0.1: new optional fields and HostContext
+members are minor releases; removals or behavior changes are major releases.
+Check `host.sdkVersion` if you depend on newer members.

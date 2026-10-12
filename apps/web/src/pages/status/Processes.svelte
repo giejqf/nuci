@@ -105,7 +105,8 @@
 		{#if error}<div role="alert" class="alert alert-error">{error}</div>{/if}
 		{#if !loaded}
 			<div class="flex justify-center p-8" role="status">
-				<span class="loading loading-spinner" aria-label={t('ui.loading')}></span>
+				<span class="loading loading-spinner" role="img" aria-label={t('ui.loading')}
+				></span>
 			</div>
 		{:else}
 			<DataTable

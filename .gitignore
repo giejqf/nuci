@@ -13,3 +13,9 @@ e2e/test-results/
 e2e/playwright-report/
 e2e/.auth/
 e2e/fixtures/*/dist/
+
+# release signing keys (never commit)
+tools/release/keys/
+*.key.pem
+tools/imagebuilder/cache/
+tools/imagebuilder/work/

@@ -19,18 +19,19 @@
 	};
 </script>
 
-<div class="py-1 text-sm" data-testid={testid}>
-	<div class="flex justify-between gap-4">
-		<dt class="text-base-content/70 shrink-0">{label}</dt>
-		<dd class="min-w-0 text-right font-medium break-words">
-			{text ?? (pct === null ? '—' : `${pct}%`)}
-		</dd>
-	</div>
-	<progress
-		class="progress {toneClass[tone]} mt-1 h-1.5 w-full"
-		value={pct ?? undefined}
-		max="100"
-		aria-label={label}
-		aria-valuetext={text ?? undefined}
-	></progress>
+<!-- One dt with two dd (text, bar): valid inside the caller's <dl>. -->
+<div class="flex flex-wrap justify-between gap-x-4 py-1 text-sm" data-testid={testid}>
+	<dt class="text-base-content/70 shrink-0">{label}</dt>
+	<dd class="min-w-0 text-right font-medium break-words">
+		{text ?? (pct === null ? '—' : `${pct}%`)}
+	</dd>
+	<dd class="basis-full">
+		<progress
+			class="progress {toneClass[tone]} mt-1 block h-1.5 w-full"
+			value={pct ?? undefined}
+			max="100"
+			aria-label={label}
+			aria-valuetext={text ?? undefined}
+		></progress>
+	</dd>
 </div>

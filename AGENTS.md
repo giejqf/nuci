@@ -215,8 +215,9 @@ packages/app-sdk              public API for future nuci-app-*: manifest schema,
   permission denied on a page = page renders read-only with an explanation.
 - **Accessibility:** DaisyUI components used with proper labels; keyboard
   navigable tables/forms; `aria-live` for apply status.
-- **Bundle budget:** ≤ 250 KB gzipped for shell + login + Status overview;
-  each page chunk ≤ 80 KB gzipped. CI fails over budget.
+- **Bundle budget:** ≤ 120 KB gzipped for shell + login + Status overview;
+  each page chunk ≤ 20 KB gzipped (tightened from 250/80 KB in ADR-0003).
+  CI fails over budget.
 - **Request size:** uhttpd-mod-ubus rejects `/ubus` bodies over 64 KiB
   (`UH_UBUS_MAX_POST_SIZE`), and rpcd's `file.read` refuses files ≥ 256 KiB.
   `@nuci/rpc` splits batches below the limit; uploads use 45 KiB `file.write`

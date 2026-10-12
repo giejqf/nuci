@@ -53,7 +53,7 @@
 		<ul class="menu w-full gap-1" data-testid="sidebar">
 			{#each menu as g (g.id)}
 				<li>
-					<h2 class="menu-title flex items-center gap-2">
+					<h2 class="menu-title text-base-content/70 flex items-center gap-2">
 						<g.icon size={16} aria-hidden="true" />{t(g.title)}
 					</h2>
 					<ul>

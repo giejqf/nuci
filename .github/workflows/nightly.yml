@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: Apache-2.0
+# Nightly: the e2e suite on armsr/armv8 (AGENTS.md §7, D10).
+name: nightly
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  OPENWRT_VERSION: 25.12.0
+
+jobs:
+  packages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - uses: actions/cache@v4
+        with:
+          path: tools/sdk/cache
+          key: openwrt-sdk-x86-64-${{ env.OPENWRT_VERSION }}
+      # nuci packages are architecture-independent (PKGARCH:=all)
+      - run: tools/sdk/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: feed
+          path: dist/feed/*.apk
+
+  armsr-armv8:
+    needs: packages
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: feed
+          path: dist/feed
+      - name: Install QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64 qemu-utils socat zstd
+          [ -e /dev/kvm ] && sudo chmod 666 /dev/kvm || true
+      - name: Boot and provision armsr/armv8
+        env:
+          NUCI_TARGET: armsr/armv8
+        run: |
+          tools/qemu/fetch.sh "$OPENWRT_VERSION"
+          tools/qemu/start.sh --fresh --version "$OPENWRT_VERSION"
+          tools/qemu/provision.sh --wireless
+      - name: Install Playwright browser
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Playwright
+        run: pnpm e2e
+        env:
+          NUCI_E2E_SYNC: '0'
+          NUCI_E2E_DOCKER: '0'
+          NUCI_TARGET: armsr/armv8
+      - name: Upload report and serial log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-armsr-report
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+            tools/qemu/run/*.serial.log
+      - name: Stop lab
+        if: always()
+        run: tools/qemu/stop.sh

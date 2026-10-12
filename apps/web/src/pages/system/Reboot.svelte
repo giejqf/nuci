@@ -52,7 +52,8 @@
 				class="flex items-center gap-3"
 				data-testid="reboot-status"
 			>
-				{#if phase !== 'timeout'}<span class="loading loading-spinner"></span>{/if}
+				{#if phase !== 'timeout'}<span class="loading loading-spinner" aria-hidden="true"
+					></span>{/if}
 				{t(`reboot.phase.${phase}`)}
 			</div>
 		{/if}

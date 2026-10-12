@@ -1,5 +1,6 @@
 {
 	"name": "nuci",
+	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"license": "Apache-2.0",
@@ -14,10 +15,11 @@
 		"test:unit": "vitest run",
 		"test:ucode": "sh rpcd/test/run.sh",
 		"check": "pnpm -r --parallel check && sh tools/check-ucode.sh",
-		"lint": "eslint . && prettier --check . && sh tools/check-license.sh && node tools/check-i18n.mjs",
+		"lint": "eslint . && prettier --check . && sh tools/check-license.sh && node tools/check-i18n.mjs && node tools/i18n-extract.mjs",
 		"format": "prettier --write .",
 		"size": "node tools/size.mjs",
-		"e2e": "bash e2e/run.sh"
+		"e2e": "bash e2e/run.sh",
+		"i18n:template": "node tools/i18n-extract.mjs --template"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

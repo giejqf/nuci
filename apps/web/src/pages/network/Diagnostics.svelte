@@ -103,10 +103,8 @@
 				disabled={running || !!hostError}
 				data-testid="diag-run"
 			>
-				{#if running}<span class="loading loading-spinner loading-xs"></span>{:else}<Play
-						size={16}
-						aria-hidden="true"
-					/>{/if}{t('diag.run')}
+				{#if running}<span class="loading loading-spinner loading-xs" aria-hidden="true"
+					></span>{:else}<Play size={16} aria-hidden="true" />{/if}{t('diag.run')}
 			</button>
 		</form>
 		{#if error}<div role="alert" class="alert alert-error">{error}</div>{/if}

@@ -34,7 +34,8 @@
 
 {#if !session.ready}
 	<div class="flex min-h-screen items-center justify-center" role="status">
-		<span class="loading loading-spinner loading-lg" aria-label={t('ui.loading')}></span>
+		<span class="loading loading-spinner loading-lg" role="img" aria-label={t('ui.loading')}
+		></span>
 	</div>
 {:else if session.authenticated}
 	<Shell />

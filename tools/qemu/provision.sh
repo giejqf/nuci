@@ -50,16 +50,26 @@ ssh_try "mkdir -p /etc/dropbear && cat > /etc/dropbear/authorized_keys && chmod 
 	< "$RUN_DIR/id_ed25519.pub"
 printf '%s\n%s\n' "$NUCI_ROOT_PASSWORD" "$NUCI_ROOT_PASSWORD" | lab_ssh "passwd root >/dev/null 2>&1"
 
-log "waiting for WAN connectivity"
-for i in $(seq 1 60); do
-	lab_ssh "ping -c1 -W2 downloads.openwrt.org >/dev/null 2>&1" && break
-	[ "$i" -eq 60 ] && die "guest has no internet via wan"
-	sleep 2
-done
+wait_wan() {
+	log "waiting for WAN connectivity"
+	for i in $(seq 1 60); do
+		lab_ssh "ping -c1 -W2 downloads.openwrt.org >/dev/null 2>&1" && return 0
+		[ "$i" -eq 60 ] && die "guest has no internet via wan"
+		sleep 2
+	done
+}
 
 PKGS="$(grep -vE '^\s*(#|$)' "$QEMU_DIR/packages.txt" | tr '\n' ' ') $EXTRA"
-log "apk add $PKGS"
-lab_ssh "apk update >/dev/null && apk add $PKGS"
+# Only touch the network when something is missing (Image Builder images
+# already contain everything).
+MISSING="$(lab_ssh "for p in $PKGS; do apk info -e \$p >/dev/null 2>&1 || printf '%s ' \$p; done")"
+if [ -n "$MISSING" ]; then
+	wait_wan
+	log "apk add $MISSING"
+	lab_ssh "apk update >/dev/null && apk add $MISSING"
+else
+	log "all base packages present"
+fi
 
 if [ "$KEEP_LUCI" -eq 0 ]; then
 	log "removing LuCI (NuCI must not depend on it)"
@@ -79,7 +89,9 @@ if [ "$WIRELESS" -eq 1 ]; then
 	# Findings (Phase 4): hostapd rejects the default country "00"; wpad and
 	# netifd's ucode wireless only come up in the right order after a reboot.
 	log "adding mac80211_hwsim radios"
-	lab_ssh 'apk add kmod-mac80211-hwsim wpad-basic-mbedtls iw >/dev/null &&
+	lab_ssh 'apk info -e kmod-mac80211-hwsim >/dev/null 2>&1 && apk info -e wpad-basic-mbedtls >/dev/null 2>&1' || wait_wan
+	lab_ssh 'for p in kmod-mac80211-hwsim wpad-basic-mbedtls iw; do apk info -e $p >/dev/null 2>&1 || need="$need $p"; done
+		[ -z "$need" ] || { apk update >/dev/null && apk add $need >/dev/null; }
 		[ -s /etc/config/wireless ] || wifi config
 		for r in $(uci show wireless | sed -n "s/^wireless\.\([^.=]*\)=wifi-device$/\1/p"); do
 			uci set wireless.$r.band=2g; uci set wireless.$r.channel=6

@@ -35,8 +35,7 @@
 			type="button"
 			role="tab"
 			id="{base}-{tab.id}"
-			class="tab"
-			class:tab-active={active === tab.id}
+			class="tab {active === tab.id ? 'tab-active' : 'text-base-content/70'}"
 			aria-selected={active === tab.id}
 			aria-controls="{base}-panel"
 			tabindex={active === tab.id ? 0 : -1}

@@ -125,7 +125,7 @@
 		<ApplyBar />
 	</div>
 	<div class="drawer-side z-30">
-		<label for="nuci-drawer" class="drawer-overlay" aria-label={t('nav.close')}></label>
+		<label for="nuci-drawer" class="drawer-overlay" aria-hidden="true"></label>
 		<Sidebar onnavigate={() => (drawer = false)} />
 	</div>
 </div>

@@ -76,7 +76,8 @@
 	<Section title={t('startup.scripts')}>
 		{#if loading}
 			<div class="flex justify-center p-8" role="status">
-				<span class="loading loading-spinner" aria-label={t('ui.loading')}></span>
+				<span class="loading loading-spinner" role="img" aria-label={t('ui.loading')}
+				></span>
 			</div>
 		{:else}
 			<DataTable
@@ -133,6 +134,7 @@
 								>
 									{#if busy === `${r.name}:${a}`}<span
 											class="loading loading-spinner loading-xs"
+											aria-hidden="true"
 										></span>{/if}
 									{t(`startup.action.${a}`)}
 								</button>

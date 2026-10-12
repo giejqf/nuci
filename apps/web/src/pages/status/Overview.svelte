@@ -191,7 +191,7 @@
 
 	{#if loading}
 		<div class="flex justify-center p-8" role="status">
-			<span class="loading loading-spinner" aria-label={t('ui.loading')}></span>
+			<span class="loading loading-spinner" role="img" aria-label={t('ui.loading')}></span>
 		</div>
 	{:else}
 		<div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">

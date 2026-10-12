@@ -466,7 +466,8 @@
 >
 	{#if scanning}
 		<div class="flex justify-center p-6" role="status">
-			<span class="loading loading-spinner" aria-label={t('wireless.scanning')}></span>
+			<span class="loading loading-spinner" role="img" aria-label={t('wireless.scanning')}
+			></span>
 		</div>
 	{:else if !results.length}
 		<p class="text-base-content/60">{t('wireless.scan_empty')}</p>

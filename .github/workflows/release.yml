@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: Apache-2.0
+# Tag vX.Y.Z -> GitHub release with the signed package feed:
+#   apk feed URL: https://github.com/<owner>/<repo>/releases/download/vX.Y.Z/packages.adb
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+env:
+  OPENWRT_VERSION: 25.12.0
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Host ucode (router revision)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake libjson-c-dev
+          tools/install-ucode.sh "$HOME/.local"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: pnpm lint
+      - run: pnpm check
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm size
+
+      - uses: actions/cache@v4
+        with:
+          path: tools/sdk/cache
+          key: openwrt-sdk-x86-64-${{ env.OPENWRT_VERSION }}
+      - name: Build and sign the feed
+        env:
+          FEED_KEY: ${{ secrets.NUCI_FEED_KEY }}
+        run: |
+          umask 077
+          printf '%s\n' "$FEED_KEY" > "$RUNNER_TEMP/feed.key.pem"
+          NUCI_FEED_KEY="$RUNNER_TEMP/feed.key.pem" tools/release.sh
+          rm -f "$RUNNER_TEMP/feed.key.pem"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/release/* \
+            --title "NuCI $GITHUB_REF_NAME" --notes-file docs/releases/"$GITHUB_REF_NAME".md

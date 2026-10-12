@@ -71,7 +71,6 @@
 	"login.expired": "Session expired",
 	"nav.label": "Main navigation",
 	"nav.open": "Open navigation",
-	"nav.close": "Close navigation",
 	"nav.not_found": "This page does not exist.",
 	"nav.load_failed": "The page could not be loaded",
 	"nav.status": "Status",

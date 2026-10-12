@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// Bundle budget (AGENTS.md §3.3): shell + login + Status overview ≤ 250 KB gzip,
-// every lazily loaded chunk ≤ 80 KB gzip. Reads Vite's build manifest.
+// Bundle budget (AGENTS.md §3.3, ADR-0003): shell + login + Status overview
+// ≤ 120 KB gzip, every lazily loaded chunk ≤ 20 KB gzip. Reads Vite's manifest.
 
 import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -11,8 +11,8 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'apps/web/dist');
 const MANIFEST = join(DIST, '.vite/manifest.json');
-const INITIAL_BUDGET = 250 * 1024;
-const CHUNK_BUDGET = 80 * 1024;
+const INITIAL_BUDGET = 120 * 1024;
+const CHUNK_BUDGET = 20 * 1024;
 // Lazy chunks that are part of the initial experience and count toward the 250 KB budget.
 const INITIAL_LAZY = [/pages\/status\/Overview\.svelte$/, /shell\/Login\.svelte$/];
 

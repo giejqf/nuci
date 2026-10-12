@@ -147,7 +147,9 @@
 <Page title={t('backup.title')} description={t('backup.description')}>
 	{#if restartPhase}
 		<div role="status" aria-live="polite" class="alert alert-info" data-testid="restart-status">
-			<span class="loading loading-spinner"></span>{t(`reboot.phase.${restartPhase}`)}
+			<span class="loading loading-spinner" aria-hidden="true"></span>{t(
+				`reboot.phase.${restartPhase}`,
+			)}
 		</div>
 	{/if}
 	<div class="grid gap-4 xl:grid-cols-2">
@@ -160,7 +162,9 @@
 					onclick={backup}
 					data-testid="backup-create"
 				>
-					{#if backupBusy}<span class="loading loading-spinner loading-xs"
+					{#if backupBusy}<span
+							class="loading loading-spinner loading-xs"
+							aria-hidden="true"
 						></span>{:else}<DatabaseBackup size={16} aria-hidden="true" />{/if}
 					{t('backup.generate')}
 				</button>

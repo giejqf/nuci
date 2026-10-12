@@ -21,7 +21,7 @@
 {:else}
 	{#await page}
 		<div class="flex justify-center p-8" role="status">
-			<span class="loading loading-spinner" aria-label={t('ui.loading')}></span>
+			<span class="loading loading-spinner" role="img" aria-label={t('ui.loading')}></span>
 		</div>
 	{:then mod}
 		<mod.default {params} />

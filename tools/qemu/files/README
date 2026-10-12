@@ -1,0 +1,3 @@
+Files copied into Image Builder lab images (tools/imagebuilder/build.sh,
+FILES=). Never put secrets here (AGENTS.md rule 10): passwords and SSH keys
+are set by tools/qemu/provision.sh at run time.

@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0
 # Boot a disposable OpenWrt VM on a qcow2 overlay of the base image.
-# Usage: start.sh [--version V] [--name N] [--fresh]
+# Usage: start.sh [--version V] [--name N] [--fresh] [--image FILE]
+#   --image  boot this raw image instead of the stock base image (e.g. the
+#            Image Builder image from tools/imagebuilder/build.sh)
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
 
 VERSION="$DEFAULT_VERSION"
 NAME="nuci"
 FRESH=0
+IMAGE=""
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--version) VERSION="$2"; shift 2 ;;
 		--name) NAME="$2"; shift 2 ;;
 		--fresh) FRESH=1; shift ;;
+		--image) IMAGE="$2"; shift 2 ;;
 		*) die "unknown argument $1" ;;
 	esac
 done
@@ -20,14 +24,16 @@ done
 TARGET="${NUCI_TARGET:-x86/64}"
 SUFFIX=""
 [ "$TARGET" = "x86/64" ] || SUFFIX="-armv8"
-BASE="$IMAGES_DIR/base-$VERSION$SUFFIX.img"
+BASE="${IMAGE:-$IMAGES_DIR/base-$VERSION$SUFFIX.img}"
 OVERLAY="$RUN_DIR/$NAME.qcow2"
 PIDFILE="$RUN_DIR/$NAME.pid"
 MON="$RUN_DIR/$NAME.mon"
 SERIAL="$RUN_DIR/$NAME.serial.log"
 
 mkdir -p "$RUN_DIR"
-[ -s "$BASE" ] || "$QEMU_DIR/fetch.sh" "$VERSION"
+[ -n "$IMAGE" ] || [ -s "$BASE" ] || "$QEMU_DIR/fetch.sh" "$VERSION"
+[ -s "$BASE" ] || die "image $BASE not found"
+BASE="$(cd "$(dirname "$BASE")" && pwd)/$(basename "$BASE")"
 
 if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
 	if [ "$FRESH" -eq 0 ]; then

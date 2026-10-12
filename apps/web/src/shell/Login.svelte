@@ -67,10 +67,8 @@
 			</div>
 		{/if}
 		<button class="btn btn-primary mt-2" type="submit" disabled={busy || !username}>
-			{#if busy}<span class="loading loading-spinner loading-sm"></span>{:else}<LogIn
-					size={18}
-					aria-hidden="true"
-				/>{/if}
+			{#if busy}<span class="loading loading-spinner loading-sm" aria-hidden="true"
+				></span>{:else}<LogIn size={18} aria-hidden="true" />{/if}
 			{t('login.submit')}
 		</button>
 	</form>
