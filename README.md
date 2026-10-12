@@ -50,7 +50,7 @@ From a release (OpenWrt 25.12, any architecture; the packages are
 architecture independent):
 
 ```sh
-BASE=https://github.com/<owner>/nuci/releases/download/v0.1.0
+BASE=https://github.com/giejqf/nuci/releases/download/v0.1.0
 wget -O /etc/apk/keys/nuci-feed.pem "$BASE/nuci-feed.pem"
 echo "$BASE/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 apk update && apk add nuci
