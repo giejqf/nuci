@@ -52,6 +52,19 @@ phases are added as the maintainer schedules them, see §11):
 | Setup | First-run wizard: root password, internet connection, Wi-Fi, time zone; applied with the rollback protocol |
 | Design | A UI/UX design request (`docs/design/DesignRequest.md`) is out with a designer; its results become later phases |
 
+**0.4 scope** (scheduled 2026-10-13; 0.3 is not released separately, the
+maintainer goes on to 0.4 first; plan in §9 Phases 15–19):
+
+| Area | Content |
+|------|---------|
+| UX fixes | Bugs found while capturing the design-request screenshots |
+| Attended sysupgrade | `nuci-app-asu`: upgrade to a newer release with the installed packages through the OpenWrt build service (`owut`), ADR-0007; a real sysupgrade test in QEMU |
+| Apps | `nuci-app-nlbwmon` (traffic per client), `nuci-app-adblock` (DNS blocklists) |
+| Platform | Restart the network service from the UI after a protocol is installed; transfers longer than uhttpd's `script_timeout` |
+
+**Non-goals for 0.4:** the designer's changes (a later phase once the results
+are in), further apps (banip, mwan3, acme, statistics), native arm64 builds.
+
 **Hard rule:** no LuCI runtime dependency. Not `luci-base`, not `rpcd-mod-luci`,
 not the `luci` ubus object, not LuCI's JS. Reading LuCI source to learn ubus/uci
 semantics is fine; copying code is not.
@@ -677,6 +690,10 @@ next phase's pages before the previous phase's exit criteria are met.
   `NUCI_FEED_KEY` secret (set by the maintainer).
 - **Exit:** `ci` and `e2e` green on `main`; the first tag pushed after the
   secret exists produces a GitHub Release with an installable feed.
+- **Status:** `ci` and `e2e` green on `main` since 2026-10-13 (e2e about
+  22 min per transport under TCG after the lab switched to cold restarts).
+  The release step waits for the secret and moves to the 0.4 release
+  (Phase 19); `v0.2.0` stays an unpushed local tag.
 
 ### Phase 14 — First-run setup wizard (0.3)
 - A fresh OpenWrt router has no root password and rpcd then accepts any
@@ -697,6 +714,67 @@ next phase's pages before the previous phase's exit criteria are met.
   opens after login, sets the password, changes wan/Wi-Fi/time zone, the
   apply confirms and the values are on the router; the wizard does not open
   again; the same flow passes in `de` and `zh-CN` without missing keys.
+- **Status:** done 2026-10-12; passes in CI under TCG.
+
+---
+
+### Phase 15 — UX fixes from the design review (0.4)
+- Overview: the wireless card lists radios whose networks are all disabled
+  (today it says "No wireless devices").
+- Wireless: row actions stay reachable on narrow screens.
+- Port forwards (and other add dialogs): nothing is staged until the dialog
+  is confirmed; cancelling leaves no change behind.
+- Software: search works on a router whose package lists were never
+  downloaded (the page offers or runs `nuci.pkg update` when lists are
+  missing or stale).
+- **Exit:** e2e covers each fix (mobile viewport for the Wireless table);
+  the affected screenshots in `docs/design/screenshots/` are refreshed.
+
+### Phase 16 — Attended sysupgrade (0.4)
+- ADR-0007: the router, not the browser, talks to the build service
+  (`sysupgrade.openwrt.org` or the server in `attendedsysupgrade.server`)
+  through the stock `owut` client; the browser still talks only to the
+  router. Shipped as `nuci-app-asu` (depends on `owut`), so routers without
+  it make no outside requests.
+- `nuci.asu` methods (names fixed after checking `owut` on the target):
+  check for a newer release or revision, request a build with the installed
+  packages, download and verify the image, then hand it to the existing
+  flash flow (keep settings) — all as detached jobs with status polling.
+- QEMU sysupgrade test (manual-only since Phase 3): flash an Image Builder
+  image on the lab with settings kept; settings and NuCI survive the
+  upgrade. The ASU flow runs against a local stub of the build-service API
+  so e2e does not depend on the internet.
+- **Exit:** e2e: the app finds a "newer" image on the stub, builds,
+  downloads, verifies and flashes it; the router comes back with its
+  settings and packages.
+
+### Phase 17 — Apps round 2 (0.4)
+- `nuci-app-nlbwmon` (`nlbwmon`): traffic per client and protocol over the
+  accounting period, settings (period, networks, database); read through a
+  narrow `nuci.nlbwmon` method over `nlbw` output.
+- `nuci-app-adblock` (`adblock`): enable, sources/blocklists, allow/deny
+  lists, status and statistics, refresh as a job.
+- Same rules as Phase 10: manifest, UI, ACL group, typed `src/api.ts`,
+  host tests, fixtures, `zh-CN`/`de` catalogs, size budget.
+- **Exit:** e2e per app: nlbwmon shows the lab client's traffic after a
+  transfer; adblock blocks a domain from a local test list (lookup through
+  dnsmasq returns the block answer) and unblocks it via the allow list.
+
+### Phase 18 — Platform leftovers (0.4)
+- After a protocol package is installed, the Interfaces page offers to
+  restart the network service (narrow method, confirmation dialog, the
+  page reconnects afterwards); `get_proto_handlers` then lists it.
+- Transfers longer than `script_timeout`: uploads and downloads through
+  `/nuci/transfer` resume by offset across several requests, so a slow link
+  can move a firmware image of any size (ADR-0005 amended).
+- **Exit:** e2e: install a protocol, restart from the page, create an
+  interface with it; a transfer throttled past `script_timeout` completes.
+
+### Phase 19 — 0.4 release
+- Release notes, perf and accessibility checks for new pages, signed feed
+  published from the tag (needs the `NUCI_FEED_KEY` secret).
+- **Exit:** tagged `v0.4.0` (pushed only with the maintainer's go-ahead);
+  the feed installs `nuci` and every app on a stock 25.12 armsr image.
 
 ---
 
@@ -734,12 +812,8 @@ next phase's pages before the previous phase's exit criteria are met.
 
 ## 11. Open questions (answer and move to §2)
 
-- **0.3 beyond Phases 13–14** (proposed 2026-10-12, not yet scheduled by
-  the maintainer): which further apps (candidates: adblock or banip,
-  nlbwmon, statistics/collectd, mwan3, acme); attended sysupgrade (talks to
-  the external ASU build service — needs an ADR); restarting the network
-  service from the UI after a protocol is installed; transfers longer than
-  `script_timeout`; a sysupgrade test in QEMU; native arm64 builds via the
-  buildroot; UI changes from the design request.
+- **After 0.4** (not scheduled): further apps (banip, mwan3, acme,
+  statistics/collectd); native arm64 builds via the buildroot; UI changes
+  from the design request.
 - (Non-root users: decided in ADR-0006, D17.)
 
