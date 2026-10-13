@@ -3,7 +3,7 @@
 <script lang="ts">
 	import { Router as RouterIcon } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
-	import { appHost } from '../apps/host.svelte';
+	import { appHost, pageTitle } from '../apps/host.svelte';
 	import { session } from '../lib/session.svelte';
 	import { router } from '../router/router.svelte';
 	import { groups, routes } from '../router/routes';
@@ -34,7 +34,7 @@
 						)
 						.map((r) => ({
 							path: r.page.path,
-							label: r.page.title,
+							label: pageTitle(r.page),
 							order: r.page.order ?? r.app.menu?.order ?? 100,
 						})),
 				].sort((a, b) => a.order - b.order);

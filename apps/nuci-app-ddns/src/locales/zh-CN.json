@@ -30,5 +30,6 @@
 	"ddns.check_interval": "检查间隔（分钟）",
 	"ddns.log": "显示日志",
 	"ddns.log_of": "{name} 的日志",
-	"ddns.no_log": "暂无日志。"
+	"ddns.no_log": "暂无日志。",
+	"ddns.nav": "动态 DNS"
 }

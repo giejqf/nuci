@@ -3,7 +3,7 @@
 <script lang="ts">
 	import { t } from '@nuci/i18n';
 	import type { AppRoute } from '../apps/host.svelte';
-	import { appHost } from '../apps/host.svelte';
+	import { appHost, pageTitle } from '../apps/host.svelte';
 
 	interface Props {
 		route: AppRoute;
@@ -28,7 +28,7 @@
 </script>
 
 <section class="flex flex-col gap-4" aria-labelledby="app-title">
-	<h1 id="app-title" class="text-2xl font-semibold">{route.page.title}</h1>
+	<h1 id="app-title" class="text-2xl font-semibold">{pageTitle(route.page)}</h1>
 	{#if error}<div role="alert" class="alert alert-error">
 			{t('nav.load_failed')}: {error}
 		</div>{/if}

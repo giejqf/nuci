@@ -37,5 +37,6 @@
 	"nlbw.generations": "保留的周期数",
 	"nlbw.limit": "每个周期的最大条目数",
 	"nlbw.limit_help": "0 = 不限制。",
-	"nlbw.compress": "压缩已归档的周期"
+	"nlbw.compress": "压缩已归档的周期",
+	"nlbw.nav": "流量统计"
 }

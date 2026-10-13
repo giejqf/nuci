@@ -28,5 +28,6 @@
 	"upnp.rule": "访问规则",
 	"upnp.action": "动作",
 	"upnp.allow": "允许",
-	"upnp.deny": "拒绝"
+	"upnp.deny": "拒绝",
+	"upnp.nav": "UPnP"
 }

@@ -20,6 +20,7 @@ registerSveltePage({
 	id: 'ddns',
 	path: 'services/ddns',
 	title: 'Dynamic DNS',
+	titleKey: 'ddns.nav',
 	component: Ddns,
 	css,
 	messages,

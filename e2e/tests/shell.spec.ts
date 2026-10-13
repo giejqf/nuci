@@ -69,7 +69,7 @@ test('an installed nuci-app registers a page through @nuci/app-sdk', async ({ pa
 	await link.click();
 	await expect(page).toHaveURL(/#\/services\/hello$/);
 	await expect(page.getByTestId('hello-greeting')).toHaveText(/^Hello from \S+/);
-	await expect(page.getByTestId('hello-sdk')).toHaveText('sdk 0.3.0');
+	await expect(page.getByTestId('hello-sdk')).toHaveText('sdk 0.4.0');
 });
 
 test('a nuci-app edits uci through the host: change review and apply with rollback', async ({

@@ -153,7 +153,8 @@ registerPage('hello', {
 | Field | Meaning |
 |-------|---------|
 | `path` | Route below `#/`; must start with the page's group, e.g. `services/hello` |
-| `title` | Sidebar label and page heading |
+| `title` | Sidebar label and page heading (English) |
+| `titles` | The title in other languages by locale, e.g. `{ de: 'Hallo' }` (0.4.0); the sidebar shows it before the page is opened |
 | `group`, `order` | Override the manifest's menu placement |
 | `acl` | ACL group required to show this page (default: the manifest's) |
 | `mount(target, host)` | Render into `target`; may be async; may return an unmount function |
@@ -198,6 +199,11 @@ const messages: Record<string, Record<string, string>> = { en };
 for (const [path, catalog] of Object.entries(locales))
 	messages[path.replace(/^.*\/(.+)\.json$/, '$1')] = catalog;
 ```
+
+The messages reach the host when a page is mounted, so the sidebar cannot
+use them for the page's title. With `@nuci/app-kit`, give
+`registerSveltePage` a `titleKey` (e.g. `hello.nav`, with the English title
+in `en.json` as well): it fills `titles` from your catalogs.
 
 ## Server side
 
@@ -269,5 +275,5 @@ integer (apk version rules).
 members are minor releases; removals or behavior changes are major releases.
 Check `host.sdkVersion` if you depend on newer members: 0.2.0 added `uci`,
 `notify` and `locale`; 0.3.0 added draft sections (`uci.add` option `draft`,
-`uci.confirmDraft`). An app that needs them should declare a dependency
+`uci.confirmDraft`); 0.4.0 added the page field `titles`. An app that needs them should declare a dependency
 on `nuci-base (>= 0.2.0)` in its package.

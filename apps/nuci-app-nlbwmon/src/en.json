@@ -37,5 +37,6 @@
 	"nlbw.generations": "Periods to keep",
 	"nlbw.limit": "Maximum entries per period",
 	"nlbw.limit_help": "0 = unlimited.",
-	"nlbw.compress": "Compress archived periods"
+	"nlbw.compress": "Compress archived periods",
+	"nlbw.nav": "Traffic usage"
 }

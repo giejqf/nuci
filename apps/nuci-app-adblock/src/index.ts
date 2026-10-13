@@ -20,6 +20,7 @@ registerSveltePage({
 	id: 'adblock',
 	path: 'services/adblock',
 	title: 'Adblock',
+	titleKey: 'adblock.nav',
 	component: Adblock,
 	css,
 	messages,

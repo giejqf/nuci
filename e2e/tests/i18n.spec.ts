@@ -51,8 +51,8 @@ async function rawKeys(page: Page): Promise<string[]> {
 }
 
 for (const [locale, expected] of [
-	['de', { lang: 'de', nav: 'Schnittstellen' }],
-	['zh-CN', { lang: 'zh-CN', nav: '接口' }],
+	['de', { lang: 'de', nav: 'Schnittstellen', app: 'Datenverbrauch' }],
+	['zh-CN', { lang: 'zh-CN', nav: '接口', app: '流量统计' }],
 ] as const) {
 	test(`${locale}: shell and one page per group are fully translated`, async ({ page }) => {
 		test.setTimeout(slow(300_000));
@@ -67,6 +67,8 @@ for (const [locale, expected] of [
 		await page.locator('form[data-testid="login-form"] button[type="submit"]').click();
 		await expect(page.getByTestId('sidebar')).toBeVisible();
 		await expect(page.getByTestId('sidebar')).toContainText(expected.nav);
+		// App pages too (titles from the app's own catalogs, @nuci/app-sdk 0.4).
+		await expect(page.getByTestId('sidebar')).toContainText(expected.app);
 		const problems: string[] = [];
 		for (const route of ROUTES) {
 			await page.goto(`/nuci/#/${route}`);

@@ -3,7 +3,7 @@
 	import { t } from '@nuci/i18n';
 	import { ApplyBar, setNuciContext, Toaster } from '@nuci/ui';
 	import { onMount } from 'svelte';
-	import { appHost } from '../apps/host.svelte';
+	import { appHost, pageTitle } from '../apps/host.svelte';
 	import { browserAddress, configuredAddresses, handoffTarget, handoffUrl } from '../lib/handoff';
 	import { probe, rpc, uci } from '../lib/services';
 	import { session } from '../lib/session.svelte';
@@ -97,7 +97,7 @@
 	const appRoute = $derived(
 		match ? null : appHost.routes.find((r) => r.page.path === router.path),
 	);
-	const title = $derived(match ? t(match.route.title) : appRoute?.page.title);
+	const title = $derived(match ? t(match.route.title) : appRoute && pageTitle(appRoute.page));
 
 	$effect(() => {
 		document.title = title

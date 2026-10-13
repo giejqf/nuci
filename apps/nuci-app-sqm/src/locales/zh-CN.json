@@ -22,5 +22,6 @@
 	"sqm.ingress": "下载",
 	"sqm.inactive": "未整形",
 	"sqm.dropped": "已丢弃 {n} 个",
-	"sqm.no_queues": "尚未配置队列。"
+	"sqm.no_queues": "尚未配置队列。",
+	"sqm.nav": "SQM QoS"
 }

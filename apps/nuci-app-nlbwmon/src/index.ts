@@ -20,6 +20,7 @@ registerSveltePage({
 	id: 'nlbwmon',
 	path: 'status/traffic',
 	title: 'Traffic usage',
+	titleKey: 'nlbw.nav',
 	component: Nlbwmon,
 	css,
 	messages,

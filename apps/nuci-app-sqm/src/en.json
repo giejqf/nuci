@@ -22,5 +22,6 @@
 	"sqm.ingress": "download",
 	"sqm.inactive": "not shaped",
 	"sqm.dropped": "{n} dropped",
-	"sqm.no_queues": "No queues configured."
+	"sqm.no_queues": "No queues configured.",
+	"sqm.nav": "SQM QoS"
 }

@@ -9,7 +9,7 @@
 // Pages mount into a host-provided element, so an app may bundle any UI
 // runtime without touching the host's.
 
-export const SDK_VERSION = '0.3.0';
+export const SDK_VERSION = '0.4.0';
 
 export type MenuGroup = 'status' | 'system' | 'network' | 'firewall' | 'services';
 
@@ -108,6 +108,8 @@ export interface PageDefinition {
 	/** Route below #/, e.g. "services/hello". Must start with the menu group. */
 	path: string;
 	title: string;
+	/** The title in other languages, by locale ("de", "zh-CN"; since 0.4.0). */
+	titles?: Record<string, string>;
 	icon?: string;
 	group?: MenuGroup;
 	order?: number;

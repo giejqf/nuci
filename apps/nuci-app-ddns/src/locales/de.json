@@ -30,5 +30,6 @@
 	"ddns.check_interval": "Prüfintervall (Minuten)",
 	"ddns.log": "Protokoll anzeigen",
 	"ddns.log_of": "Protokoll von {name}",
-	"ddns.no_log": "Noch kein Protokoll."
+	"ddns.no_log": "Noch kein Protokoll.",
+	"ddns.nav": "Dynamisches DNS"
 }

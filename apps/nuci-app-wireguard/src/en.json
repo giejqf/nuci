@@ -50,5 +50,6 @@
 	"wireguard.qr_label": "QR code of the peer configuration",
 	"wireguard.config_text": "Peer configuration text",
 	"wireguard.export_unavailable": "Available once the tunnel runs and the peer's key pair was generated here.",
-	"wireguard.no_handler": "The router does not know the WireGuard protocol yet. It was installed while the network service was running: restart the network service (or the router) once."
+	"wireguard.no_handler": "The router does not know the WireGuard protocol yet. It was installed while the network service was running: restart the network service (or the router) once.",
+	"wireguard.nav": "WireGuard"
 }

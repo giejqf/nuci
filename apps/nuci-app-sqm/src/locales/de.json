@@ -22,5 +22,6 @@
 	"sqm.ingress": "Download",
 	"sqm.inactive": "nicht gedrosselt",
 	"sqm.dropped": "{n} verworfen",
-	"sqm.no_queues": "Keine Warteschlangen konfiguriert."
+	"sqm.no_queues": "Keine Warteschlangen konfiguriert.",
+	"sqm.nav": "SQM QoS"
 }

@@ -26,5 +26,6 @@
 	"asu.confirm_go": "Install and restart",
 	"asu.phase.installing": "Installing the new firmware…",
 	"asu.phase.restarting": "The router is restarting with the new firmware…",
-	"asu.phase.timeout": "The router did not come back. Check it and reload this page."
+	"asu.phase.timeout": "The router did not come back. Check it and reload this page.",
+	"asu.nav": "Firmware upgrade"
 }

@@ -66,13 +66,20 @@ export function mountApp(
 
 export interface SveltePage extends Omit<PageDefinition, 'mount'>, MountOptions {
 	component: Component<{ host: HostContext }>;
+	/** Catalog key of the title: `titles` come from the app's messages. */
+	titleKey?: string;
 }
 
 /** registerPage() for a Svelte component page. */
 export function registerSveltePage(page: SveltePage): void {
-	const { component, css, messages, id, ...def } = page;
+	const { component, css, messages, id, titleKey, ...def } = page;
+	const titles: Record<string, string> = { ...def.titles };
+	if (titleKey)
+		for (const [locale, catalog] of Object.entries(messages ?? {}))
+			if (locale !== 'en' && catalog[titleKey]) titles[locale] ??= catalog[titleKey];
 	registerPage(id, {
 		...def,
+		titles,
 		mount: (target, host) => mountApp(component, target, host, { id, css, messages }),
 	});
 }

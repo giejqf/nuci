@@ -28,5 +28,6 @@
 	"upnp.rule": "Access rule",
 	"upnp.action": "Action",
 	"upnp.allow": "allow",
-	"upnp.deny": "deny"
+	"upnp.deny": "deny",
+	"upnp.nav": "UPnP"
 }

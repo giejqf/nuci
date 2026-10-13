@@ -51,5 +51,6 @@
 	"adblock.lookup": "查询域名",
 	"adblock.lookup_help": "显示某个域名（或其上级域名）是否在生效的拦截列表或本地列表中。",
 	"adblock.domain": "域名",
-	"adblock.lookup_go": "查询"
+	"adblock.lookup_go": "查询",
+	"adblock.nav": "广告拦截"
 }

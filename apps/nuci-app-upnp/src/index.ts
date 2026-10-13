@@ -20,6 +20,7 @@ registerSveltePage({
 	id: 'upnp',
 	path: 'services/upnp',
 	title: 'UPnP',
+	titleKey: 'upnp.nav',
 	component: Upnp,
 	css,
 	messages,

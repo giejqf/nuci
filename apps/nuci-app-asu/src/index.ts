@@ -20,6 +20,7 @@ registerSveltePage({
 	id: 'asu',
 	path: 'system/upgrade',
 	title: 'Firmware upgrade',
+	titleKey: 'asu.nav',
 	component: Asu,
 	css,
 	messages,

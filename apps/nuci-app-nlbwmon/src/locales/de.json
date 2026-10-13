@@ -37,5 +37,6 @@
 	"nlbw.generations": "Aufbewahrte Zeiträume",
 	"nlbw.limit": "Höchstzahl Einträge pro Zeitraum",
 	"nlbw.limit_help": "0 = unbegrenzt.",
-	"nlbw.compress": "Archivierte Zeiträume komprimieren"
+	"nlbw.compress": "Archivierte Zeiträume komprimieren",
+	"nlbw.nav": "Datenverbrauch"
 }

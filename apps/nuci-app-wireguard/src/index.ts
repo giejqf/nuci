@@ -21,6 +21,7 @@ registerSveltePage({
 	id: 'wireguard',
 	path: 'network/wireguard',
 	title: 'WireGuard',
+	titleKey: 'wireguard.nav',
 	component: WireGuard,
 	css,
 	messages,

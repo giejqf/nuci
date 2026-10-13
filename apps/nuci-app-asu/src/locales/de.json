@@ -26,5 +26,6 @@
 	"asu.confirm_go": "Installieren und neu starten",
 	"asu.phase.installing": "Die neue Firmware wird installiert …",
 	"asu.phase.restarting": "Der Router startet mit der neuen Firmware neu …",
-	"asu.phase.timeout": "Der Router ist nicht wieder erreichbar. Prüfen Sie ihn und laden Sie diese Seite neu."
+	"asu.phase.timeout": "Der Router ist nicht wieder erreichbar. Prüfen Sie ihn und laden Sie diese Seite neu.",
+	"asu.nav": "Firmware-Upgrade"
 }

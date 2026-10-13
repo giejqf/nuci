@@ -50,5 +50,6 @@
 	"wireguard.qr_label": "对端配置的 QR 码",
 	"wireguard.config_text": "对端配置文本",
 	"wireguard.export_unavailable": "隧道运行后，且对端密钥对是在此处生成的，才可使用。",
-	"wireguard.no_handler": "路由器尚不支持 WireGuard 协议。它是在网络服务运行期间安装的：请重启一次网络服务（或路由器）。"
+	"wireguard.no_handler": "路由器尚不支持 WireGuard 协议。它是在网络服务运行期间安装的：请重启一次网络服务（或路由器）。",
+	"wireguard.nav": "WireGuard"
 }

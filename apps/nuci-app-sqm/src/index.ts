@@ -20,6 +20,7 @@ registerSveltePage({
 	id: 'sqm',
 	path: 'network/sqm',
 	title: 'SQM QoS',
+	titleKey: 'sqm.nav',
 	component: Sqm,
 	css,
 	messages,

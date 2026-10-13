@@ -48,7 +48,16 @@ class AppHost {
 			throw new Error(`${appId}: ${page.path} is outside ${group}/`);
 		if (this.routes.some((r) => r.page.path === page.path))
 			throw new Error(`${appId}: duplicate ${page.path}`);
-		this.routes.push({ app, page: { ...page, group: group as PageDefinition['group'] } });
+		// Untrusted input: only string titles survive.
+		const titles = Object.fromEntries(
+			Object.entries(page.titles ?? {}).filter(
+				(e): e is [string, string] => typeof e[1] === 'string' && e[1] !== '',
+			),
+		);
+		this.routes.push({
+			app,
+			page: { ...page, titles, group: group as PageDefinition['group'] },
+		});
 	}
 
 	async load(): Promise<void> {
@@ -146,3 +155,8 @@ class AppHost {
 }
 
 export const appHost = new AppHost();
+
+/** An app page's title in the active language (the app's English title otherwise). */
+export function pageTitle(page: PageDefinition): string {
+	return page.titles?.[getLocale()] ?? page.title;
+}

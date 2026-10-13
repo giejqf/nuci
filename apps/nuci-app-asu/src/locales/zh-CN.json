@@ -26,5 +26,6 @@
 	"asu.confirm_go": "安装并重启",
 	"asu.phase.installing": "正在安装新固件…",
 	"asu.phase.restarting": "路由器正在以新固件重新启动…",
-	"asu.phase.timeout": "路由器未能恢复。请检查路由器并重新加载此页面。"
+	"asu.phase.timeout": "路由器未能恢复。请检查路由器并重新加载此页面。",
+	"asu.nav": "固件升级"
 }

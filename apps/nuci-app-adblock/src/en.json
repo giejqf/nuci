@@ -51,5 +51,6 @@
 	"adblock.lookup": "Look up a domain",
 	"adblock.lookup_help": "Shows whether a domain (or one of its parent domains) is in the active blocklist or in the local lists.",
 	"adblock.domain": "Domain",
-	"adblock.lookup_go": "Look up"
+	"adblock.lookup_go": "Look up",
+	"adblock.nav": "Adblock"
 }

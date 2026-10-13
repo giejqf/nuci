@@ -28,5 +28,6 @@
 	"upnp.rule": "Zugriffsregel",
 	"upnp.action": "Aktion",
 	"upnp.allow": "erlauben",
-	"upnp.deny": "verweigern"
+	"upnp.deny": "verweigern",
+	"upnp.nav": "UPnP"
 }

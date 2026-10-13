@@ -2,6 +2,7 @@
 // Phase 17: nuci-app-nlbwmon and nuci-app-adblock on the lab router (exit
 // criteria in AGENTS.md). Neither test needs the internet.
 
+import { get as httpGet } from 'node:http';
 import { expect, test, type Page } from '@playwright/test';
 import { createRpc } from '../../packages/rpc/src/index.ts';
 import { rootPassword } from '../lib/router';
@@ -62,8 +63,7 @@ test('nlbwmon: a transfer from the lab client shows up per client and protocol',
 		await expect
 			.poll(
 				async () => {
-					for (let i = 0; i < 8; i++)
-						await (await fetch(`${base}/nuci/apps/adblock/index.js`)).arrayBuffer();
+					for (let i = 0; i < 8; i++) await get(`${base}/nuci/apps/adblock/index.js`);
 					const d = await rpc.client.call<{
 						clients: { ips: string[]; rx_bytes: number }[];
 					}>('nuci.nlbwmon', 'data', {});
@@ -90,15 +90,26 @@ test('nlbwmon: a transfer from the lab client shows up per client and protocol',
 	}
 });
 
-/** nslookup through the Diagnostics page (dnsmasq on the router). */
-async function lookup(page: Page, host: string): Promise<string> {
-	await page.goto('/nuci/#/network/diagnostics');
-	await page.getByTestId('diag-tool').selectOption('nslookup');
-	await page.getByTestId('diag-host').fill(host);
-	await page.getByTestId('diag-run').click();
-	const out = page.getByTestId('diag-output');
-	await expect(out).toContainText(/Address: \d|can't find/, { timeout: slow(30_000) });
-	return (await out.textContent()) ?? '';
+/** nslookup on the router (nuci.diag, answered by dnsmasq); the finished job's output. */
+async function lookup(host: string): Promise<string> {
+	const rpc = await api();
+	await rpc.nuci.diag.nslookup(host);
+	await expect
+		.poll(async () => (await rpc.nuci.diag.status()).running, { timeout: slow(60_000) })
+		.toBe(false);
+	return (await rpc.nuci.diag.status()).log ?? '';
+}
+
+/** Download a file over a new connection each time (no keep-alive reuse). */
+function get(url: string): Promise<number> {
+	return new Promise((resolve, reject) => {
+		httpGet(url, { agent: false }, (res) => {
+			let n = 0;
+			res.on('data', (c: Buffer) => (n += c.length));
+			res.on('end', () => resolve(n));
+			res.on('error', reject);
+		}).on('error', reject);
+	});
 }
 
 test('adblock: a domain from the own blocklist is blocked, the allowlist lets it through', async ({
@@ -137,19 +148,14 @@ test('adblock: a domain from the own blocklist is blocked, the allowlist lets it
 			timeout: slow(60_000),
 		});
 
-		await expect
-			.poll(() => lookup(page, BLOCKED), { timeout: slow(90_000) })
-			.toContain('NXDOMAIN');
+		await expect.poll(() => lookup(BLOCKED), { timeout: slow(90_000) }).toContain('NXDOMAIN');
 		// The rest of the zone still resolves.
-		expect(await lookup(page, `www.${ZONE}`)).toContain('192.0.2.7');
+		expect(await lookup(`www.${ZONE}`)).toContain('192.0.2.7');
 
-		await page.goto('/nuci/#/services/adblock');
 		await page.getByTestId('adblock-list-allow').fill(BLOCKED);
 		await page.getByTestId('adblock-save-allow').click();
 		await expect(page.getByTestId('adblock-save-allow')).toBeDisabled();
-		await expect
-			.poll(() => lookup(page, BLOCKED), { timeout: slow(120_000) })
-			.toContain('192.0.2.7');
+		await expect.poll(() => lookup(BLOCKED), { timeout: slow(120_000) }).toContain('192.0.2.7');
 	} finally {
 		for (const list of ['allow', 'block'])
 			await rpc.client.call('nuci.adblock', 'set_list', { list, domains: [] });

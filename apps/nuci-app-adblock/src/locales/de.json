@@ -51,5 +51,6 @@
 	"adblock.lookup": "Domain nachschlagen",
 	"adblock.lookup_help": "Zeigt, ob eine Domain (oder eine übergeordnete Domain) in der aktiven Sperrliste oder in den lokalen Listen steht.",
 	"adblock.domain": "Domain",
-	"adblock.lookup_go": "Nachschlagen"
+	"adblock.lookup_go": "Nachschlagen",
+	"adblock.nav": "Adblock"
 }

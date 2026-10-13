@@ -30,5 +30,6 @@
 	"ddns.check_interval": "Check interval (minutes)",
 	"ddns.log": "Show log",
 	"ddns.log_of": "Log of {name}",
-	"ddns.no_log": "No log yet."
+	"ddns.no_log": "No log yet.",
+	"ddns.nav": "Dynamic DNS"
 }
