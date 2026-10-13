@@ -426,13 +426,19 @@ Scripts live in `tools/qemu/`. All of them are idempotent and non-interactive.
     -drive file=run/N.qcow2,format=qcow2,if=virtio \
     -nic user,model=virtio-net-pci,net=192.168.1.0/24,host=192.168.1.2,dhcpstart=192.168.1.100,hostfwd=tcp:127.0.0.1:8080-192.168.1.1:80,hostfwd=tcp:127.0.0.1:2222-192.168.1.1:22 \
     -nic user,model=virtio-net-pci \
-    -monitor unix:run/N.mon,server,nowait -serial file:run/N.serial.log -daemonize
-  # (-nographic cannot be combined with -daemonize; the serial log replaces it)
+    -monitor unix:run/N.mon,server,nowait \
+    -chardev file,id=serial0,path=run/N.serial.log,append=on -serial chardev:serial0 \
+    -no-reboot   # run detached in a loop that boots again after a guest reboot
   ```
 
   NIC 1 = `eth0` = OpenWrt `lan` (static 192.168.1.1) with host port forwards;
   NIC 2 = `eth1` = `wan` (DHCP from QEMU user-net) so the guest has internet for
   `apk`. The serial console is logged to a file for debugging.
+  QEMU runs with `-no-reboot` under a small supervisor loop: a guest reboot
+  exits QEMU and the VM boots again cold on the same overlay (under TCG a
+  warm reset stalls the next boot in the EFI stub for minutes, growing with
+  uptime). `NUCI_QEMU_ACCEL=tcg` forces emulation on a KVM host, to
+  reproduce CI.
 - `provision.sh` — waits for SSH on :2222, sets the root password used by tests,
   runs `apk update && apk add uhttpd-mod-ubus uhttpd-mod-ucode rpcd
   rpcd-mod-ucode rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-rpcsys`, pushes the

@@ -29,6 +29,7 @@ OVERLAY="$RUN_DIR/$NAME.qcow2"
 PIDFILE="$RUN_DIR/$NAME.pid"
 MON="$RUN_DIR/$NAME.mon"
 SERIAL="$RUN_DIR/$NAME.serial.log"
+STOPFILE="$RUN_DIR/$NAME.stop"
 
 mkdir -p "$RUN_DIR"
 [ -n "$IMAGE" ] || [ -s "$BASE" ] || "$QEMU_DIR/fetch.sh" "$VERSION"
@@ -49,6 +50,7 @@ if [ "$FRESH" -eq 1 ] || [ ! -f "$OVERLAY" ]; then
 fi
 rm -f "$MON"
 : > "$SERIAL"
+: > "$RUN_DIR/$NAME.qemu.log"
 
 LAN_NIC="user,model=virtio-net-pci,net=192.168.1.0/24,host=192.168.1.2,dhcpstart=192.168.1.100"
 LAN_NIC="$LAN_NIC,hostfwd=tcp:127.0.0.1:$NUCI_HTTP_PORT-192.168.1.1:80"
@@ -61,21 +63,42 @@ COMMON=(
 	-drive "file=$OVERLAY,format=qcow2,if=virtio"
 	-nic "$LAN_NIC" -nic "$WAN_NIC"
 	-monitor "unix:$MON,server,nowait"
-	-serial "file:$SERIAL"
-	-pidfile "$PIDFILE" -daemonize
+	-chardev "file,id=serial0,path=$SERIAL,append=on" -serial chardev:serial0
+	-pidfile "$PIDFILE" -no-reboot
 )
+
+# NUCI_QEMU_ACCEL=tcg forces full emulation (what CI gets without /dev/kvm).
+KVM_OK=0
+if [ -w /dev/kvm ] && [ "${NUCI_QEMU_ACCEL:-}" != tcg ]; then KVM_OK=1; fi
 
 case "$TARGET" in
 	x86/64)
 		ACCEL=(-accel tcg)
-		if [ -w /dev/kvm ] && [ "$(uname -m)" = "x86_64" ]; then ACCEL=(-accel kvm -cpu host); fi
-		qemu-system-x86_64 -M q35 "${ACCEL[@]}" "${COMMON[@]}"
+		if [ "$KVM_OK" = 1 ] && [ "$(uname -m)" = "x86_64" ]; then ACCEL=(-accel kvm -cpu host); fi
+		CMD=(qemu-system-x86_64 -M q35 "${ACCEL[@]}" "${COMMON[@]}")
 		;;
 	armsr/armv8)
 		ACCEL=(-cpu cortex-a57)
-		if [ -w /dev/kvm ] && [ "$(uname -m)" = "aarch64" ]; then ACCEL=(-accel kvm -cpu host); fi
+		if [ "$KVM_OK" = 1 ] && [ "$(uname -m)" = "aarch64" ]; then ACCEL=(-accel kvm -cpu host); fi
 		FW="${NUCI_AARCH64_FW:-/usr/share/qemu-efi-aarch64/QEMU_EFI.fd}"
-		qemu-system-aarch64 -M virt "${ACCEL[@]}" -bios "$FW" "${COMMON[@]}"
+		CMD=(qemu-system-aarch64 -M virt "${ACCEL[@]}" -bios "$FW" "${COMMON[@]}")
 		;;
 esac
+
+# A guest reboot exits QEMU (-no-reboot) and this loop boots the same overlay
+# again from a cold start. Under TCG (aarch64, QEMU 8.2) the boot after a warm
+# reset stalls in the kernel's EFI stub for minutes, longer the longer the
+# guest was up (4 min after 6 min, 15 min after 35); a cold start does not.
+# stop.sh leaves $STOPFILE to end the loop.
+rm -f "$STOPFILE" "$PIDFILE"
+setsid bash -c '
+	stopfile="$1"; shift
+	while [ ! -e "$stopfile" ] && "$@"; do :; done
+	rm -f "$stopfile"
+' supervise "$STOPFILE" "${CMD[@]}" </dev/null >>"$RUN_DIR/$NAME.qemu.log" 2>&1 &
+for _ in $(seq 1 50); do
+	[ -s "$PIDFILE" ] && break
+	sleep 0.2
+done
+[ -s "$PIDFILE" ] || die "qemu did not start, see $RUN_DIR/$NAME.qemu.log"
 log "started $NAME (pid $(cat "$PIDFILE")), http://127.0.0.1:$NUCI_HTTP_PORT ssh :$NUCI_SSH_PORT"
