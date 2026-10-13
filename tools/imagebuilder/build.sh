@@ -21,12 +21,12 @@ IMAGES="$REPO/tools/qemu/images"
 # NuCI, its first-party apps (their DEPENDS pull in the backends) and what
 # the lab needs; LuCI is left out on purpose.
 LAB="kmod-mac80211-hwsim wpad-basic-mbedtls iw 6in4 6rd ds-lite kmod-veth -luci -luci-light -luci-ssl -wpad-basic -wpad-mini"
-PACKAGES="nuci nuci-app-wireguard nuci-app-ddns nuci-app-upnp nuci-app-sqm nuci-app-asu $LAB"
+PACKAGES="nuci nuci-app-wireguard nuci-app-ddns nuci-app-upnp nuci-app-sqm nuci-app-asu nuci-app-nlbwmon nuci-app-adblock $LAB"
 FILES="$REPO/tools/qemu/files"
 ASU="${NUCI_IB_ASU:-0}"
 if [ "$ASU" = 1 ]; then
 	# What owut requests for the lab: its packages minus NuCI's, plus their dependencies.
-	PACKAGES="uhttpd uhttpd-mod-ubus uhttpd-mod-ucode rpcd rpcd-mod-ucode rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-rpcsys ucode ucode-mod-fs ucode-mod-ubus ucode-mod-uci wireguard-tools ddns-scripts miniupnpd-nftables sqm-scripts owut $LAB"
+	PACKAGES="uhttpd uhttpd-mod-ubus uhttpd-mod-ucode rpcd rpcd-mod-ucode rpcd-mod-file rpcd-mod-iwinfo rpcd-mod-rpcsys ucode ucode-mod-fs ucode-mod-ubus ucode-mod-uci wireguard-tools ddns-scripts miniupnpd-nftables sqm-scripts owut nlbwmon adblock $LAB"
 	FILES=""
 fi
 

@@ -161,8 +161,12 @@
 {#if running || failed}
 	<Section title={running ? t('asu.job_running') : t('asu.job_failed')} testid="asu-job">
 		{#if running}<span class="loading loading-dots loading-sm" aria-hidden="true"></span>{/if}
+		<!-- Scrollable region: focusable so keyboard users can scroll it. -->
+		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 		<pre
 			class="bg-base-200 max-h-64 overflow-auto rounded p-2 text-xs whitespace-pre-wrap"
+			tabindex="0"
+			aria-label={t('asu.job_running')}
 			data-testid="asu-log">{st?.job.log ?? ''}</pre>
 	</Section>
 {/if}

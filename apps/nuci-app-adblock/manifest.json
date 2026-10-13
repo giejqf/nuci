@@ -1,0 +1,12 @@
+{
+	"id": "adblock",
+	"title": "Adblock",
+	"icon": "ShieldBan",
+	"entry": "apps/adblock/index.js",
+	"version": "0.4.0",
+	"menu": {
+		"group": "services",
+		"order": 40
+	},
+	"acls": ["nuci-app-adblock"]
+}

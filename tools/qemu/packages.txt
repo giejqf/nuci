@@ -26,3 +26,5 @@ ddns-scripts
 miniupnpd-nftables
 sqm-scripts
 kmod-sched-cake
+nlbwmon
+adblock

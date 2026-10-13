@@ -1,0 +1,939 @@
+{
+	"object": "nuci.adblock",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"status": {},
+		"feeds": {},
+		"lists": {},
+		"run": {
+			"action": "String"
+		},
+		"set_list": {
+			"list": "String",
+			"domains": "Array"
+		},
+		"search": {
+			"domain": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"state": "disabled",
+				"blocked": 0,
+				"feeds": [],
+				"backend": "dnsmasq (2.93-r1)",
+				"version": "4.5.8-r3",
+				"last_run": {
+					"mode": "reload",
+					"time": "2026-10-13 18:50:09",
+					"duration": 2
+				},
+				"autostart": true,
+				"job": {
+					"name": "adblock",
+					"running": false,
+					"command": "/etc/init.d/adblock reload",
+					"started": 1791917411,
+					"log": "",
+					"finished": 1791917411,
+					"rc": 0
+				},
+				"search": {
+					"name": "adblock-search",
+					"running": false,
+					"command": "/etc/init.d/adblock search ads.nuci-e2e.test",
+					"started": 1791917402,
+					"log": ":::\n::: domain 'ads.nuci-e2e.test' in active blocklist\n:::\n  + ads.nuci-e2e.test\n\n:::\n::: domain 'nuci-e2e.test' in active blocklist\n:::\n  + ads.nuci-e2e.test\n\n:::\n::: domain 'test' in active blocklist\n:::\n  + ads.nuci-e2e.test\n\n:::\n::: domain 'ads.nuci-e2e.test' in backups and in local block-/allowlist\n:::\n  + adblock.blocklist             ads.nuci-e2e.test\n",
+					"finished": 1791917402,
+					"rc": 0
+				}
+			}
+		},
+		{
+			"method": "feeds",
+			"args": {},
+			"status": 0,
+			"result": {
+				"custom": false,
+				"feeds": [
+					{
+						"name": "1hosts",
+						"descr": "compilation",
+						"size": "VAR",
+						"host": "raw.githubusercontent.com",
+						"option": "adb_hst_feed",
+						"categories": [
+							{
+								"value": "Lite/domains.wildcards",
+								"label": "lite"
+							},
+							{
+								"value": "Xtra/domains.wildcards",
+								"label": "xtra"
+							}
+						]
+					},
+					{
+						"name": "adguard",
+						"descr": "general",
+						"size": "L",
+						"host": "adguardteam.github.io"
+					},
+					{
+						"name": "adguard_tracking",
+						"descr": "tracking",
+						"size": "L",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "android_tracking",
+						"descr": "tracking",
+						"size": "S",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "andryou",
+						"descr": "compilation",
+						"size": "L",
+						"host": "gitlab.com"
+					},
+					{
+						"name": "anti_ad",
+						"descr": "compilation",
+						"size": "L",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "anudeep",
+						"descr": "compilation",
+						"size": "M",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "bitcoin",
+						"descr": "mining",
+						"size": "S",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "certpl",
+						"descr": "phishing",
+						"size": "L",
+						"host": "hole.cert.pl"
+					},
+					{
+						"name": "cpbl",
+						"descr": "compilation",
+						"size": "XL",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "disconnect",
+						"descr": "general",
+						"size": "S",
+						"host": "s3.amazonaws.com"
+					},
+					{
+						"name": "divested",
+						"descr": "compilation",
+						"size": "XXL",
+						"host": "divested.dev"
+					},
+					{
+						"name": "doh_blocklist",
+						"descr": "doh_server",
+						"size": "S",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "firetv_tracking",
+						"descr": "tracking",
+						"size": "S",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "games_tracking",
+						"descr": "tracking",
+						"size": "S",
+						"host": "repository.gameindustry.eu"
+					},
+					{
+						"name": "hagezi",
+						"descr": "compilation",
+						"size": "VAR",
+						"host": "raw.githubusercontent.com",
+						"option": "adb_hag_feed",
+						"categories": [
+							{
+								"value": "wildcard/light-onlydomains.txt",
+								"label": "multi-light"
+							},
+							{
+								"value": "wildcard/multi-onlydomains.txt",
+								"label": "multi-normal"
+							},
+							{
+								"value": "wildcard/pro-onlydomains.txt",
+								"label": "multi-pro"
+							},
+							{
+								"value": "wildcard/pro.mini-onlydomains.txt",
+								"label": "multi-pro.mini"
+							},
+							{
+								"value": "wildcard/pro.plus-onlydomains.txt",
+								"label": "multi-pro.plus"
+							},
+							{
+								"value": "wildcard/pro.plus.mini-onlydomains.txt",
+								"label": "multi-pro.plus.mini"
+							},
+							{
+								"value": "wildcard/ultimate-onlydomains.txt",
+								"label": "multi-ultimate"
+							},
+							{
+								"value": "wildcard/ultimate.mini-onlydomains.txt",
+								"label": "multi-ultimate.mini"
+							},
+							{
+								"value": "wildcard/tif-onlydomains.txt",
+								"label": "threat-intelligence"
+							},
+							{
+								"value": "wildcard/tif.medium-onlydomains.txt",
+								"label": "threat-intelligence.medium"
+							},
+							{
+								"value": "wildcard/tif.mini-onlydomains.txt",
+								"label": "threat-intelligence.mini"
+							},
+							{
+								"value": "wildcard/anti.piracy-onlydomains.txt",
+								"label": "anti.piracy"
+							},
+							{
+								"value": "wildcard/blocklist-referral-onlydomains.txt",
+								"label": "blocklist-referral"
+							},
+							{
+								"value": "wildcard/doh-onlydomains.txt",
+								"label": "doh"
+							},
+							{
+								"value": "wildcard/doh-vpn-proxy-bypass-onlydomains.txt",
+								"label": "doh-vpn-proxy-bypass"
+							},
+							{
+								"value": "wildcard/dyndns-onlydomains.txt",
+								"label": "dyndns"
+							},
+							{
+								"value": "wildcard/fake-onlydomains.txt",
+								"label": "fake"
+							},
+							{
+								"value": "wildcard/gambling-onlydomains.txt",
+								"label": "gambling"
+							},
+							{
+								"value": "wildcard/gambling.medium-onlydomains.txt",
+								"label": "gambling.medium"
+							},
+							{
+								"value": "wildcard/gambling.mini-onlydomains.txt",
+								"label": "gambling.mini"
+							},
+							{
+								"value": "wildcard/hoster-onlydomains.txt",
+								"label": "hoster"
+							},
+							{
+								"value": "wildcard/nsfw-onlydomains.txt",
+								"label": "nsfw"
+							},
+							{
+								"value": "wildcard/native.amazon-onlydomains.txt",
+								"label": "tracker.amazon"
+							},
+							{
+								"value": "wildcard/native.apple-onlydomains.txt",
+								"label": "tracker.apple"
+							},
+							{
+								"value": "wildcard/native.huawei-onlydomains.txt",
+								"label": "tracker.huawei"
+							},
+							{
+								"value": "wildcard/native.lgwebos-onlydomains.txt",
+								"label": "tracker.lgwebos"
+							},
+							{
+								"value": "wildcard/native.oppo-realme-onlydomains.txt",
+								"label": "tracker.oppo-realme"
+							},
+							{
+								"value": "wildcard/native.roku-onlydomains.txt",
+								"label": "tracker.roku"
+							},
+							{
+								"value": "wildcard/native.samsung-onlydomains.txt",
+								"label": "tracker.samsung"
+							},
+							{
+								"value": "wildcard/native.tiktok-onlydomains.txt",
+								"label": "tracker.tiktok"
+							},
+							{
+								"value": "wildcard/native.tiktok.extended-onlydomains.txt",
+								"label": "tracker.tiktok.extended"
+							},
+							{
+								"value": "wildcard/native.vivo-onlydomains.txt",
+								"label": "tracker.vivo"
+							},
+							{
+								"value": "wildcard/native.winoffice-onlydomains.txt",
+								"label": "tracker.winoffice"
+							},
+							{
+								"value": "wildcard/native.xiaomi-onlydomains.txt",
+								"label": "tracker.xiaomi"
+							},
+							{
+								"value": "wildcard/nosafesearch-onlydomains.txt",
+								"label": "nosafesearch"
+							},
+							{
+								"value": "wildcard/popupads-onlydomains.txt",
+								"label": "popupads"
+							},
+							{
+								"value": "wildcard/urlshortener-onlydomains.txt",
+								"label": "urlshortener"
+							},
+							{
+								"value": "wildcard/spam-tlds-onlydomains.txt",
+								"label": "abusetlds"
+							},
+							{
+								"value": "wildcard/social-onlydomains.txt",
+								"label": "social"
+							},
+							{
+								"value": "domains/dga7.txt",
+								"label": "dga-7days"
+							},
+							{
+								"value": "domains/dga14.txt",
+								"label": "dga-14days"
+							},
+							{
+								"value": "domains/dga30.txt",
+								"label": "dga-30days"
+							},
+							{
+								"value": "domains/nrd7.txt",
+								"label": "nrd-7days"
+							},
+							{
+								"value": "domains/nrd14-8.txt",
+								"label": "nrd-14days"
+							},
+							{
+								"value": "domains/nrd21-15.txt",
+								"label": "nrd-21days"
+							},
+							{
+								"value": "domains/nrd28-22.txt",
+								"label": "nrd-28days"
+							},
+							{
+								"value": "domains/nrd35-29.txt",
+								"label": "nrd-35days"
+							}
+						]
+					},
+					{
+						"name": "hblock",
+						"descr": "compilation",
+						"size": "XL",
+						"host": "hblock.molinero.dev"
+					},
+					{
+						"name": "ipfire_dbl",
+						"descr": "compilation",
+						"size": "VAR",
+						"host": "dbl.ipfire.org",
+						"option": "adb_ipf_feed",
+						"categories": [
+							{
+								"value": "ads/domains.txt",
+								"label": "ads"
+							},
+							{
+								"value": "dating/domains.txt",
+								"label": "dating"
+							},
+							{
+								"value": "doh/domains.txt",
+								"label": "doh"
+							},
+							{
+								"value": "gambling/domains.txt",
+								"label": "gambling"
+							},
+							{
+								"value": "games/domains.txt",
+								"label": "games"
+							},
+							{
+								"value": "malware/domains.txt",
+								"label": "malware"
+							},
+							{
+								"value": "phishing/domains.txt",
+								"label": "phishing"
+							},
+							{
+								"value": "piracy/domains.txt",
+								"label": "piracy"
+							},
+							{
+								"value": "porn/domains.txt",
+								"label": "porn"
+							},
+							{
+								"value": "shopping/domains.txt",
+								"label": "shopping"
+							},
+							{
+								"value": "smart-tv/domains.txt",
+								"label": "smart-tv"
+							},
+							{
+								"value": "social/domains.txt",
+								"label": "social"
+							},
+							{
+								"value": "streaming/domains.txt",
+								"label": "streaming"
+							},
+							{
+								"value": "violence/domains.txt",
+								"label": "violence"
+							}
+						]
+					},
+					{
+						"name": "oisd_big",
+						"descr": "general",
+						"size": "XXL",
+						"host": "big.oisd.nl"
+					},
+					{
+						"name": "oisd_nsfw",
+						"descr": "porn",
+						"size": "XXL",
+						"host": "nsfw.oisd.nl"
+					},
+					{
+						"name": "oisd_nsfw_small",
+						"descr": "porn",
+						"size": "M",
+						"host": "nsfw-small.oisd.nl"
+					},
+					{
+						"name": "oisd_small",
+						"descr": "general",
+						"size": "L",
+						"host": "small.oisd.nl"
+					},
+					{
+						"name": "phishing_army",
+						"descr": "phishing",
+						"size": "S",
+						"host": "phishing.army"
+					},
+					{
+						"name": "smarttv_tracking",
+						"descr": "tracking",
+						"size": "S",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "spam404",
+						"descr": "general",
+						"size": "S",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "stevenblack",
+						"descr": "compilation",
+						"size": "VAR",
+						"host": "raw.githubusercontent.com",
+						"option": "adb_stb_feed",
+						"categories": [
+							{
+								"value": "hosts",
+								"label": "standard"
+							},
+							{
+								"value": "alternates/fakenews/hosts",
+								"label": "standard-fakenews"
+							},
+							{
+								"value": "alternates/fakenews-gambling/hosts",
+								"label": "standard-fakenews-gambling"
+							},
+							{
+								"value": "alternates/fakenews-gambling-porn/hosts",
+								"label": "standard-fakenews-gambling-porn"
+							},
+							{
+								"value": "alternates/fakenews-gambling-porn-social/hosts",
+								"label": "standard-fakenews-gambling-porn-social"
+							},
+							{
+								"value": "alternates/fakenews-gambling-social/hosts",
+								"label": "standard-fakenews-gambling-social"
+							},
+							{
+								"value": "alternates/fakenews-porn/hosts",
+								"label": "standard-fakenews-porn"
+							},
+							{
+								"value": "alternates/fakenews-porn-social/hosts",
+								"label": "standard-fakenews-porn-social"
+							},
+							{
+								"value": "alternates/fakenews-social/hosts",
+								"label": "standard-fakenews-social"
+							},
+							{
+								"value": "alternates/gambling/hosts",
+								"label": "standard-gambling"
+							},
+							{
+								"value": "alternates/gambling-porn/hosts",
+								"label": "standard-gambling-porn"
+							},
+							{
+								"value": "alternates/gambling-porn-social/hosts",
+								"label": "standard-gambling-porn-social"
+							},
+							{
+								"value": "alternates/gambling-social/hosts",
+								"label": "standard-gambling-social"
+							},
+							{
+								"value": "alternates/porn/hosts",
+								"label": "standard-porn"
+							},
+							{
+								"value": "alternates/porn-social/hosts",
+								"label": "standard-porn-social"
+							},
+							{
+								"value": "alternates/social/hosts",
+								"label": "standard-social"
+							},
+							{
+								"value": "alternates/fakenews-only/hosts",
+								"label": "fakenews"
+							},
+							{
+								"value": "alternates/fakenews-gambling-only/hosts",
+								"label": "fakenews-gambling"
+							},
+							{
+								"value": "alternates/fakenews-gambling-porn-only/hosts",
+								"label": "fakenews-gambling-porn"
+							},
+							{
+								"value": "alternates/fakenews-gambling-porn-social-only/hosts",
+								"label": "fakenews-gambling-porn-social"
+							},
+							{
+								"value": "alternates/fakenews-gambling-social-only/hosts",
+								"label": "fakenews-gambling-social"
+							},
+							{
+								"value": "alternates/fakenews-porn-only/hosts",
+								"label": "fakenews-porn"
+							},
+							{
+								"value": "alternates/fakenews-porn-social-only/hosts",
+								"label": "fakenews-porn-social"
+							},
+							{
+								"value": "alternates/fakenews-social-only/hosts",
+								"label": "fakenews-social"
+							},
+							{
+								"value": "alternates/gambling-only/hosts",
+								"label": "gambling"
+							},
+							{
+								"value": "alternates/gambling-porn-only/hosts",
+								"label": "gambling-porn"
+							},
+							{
+								"value": "alternates/gambling-porn-social-only/hosts",
+								"label": "gambling-porn-social"
+							},
+							{
+								"value": "alternates/gambling-social-only/hosts",
+								"label": "gambling-social"
+							},
+							{
+								"value": "alternates/porn-only/hosts",
+								"label": "porn"
+							},
+							{
+								"value": "alternates/porn-social-only/hosts",
+								"label": "porn-social"
+							},
+							{
+								"value": "alternates/social-only/hosts",
+								"label": "social"
+							}
+						]
+					},
+					{
+						"name": "stopforumspam",
+						"descr": "spam",
+						"size": "S",
+						"host": "www.stopforumspam.com"
+					},
+					{
+						"name": "utcapitole",
+						"descr": "general",
+						"size": "VAR",
+						"host": "dsi.ut-capitole.fr",
+						"option": "adb_utc_feed",
+						"categories": [
+							{
+								"value": "adult",
+								"label": "adult"
+							},
+							{
+								"value": "agressif",
+								"label": "agressif"
+							},
+							{
+								"value": "ai",
+								"label": "ai"
+							},
+							{
+								"value": "arjel",
+								"label": "arjel"
+							},
+							{
+								"value": "associations_religieuses",
+								"label": "associations_religieuses"
+							},
+							{
+								"value": "astrology",
+								"label": "astrology"
+							},
+							{
+								"value": "audio-video",
+								"label": "audio-video"
+							},
+							{
+								"value": "bank",
+								"label": "bank"
+							},
+							{
+								"value": "bitcoin",
+								"label": "bitcoin"
+							},
+							{
+								"value": "blog",
+								"label": "blog"
+							},
+							{
+								"value": "celebrity",
+								"label": "celebrity"
+							},
+							{
+								"value": "chat",
+								"label": "chat"
+							},
+							{
+								"value": "child",
+								"label": "child"
+							},
+							{
+								"value": "cleaning",
+								"label": "cleaning"
+							},
+							{
+								"value": "cooking",
+								"label": "cooking"
+							},
+							{
+								"value": "cryptojacking",
+								"label": "cryptojacking"
+							},
+							{
+								"value": "dangerous_material",
+								"label": "dangerous_material"
+							},
+							{
+								"value": "dating",
+								"label": "dating"
+							},
+							{
+								"value": "ddos",
+								"label": "ddos"
+							},
+							{
+								"value": "dialer",
+								"label": "dialer"
+							},
+							{
+								"value": "doh",
+								"label": "doh"
+							},
+							{
+								"value": "download",
+								"label": "download"
+							},
+							{
+								"value": "drogue",
+								"label": "drogue"
+							},
+							{
+								"value": "dynamic-dns",
+								"label": "dynamic-dns"
+							},
+							{
+								"value": "educational_games",
+								"label": "educational_games"
+							},
+							{
+								"value": "examen_pix",
+								"label": "examen_pix"
+							},
+							{
+								"value": "exceptions_liste_bu",
+								"label": "exceptions_liste_bu"
+							},
+							{
+								"value": "fakenews",
+								"label": "fakenews"
+							},
+							{
+								"value": "filehosting",
+								"label": "filehosting"
+							},
+							{
+								"value": "financial",
+								"label": "financial"
+							},
+							{
+								"value": "forums",
+								"label": "forums"
+							},
+							{
+								"value": "gambling",
+								"label": "gambling"
+							},
+							{
+								"value": "games",
+								"label": "games"
+							},
+							{
+								"value": "hacking",
+								"label": "hacking"
+							},
+							{
+								"value": "jobsearch",
+								"label": "jobsearch"
+							},
+							{
+								"value": "lingerie",
+								"label": "lingerie"
+							},
+							{
+								"value": "liste_blanche",
+								"label": "liste_blanche"
+							},
+							{
+								"value": "liste_bu",
+								"label": "liste_bu"
+							},
+							{
+								"value": "malware",
+								"label": "malware"
+							},
+							{
+								"value": "manga",
+								"label": "manga"
+							},
+							{
+								"value": "marketingware",
+								"label": "marketingware"
+							},
+							{
+								"value": "mixed_adult",
+								"label": "mixed_adult"
+							},
+							{
+								"value": "mobile-phone",
+								"label": "mobile-phone"
+							},
+							{
+								"value": "phishing",
+								"label": "phishing"
+							},
+							{
+								"value": "press",
+								"label": "press"
+							},
+							{
+								"value": "publicite",
+								"label": "publicite"
+							},
+							{
+								"value": "radio",
+								"label": "radio"
+							},
+							{
+								"value": "reaffected",
+								"label": "reaffected"
+							},
+							{
+								"value": "redirector",
+								"label": "redirector"
+							},
+							{
+								"value": "remote-control",
+								"label": "remote-control"
+							},
+							{
+								"value": "residential-proxies",
+								"label": "residential-proxies"
+							},
+							{
+								"value": "sect",
+								"label": "sect"
+							},
+							{
+								"value": "sexual_education",
+								"label": "sexual_education"
+							},
+							{
+								"value": "shopping",
+								"label": "shopping"
+							},
+							{
+								"value": "shortener",
+								"label": "shortener"
+							},
+							{
+								"value": "social_networks",
+								"label": "social_networks"
+							},
+							{
+								"value": "special",
+								"label": "special"
+							},
+							{
+								"value": "sports",
+								"label": "sports"
+							},
+							{
+								"value": "stalkerware",
+								"label": "stalkerware"
+							},
+							{
+								"value": "strict_redirector",
+								"label": "strict_redirector"
+							},
+							{
+								"value": "strong_redirector",
+								"label": "strong_redirector"
+							},
+							{
+								"value": "translation",
+								"label": "translation"
+							},
+							{
+								"value": "tricheur",
+								"label": "tricheur"
+							},
+							{
+								"value": "tricheur_pix",
+								"label": "tricheur_pix"
+							},
+							{
+								"value": "update",
+								"label": "update"
+							},
+							{
+								"value": "vpn",
+								"label": "vpn"
+							},
+							{
+								"value": "warez",
+								"label": "warez"
+							},
+							{
+								"value": "webhosting",
+								"label": "webhosting"
+							},
+							{
+								"value": "webmail",
+								"label": "webmail"
+							}
+						]
+					},
+					{
+						"name": "wally3k",
+						"descr": "compilation",
+						"size": "S",
+						"host": "v.firebog.net"
+					},
+					{
+						"name": "whocares",
+						"descr": "general",
+						"size": "M",
+						"host": "someonewhocares.org"
+					},
+					{
+						"name": "winspy",
+						"descr": "win_telemetry",
+						"size": "S",
+						"host": "raw.githubusercontent.com"
+					},
+					{
+						"name": "yoyo",
+						"descr": "general",
+						"size": "S",
+						"host": "pgl.yoyo.org"
+					}
+				]
+			}
+		},
+		{
+			"method": "lists",
+			"args": {},
+			"status": 0,
+			"result": {
+				"allow": [],
+				"block": []
+			}
+		}
+	]
+}

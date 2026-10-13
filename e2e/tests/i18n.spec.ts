@@ -27,6 +27,8 @@ const ROUTES = [
 	'network/sqm',
 	'services/ddns',
 	'services/upnp',
+	'services/adblock',
+	'status/traffic',
 ];
 
 /** Visible texts and accessible names that are raw catalog keys (= missing translations). */

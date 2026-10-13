@@ -182,6 +182,8 @@ First-party apps ship their own objects (plugin + lib + ACL inside
 | `nuci.upnp` (upnp) | `status` (procd state, active mappings) | `service list`, miniupnpd lease file |
 | `nuci.sqm` (sqm) | `status` (root qdiscs egress/ingress) | `tc -s qdisc` on the device and `ifb4<dev>` |
 | `nuci.asu` (asu) | `status` (job + summary of the last check), `check`, `download`, `install` (jobs) | `owut dump`/`check`/`download`/`install` via `/usr/libexec/nuci/asu` (ADR-0007) |
+| `nuci.nlbwmon` (nlbwmon) | `periods`, `data` (per client by MAC with host names, per protocol; optional `period`) | `nlbw -c list`, `nlbw -c json -g mac,ip,layer7`, `nuci.dhcp` hosts |
+| `nuci.adblock` (adblock) | `status`, `feeds`, `lists`, `set_list` (allow/block list, then reload), `run` (reload/restart/suspend/resume), `search` (jobs) | `/var/run/adblock/adblock.runtime.json`, `/etc/adblock/*`, `/etc/init.d/adblock` |
 
 Findings that shape the apps (25.12.0): netifd loads protocol handlers
 (`/lib/netifd/proto/*.sh`) only at start, so a protocol installed later is
@@ -190,7 +192,13 @@ unknown until the network service restarts (pages check
 the interface is set up, so `nuci-app-wireguard` ships a procd service whose
 `network` reload trigger re-runs `ifup` for tunnels whose running peers differ
 from the config; miniupnpd refuses all mappings while the WAN address is
-private unless `upnpd.config.external_ip` is set.
+private unless `upnpd.config.external_ip` is set. nlbwmon does not count connections
+whose two ends are both in its local networks (a client talking to the
+router itself); adblock has no reload trigger for its own config, so
+`nuci-app-adblock` ships a procd service (`nuci-adblock`) that reloads it
+after an apply; dnsmasq host and `address=` records win over adblock's
+`local=` entries for the same name (a more specific subdomain is blocked).
+Adblock's own lists are files, saved directly (not staged).
 | `nuci.firewall` | `preview` (`fw4 -q print` of the saved config), `ruleset` (`nft list ruleset`); output bounded to 512 KiB with a `truncated` flag | `fw4`, `nft` |
 
 Rules for ucode plugins:
@@ -770,6 +778,12 @@ next phase's pages before the previous phase's exit criteria are met.
 - **Exit:** e2e per app: nlbwmon shows the lab client's traffic after a
   transfer; adblock blocks a domain from a local test list (lookup through
   dnsmasq returns the block answer) and unblocks it via the allow list.
+- **Status:** done 2026-10-13. `nuci-app-nlbwmon` 0.4.0 (Status → Traffic
+  usage) and `nuci-app-adblock` 0.4.0 (Services → Adblock), both in the lab
+  image (adblock off there: `tools/qemu/files/etc/uci-defaults/99-nuci-lab`).
+  e2e: `apps2.spec.ts` without internet (nlbwmon counts the client only, so
+  its traffic to the router is not local-to-local; adblock blocks a subdomain
+  of a dnsmasq `address=` zone); both pages in the a11y and i18n runs.
 
 ### Phase 18 — Platform leftovers (0.4)
 - After a protocol package is installed, the Interfaces page offers to

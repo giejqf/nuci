@@ -1,0 +1,144 @@
+{
+	"object": "nuci.nlbwmon",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"periods": {},
+		"data": {
+			"period": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "periods",
+			"args": {},
+			"status": 0,
+			"result": {
+				"running": true,
+				"periods": [
+					"2026-10-01"
+				]
+			}
+		},
+		{
+			"method": "data",
+			"args": {},
+			"status": 0,
+			"result": {
+				"period": null,
+				"running": true,
+				"clients": [
+					{
+						"mac": "52:54:00:12:34:57",
+						"hostname": null,
+						"ips": [
+							"10.0.2.15"
+						],
+						"conns": 14,
+						"rx_bytes": 10168115,
+						"rx_pkts": 358,
+						"tx_bytes": 15899,
+						"tx_pkts": 361,
+						"protocols": [
+							{
+								"name": "HTTPS",
+								"conns": 2,
+								"rx_bytes": 10167203,
+								"rx_pkts": 346,
+								"tx_bytes": 14987,
+								"tx_pkts": 349
+							},
+							{
+								"name": "IP",
+								"conns": 12,
+								"rx_bytes": 912,
+								"rx_pkts": 12,
+								"tx_bytes": 912,
+								"tx_pkts": 12
+							}
+						]
+					},
+					{
+						"mac": "52:55:c0:a8:01:02",
+						"hostname": null,
+						"ips": [
+							"192.168.1.2"
+						],
+						"conns": 18,
+						"rx_bytes": 823466,
+						"rx_pkts": 255,
+						"tx_bytes": 49545,
+						"tx_pkts": 796,
+						"protocols": [
+							{
+								"name": "HTTP",
+								"conns": 12,
+								"rx_bytes": 817180,
+								"rx_pkts": 206,
+								"tx_bytes": 29344,
+								"tx_pkts": 691
+							},
+							{
+								"name": "SSH",
+								"conns": 3,
+								"rx_bytes": 6286,
+								"rx_pkts": 49,
+								"tx_bytes": 10537,
+								"tx_pkts": 73
+							},
+							{
+								"name": "IP",
+								"conns": 3,
+								"rx_bytes": 0,
+								"rx_pkts": 0,
+								"tx_bytes": 9664,
+								"tx_pkts": 32
+							}
+						]
+					}
+				],
+				"protocols": [
+					{
+						"name": "HTTPS",
+						"conns": 2,
+						"rx_bytes": 10167203,
+						"rx_pkts": 346,
+						"tx_bytes": 14987,
+						"tx_pkts": 349,
+						"clients": 1
+					},
+					{
+						"name": "HTTP",
+						"conns": 12,
+						"rx_bytes": 817180,
+						"rx_pkts": 206,
+						"tx_bytes": 29344,
+						"tx_pkts": 691,
+						"clients": 1
+					},
+					{
+						"name": "SSH",
+						"conns": 3,
+						"rx_bytes": 6286,
+						"rx_pkts": 49,
+						"tx_bytes": 10537,
+						"tx_pkts": 73,
+						"clients": 1
+					},
+					{
+						"name": "IP",
+						"conns": 15,
+						"rx_bytes": 912,
+						"rx_pkts": 12,
+						"tx_bytes": 10576,
+						"tx_pkts": 44,
+						"clients": 2
+					}
+				]
+			}
+		}
+	]
+}

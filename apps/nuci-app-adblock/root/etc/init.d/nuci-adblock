@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+# SPDX-License-Identifier: Apache-2.0
+#
+# Reload adblock when its uci config is applied: adblock itself only reacts
+# to interface events. No daemon: only a procd reload trigger.
+
+START=99
+USE_PROCD=1
+
+start_service() {
+	# A short-lived instance keeps the service (and its trigger) registered.
+	procd_open_instance
+	procd_set_param command /bin/true
+	procd_close_instance
+}
+
+reload_service() {
+	# Turning adblock on in the UI also lets it start at boot.
+	if [ "$(uci -q get adblock.global.adb_enabled)" = 1 ] && ! /etc/init.d/adblock enabled; then
+		/etc/init.d/adblock enable
+	fi
+	/etc/init.d/adblock reload
+}
+
+service_triggers() {
+	procd_add_reload_trigger adblock
+}

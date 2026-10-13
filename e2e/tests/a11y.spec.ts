@@ -37,6 +37,8 @@ const ROUTES = [
 	'network/sqm',
 	'services/ddns',
 	'services/upnp',
+	'services/adblock',
+	'status/traffic',
 ];
 
 for (const scheme of ['light', 'dark'] as const) {

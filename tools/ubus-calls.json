@@ -168,6 +168,11 @@
 		["nuci.ddns", "status", {}],
 		["nuci.upnp", "status", {}],
 		["nuci.sqm", "status", {}],
+		["nuci.nlbwmon", "periods", {}],
+		["nuci.nlbwmon", "data", {}],
+		["nuci.adblock", "status", {}],
+		["nuci.adblock", "feeds", {}],
+		["nuci.adblock", "lists", {}],
 		[
 			"rc",
 			"list",

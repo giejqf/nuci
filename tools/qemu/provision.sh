@@ -67,6 +67,10 @@ if [ -n "$MISSING" ]; then
 	wait_wan
 	log "apk add $MISSING"
 	lab_ssh "apk update >/dev/null && apk add $MISSING"
+	# Like the lab image (tools/qemu/files/etc/uci-defaults/99-nuci-lab): adblock stays off.
+	case " $MISSING " in *" adblock "*)
+		lab_ssh 'uci set adblock.global.adb_enabled=0 && uci commit adblock && /etc/init.d/adblock reload' || true ;;
+	esac
 	# New netifd protocol handlers (6in4, ...) are only loaded at netifd start.
 	lab_ssh '/etc/init.d/network restart' || true
 	for i in $(seq 1 60); do lab_ssh true 2>/dev/null && break; sleep 2; done

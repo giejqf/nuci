@@ -1,0 +1,12 @@
+{
+	"nuci-app-nlbwmon": {
+		"description": "NuCI app: traffic accounting per client (nlbwmon)",
+		"read": {
+			"ubus": { "nuci.nlbwmon": ["periods", "data"] },
+			"uci": ["nlbwmon", "network"]
+		},
+		"write": {
+			"uci": ["nlbwmon"]
+		}
+	}
+}

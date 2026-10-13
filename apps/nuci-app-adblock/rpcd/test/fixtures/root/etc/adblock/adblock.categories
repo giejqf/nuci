@@ -1,0 +1,5 @@
+hag;multi-light;wildcard/light-onlydomains.txt
+hag;multi-normal;wildcard/multi-onlydomains.txt
+utc;adult
+utc;ai
+stb;standard;hosts

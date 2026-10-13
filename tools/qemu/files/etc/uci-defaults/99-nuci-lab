@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Lab image (tools/imagebuilder/build.sh): adblock is installed for its app's
+# e2e but stays off, so a boot does not download blocklists from the internet.
+uci -q set adblock.global.adb_enabled='0'
+uci -q commit adblock
+exit 0

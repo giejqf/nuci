@@ -1,0 +1,13 @@
+{
+	"nuci-app-adblock": {
+		"description": "NuCI app: DNS blocklists (adblock)",
+		"read": {
+			"ubus": { "nuci.adblock": ["status", "feeds", "lists"] },
+			"uci": ["adblock", "network"]
+		},
+		"write": {
+			"ubus": { "nuci.adblock": ["run", "set_list", "search"] },
+			"uci": ["adblock"]
+		}
+	}
+}
