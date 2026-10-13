@@ -1,0 +1,27 @@
+{
+	"object": "nuci.network",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"protocols": {},
+		"restart": {}
+	},
+	"calls": [
+		{
+			"method": "protocols",
+			"args": {},
+			"status": 0,
+			"result": {
+				"pending": [],
+				"started": 1791919606,
+				"job": {
+					"name": "network-restart",
+					"running": false
+				}
+			}
+		}
+	]
+}

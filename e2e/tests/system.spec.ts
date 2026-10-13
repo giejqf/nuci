@@ -80,7 +80,7 @@ test('software: install and remove a package through the UI', async ({ page }) =
 	await removeIfInstalled('tree'); // a previous failed run may have left it installed
 	await login(page, 'system/software');
 	await expect(
-		page.getByTestId('pkg-installed').getByRole('row', { name: /dnsmasq/ }),
+		page.getByTestId('pkg-installed').getByRole('row', { name: /^dnsmasq\b/ }),
 	).toBeVisible();
 
 	await page.getByTestId('pkg-update').click();
@@ -235,4 +235,37 @@ test('flash: a bogus image is rejected, the real image validates', async ({ page
 	await expect(page.getByTestId('firmware-flash')).toBeEnabled();
 	// Flashing itself is a manual test (AGENTS.md §9 Phase 3). The upload stays
 	// in /tmp of the disposable lab VM; the next upload replaces it.
+});
+
+test('flash: an upload slower than script_timeout completes in resumable chunks', async ({
+	page,
+}) => {
+	test.skip(!existsSync(SYSUPGRADE), 'sysupgrade image not fetched (tools/qemu/fetch.sh)');
+	test.setTimeout(slow(600_000));
+	await login(page, 'system/backup');
+	// uhttpd kills a handler after script_timeout (60 s); at 160 KiB/s the
+	// ~13 MB image takes about 80 s, so one request could not carry it.
+	const cdp = await page.context().newCDPSession(page);
+	await cdp.send('Network.enable');
+	await cdp.send('Network.emulateNetworkConditions', {
+		offline: false,
+		latency: 20,
+		downloadThroughput: -1,
+		uploadThroughput: 160 * 1024,
+	});
+	const chunks: string[] = [];
+	page.on('request', (r) => {
+		if (r.method() === 'POST' && r.url().includes('/nuci/transfer?name=firmware'))
+			chunks.push(r.url());
+	});
+	const started = Date.now();
+	await page.getByTestId('firmware-file').setInputFiles(SYSUPGRADE);
+	await page.getByTestId('firmware-upload').click();
+	await expect(page.getByTestId('firmware-validation')).toContainText(
+		'The image is valid for this device.',
+		{ timeout: slow(480_000) },
+	);
+	expect(Date.now() - started).toBeGreaterThan(60_000);
+	expect(chunks.length).toBeGreaterThan(2);
+	expect(chunks[0]).toContain('&offset=0&total=');
 });

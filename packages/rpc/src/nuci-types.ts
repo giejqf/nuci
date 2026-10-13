@@ -229,6 +229,15 @@ export interface JobStatus {
 	log?: string;
 }
 
+/** nuci.network protocols */
+export interface PendingProtocols {
+	/** Handlers in /lib/netifd/proto installed after netifd started. */
+	pending: string[];
+	/** netifd's start (epoch seconds), null when it is not running. */
+	started: number | null;
+	job: JobStatus;
+}
+
 export interface BackupStatus extends JobStatus {
 	/** Path of the archive once created. */
 	path?: string;

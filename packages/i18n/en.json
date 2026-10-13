@@ -798,5 +798,14 @@
 	"setup.review.finish": "Finish",
 	"setup.done.title": "Setup complete",
 	"setup.done.text": "Your router is set up. Everything can be changed later from the menu.",
-	"setup.done.overview": "Go to the overview"
+	"setup.done.overview": "Go to the overview",
+	"network.proto_pending": "Installed since the network service started: {protos}. Restart the network service to use these protocols.",
+	"network.restart_service": "Restart network service",
+	"network.restart_service_confirm": "All interfaces go down and come back up. Connections through the router, including this page, are interrupted for a few seconds. Staged changes are kept.",
+	"network.service_restarting": "Restarting the network service; the page reconnects when the router answers again…",
+	"network.service_restarted": "The network service was restarted.",
+	"proto.ipip": "IPv4-in-IPv4 tunnel (IPIP)",
+	"proto.remote_ipv4": "Remote endpoint (IPv4)",
+	"proto.local_ipv4": "Local IPv4 address",
+	"proto.local_ipv4_help": "Empty: the address of the tunnel link."
 }

@@ -31,8 +31,14 @@
 	let confirmDelete = $state<string | null>(null);
 	let devStatus = $state<Record<string, unknown>>({});
 	let handlers = $state<Record<string, unknown> | null>(null);
+	// Protocol handlers installed since netifd started: usable after a restart.
+	let pending = $state<string[]>([]);
+	let netifdStarted = $state<number | null>(null);
+	let confirmRestart = $state(false);
+	let restarting = $state(false);
 
 	const writable = $derived(session.canWriteUci('network'));
+	const canRestart = $derived(session.acl.canCall('nuci.network', 'restart'));
 	const ifaces = $derived(
 		uci.sections('network', 'interface').filter((s) => s['.name'] !== 'loopback'),
 	);
@@ -75,12 +81,45 @@
 		uci.load('network', 'firewall', 'dhcp').catch(
 			(e) => (error = isRpcError(e) ? t(e.messageKey) : String(e)),
 		);
-		rpc.network
-			.protoHandlers()
-			.then((h) => (handlers = h))
-			.catch(() => {});
+		void loadProtocols();
 		return poll(refresh, 5000);
 	});
+
+	async function loadProtocols() {
+		const [h, p] = await Promise.all([
+			rpc.network.protoHandlers().catch(() => null),
+			rpc.nuci.network.protocols().catch(() => null),
+		]);
+		if (h) handlers = h;
+		pending = p?.pending ?? [];
+		netifdStarted = p?.started ?? null;
+	}
+
+	const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+	// All interfaces go down and up: wait until netifd runs again (a new start
+	// time), retrying while the router is unreachable, then reload the handlers.
+	async function restartNetwork() {
+		confirmRestart = false;
+		restarting = true;
+		const before = netifdStarted;
+		try {
+			await rpc.nuci.network.restart();
+			const until = Date.now() + 120_000;
+			while (Date.now() < until) {
+				await sleep(2000);
+				const p = await rpc.nuci.network.protocols().catch(() => null);
+				if (p && !p.job.running && p.started !== null && p.started !== before) break;
+			}
+			await loadProtocols();
+			await refresh();
+			toasts.success(t('network.service_restarted'));
+		} catch (e) {
+			toasts.error(isRpcError(e) ? t(e.messageKey) : String(e));
+		} finally {
+			restarting = false;
+		}
+	}
 
 	async function act(name: string, what: 'up' | 'down') {
 		try {
@@ -136,6 +175,30 @@
 		{/if}
 	{/snippet}
 	{#if error}<div role="alert" class="alert alert-error">{error}</div>{/if}
+	{#if restarting}
+		<div
+			role="status"
+			aria-live="polite"
+			class="alert alert-info"
+			data-testid="iface-restarting"
+		>
+			<span class="loading loading-spinner" aria-hidden="true"></span>
+			{t('network.service_restarting')}
+		</div>
+	{:else if pending.length}
+		<div role="status" class="alert alert-info" data-testid="iface-proto-pending">
+			<span>{t('network.proto_pending', { protos: pending.join(', ') })}</span>
+			{#if canRestart}
+				<button
+					type="button"
+					class="btn btn-sm"
+					onclick={() => (confirmRestart = true)}
+					data-testid="iface-restart-network"
+					><RotateCw size={16} aria-hidden="true" />{t('network.restart_service')}</button
+				>
+			{/if}
+		</div>
+	{/if}
 	{#if uci.isLoaded('network')}
 		<div class="grid gap-4 lg:grid-cols-2" data-testid="iface-list">
 			{#each ifaces as i (i['.name'])}
@@ -283,6 +346,25 @@
 			type="button"
 			class="btn btn-error"
 			onclick={() => confirmDelete && remove(confirmDelete)}>{t('ui.delete')}</button
+		>
+	{/snippet}
+</Modal>
+
+<Modal
+	bind:open={confirmRestart}
+	title={t('network.restart_service')}
+	testid="iface-restart-confirm"
+>
+	<p>{t('network.restart_service_confirm')}</p>
+	{#snippet actions()}
+		<button type="button" class="btn btn-ghost" onclick={() => (confirmRestart = false)}
+			>{t('ui.cancel')}</button
+		>
+		<button
+			type="button"
+			class="btn btn-primary"
+			onclick={restartNetwork}
+			data-testid="iface-restart-go">{t('network.restart_service')}</button
 		>
 	{/snippet}
 </Modal>

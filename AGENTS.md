@@ -171,6 +171,7 @@ when the client disconnects, so it never pins a worker.
 | `nuci.wifi` | `status` (netifd radio status), `assoc_list_enriched` (iwinfo + hostnames), `scan` wrapper (AP-only radios: `iw … scan ap-force`; idle radios: temporary managed interface) | `iwinfo` via deferred calls, `iw`, `nuci.dhcp` |
 | `nuci.apps` | `list` (installed nuci-app manifests) | `/usr/share/nuci/apps/*.json` |
 | `nuci.users` | `list`, `groups`, `create`, `update`, `set_password`, `delete` (ADR-0006) | `/etc/passwd`, `/etc/shadow`, busybox `passwd` via stdin, uci `rpcd` |
+| `nuci.network` | `protocols` (protocol handlers installed since netifd started, by ctime), `restart` (job) | `/lib/netifd/proto`, `/proc/<netifd>/stat`, `/etc/init.d/network restart` |
 
 First-party apps ship their own objects (plugin + lib + ACL inside
 `apps/nuci-app-<id>/rpcd/`, typed wrappers in the app's `src/api.ts`):
@@ -188,7 +189,9 @@ First-party apps ship their own objects (plugin + lib + ACL inside
 Findings that shape the apps (25.12.0): netifd loads protocol handlers
 (`/lib/netifd/proto/*.sh`) only at start, so a protocol installed later is
 unknown until the network service restarts (pages check
-`get_proto_handlers` and say so); netifd applies WireGuard peers only when
+`get_proto_handlers`; the Interfaces page offers the restart through
+`nuci.network`, which finds such handlers by ctime: apk keeps the
+package's mtime); netifd applies WireGuard peers only when
 the interface is set up, so `nuci-app-wireguard` ships a procd service whose
 `network` reload trigger re-runs `ifup` for tunnels whose running peers differ
 from the config; miniupnpd refuses all mappings while the WAN address is
@@ -309,8 +312,10 @@ apps/nuci-app-<id>            first-party apps (UI, manifest, optional rpcd plug
   (`UH_UBUS_MAX_POST_SIZE`), and rpcd's `file.read` refuses files ≥ 256 KiB.
   `@nuci/rpc` splits batches below the limit. Backups, restores and firmware
   go through `/nuci/transfer` (ADR-0005: named files only, session in the
-  `X-Nuci-Session` header, `nuci-transfer` ACL scope); small files still use
-  `file.read`/`file.write` (no cgi-io).
+  `X-Nuci-Session` header, `nuci-transfer` ACL scope; uploads in chunks
+  at an offset and downloads in ranges, so no request outlives
+  `script_timeout`); small files still use `file.read`/`file.write` (no
+  cgi-io).
 - **No runtime network access other than `/ubus`** (no CDNs, no fonts fetched).
 
 ---
@@ -794,6 +799,14 @@ next phase's pages before the previous phase's exit criteria are met.
   can move a firmware image of any size (ADR-0005 amended).
 - **Exit:** e2e: install a protocol, restart from the page, create an
   interface with it; a transfer throttled past `script_timeout` completes.
+- **Status:** done 2026-10-13. `nuci.network` (`protocols`, `restart`,
+  ACL group `nuci-network`): the Interfaces page lists protocols installed
+  since netifd started and restarts the service after a confirmation, then
+  waits for netifd's new start; `ipip` joined `proto-registry.ts`. Radios
+  and access points come back after the restart. ADR-0005 amended:
+  chunked, resumable uploads and ranged downloads. e2e: `network.spec.ts`
+  (install `ipip`, restart, create a tunnel), `system.spec.ts` (13 MB
+  upload throttled to about 80 s).
 
 ### Phase 19 — 0.4 release
 - Release notes, perf and accessibility checks for new pages, signed feed

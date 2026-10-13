@@ -316,6 +316,29 @@ export const PROTOS: Proto[] = [
 			tunnelMtu,
 		],
 	},
+	{
+		id: 'ipip',
+		label: 'proto.ipip',
+		noDevice: true,
+		fields: [
+			{
+				option: 'peeraddr',
+				label: 'proto.remote_ipv4',
+				kind: 'text',
+				validate: v.all(v.required, v.ipv4),
+			},
+			{
+				option: 'ipaddr',
+				label: 'proto.local_ipv4',
+				kind: 'text',
+				validate: v.ipv4,
+				description: 'proto.local_ipv4_help',
+			},
+			tunlink,
+			tunnelMtu,
+			tunnelTtl,
+		],
+	},
 	{ id: 'none', label: 'proto.none', fields: [] },
 ];
 
@@ -335,8 +358,14 @@ export function availableProtos(
 	return PROTOS.filter((p) => p.id === 'none' || p.id === current || p.id in handlers);
 }
 
-/** Options that belong to `from` but not to `to` (unset when switching). */
+/**
+ * Options of `from` that `to` does not use the same way (unset when
+ * switching): a name both share with a different meaning (static's address
+ * list vs. a tunnel's local `ipaddr`) is dropped too.
+ */
 export function obsoleteOptions(from: string | undefined, to: string): string[] {
-	const keep = new Set(proto(to)?.fields.map((f) => f.option) ?? []);
-	return (proto(from)?.fields ?? []).map((f) => f.option).filter((o) => !keep.has(o));
+	const keep = new Map((proto(to)?.fields ?? []).map((f) => [f.option, f.label]));
+	return (proto(from)?.fields ?? [])
+		.filter((f) => keep.get(f.option) !== f.label)
+		.map((f) => f.option);
 }

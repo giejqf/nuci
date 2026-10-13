@@ -213,6 +213,9 @@
 				],
 				"network": [
 					"get_proto_handlers"
+				],
+				"nuci.network": [
+					"protocols"
 				]
 			},
 			"uci": [
@@ -236,6 +239,9 @@
 					"ping",
 					"traceroute",
 					"nslookup"
+				],
+				"nuci.network": [
+					"restart"
 				]
 			},
 			"uci": [

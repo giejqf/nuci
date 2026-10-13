@@ -798,5 +798,14 @@
 	"setup.review.finish": "完成",
 	"setup.done.title": "设置完成",
 	"setup.done.text": "路由器已设置完毕。以后可随时通过菜单更改所有设置。",
-	"setup.done.overview": "前往概览"
+	"setup.done.overview": "前往概览",
+	"network.proto_pending": "网络服务启动后新安装了：{protos}。重启网络服务后才能使用这些协议。",
+	"network.restart_service": "重启网络服务",
+	"network.restart_service_confirm": "所有接口会先关闭再重新启动。经过路由器的连接（包括本页面）会中断几秒钟。暂存的更改会保留。",
+	"network.service_restarting": "正在重启网络服务；路由器重新响应后页面会自动重连…",
+	"network.service_restarted": "网络服务已重启。",
+	"proto.ipip": "IPv4-in-IPv4 隧道（IPIP）",
+	"proto.remote_ipv4": "远端地址（IPv4）",
+	"proto.local_ipv4": "本地 IPv4 地址",
+	"proto.local_ipv4_help": "留空：使用隧道链路的地址。"
 }

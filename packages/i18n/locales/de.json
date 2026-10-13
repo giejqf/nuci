@@ -798,5 +798,14 @@
 	"setup.review.finish": "Fertigstellen",
 	"setup.done.title": "Einrichtung abgeschlossen",
 	"setup.done.text": "Ihr Router ist eingerichtet. Alles lässt sich später über das Menü ändern.",
-	"setup.done.overview": "Zur Übersicht"
+	"setup.done.overview": "Zur Übersicht",
+	"network.proto_pending": "Seit dem Start des Netzwerkdienstes installiert: {protos}. Den Netzwerkdienst neu starten, um diese Protokolle zu verwenden.",
+	"network.restart_service": "Netzwerkdienst neu starten",
+	"network.restart_service_confirm": "Alle Schnittstellen werden ab- und wieder angeschaltet. Verbindungen über den Router, auch diese Seite, sind einige Sekunden unterbrochen. Vorgemerkte Änderungen bleiben erhalten.",
+	"network.service_restarting": "Der Netzwerkdienst wird neu gestartet; die Seite verbindet sich wieder, sobald der Router antwortet …",
+	"network.service_restarted": "Der Netzwerkdienst wurde neu gestartet.",
+	"proto.ipip": "IPv4-in-IPv4-Tunnel (IPIP)",
+	"proto.remote_ipv4": "Gegenstelle (IPv4)",
+	"proto.local_ipv4": "Lokale IPv4-Adresse",
+	"proto.local_ipv4_help": "Leer: die Adresse der Tunnelverbindung."
 }

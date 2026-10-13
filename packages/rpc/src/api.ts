@@ -30,6 +30,7 @@ import type {
 	UsbDevice,
 	WifiDeviceStats,
 	WifiStation,
+	PendingProtocols,
 } from './nuci-types';
 import type {
 	AclMap,
@@ -398,6 +399,12 @@ export function createApi(client: RpcClient) {
 				nslookup: (host: string, server?: string) =>
 					call<JobStatus>('nuci.diag', 'nslookup', server ? { host, server } : { host }),
 				status: () => call<JobStatus>('nuci.diag', 'status'),
+			},
+			network: {
+				/** Protocol handlers installed since netifd started (need a restart). */
+				protocols: () => call<PendingProtocols>('nuci.network', 'protocols'),
+				/** Restart the network service (detached job; the LAN drops briefly). */
+				restart: () => call<JobStatus>('nuci.network', 'restart'),
 			},
 			users: {
 				list: async () => (await call<{ users: NuciUser[] }>('nuci.users', 'list')).users,

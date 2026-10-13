@@ -4,6 +4,7 @@
 - Date: 2026-10-12
 - Phase: 8 (lifting 0.1 limitations)
 - Amends: AGENTS.md §3.1 (runtime topology), §3.3 (request size)
+- Amended: 2026-10-13 (Phase 18, resumable transfers; see the end)
 
 ## Context
 
@@ -51,3 +52,29 @@ firmware image took hundreds of round trips plus 33 % base64 overhead.
 - `file.read`/`file.write` remain for small files (rc.local, keys).
 - The 60 s `script_timeout` caps a transfer's duration; raising it globally
   would also lengthen SSE streams' lifetimes (ADR-0001), so it stays.
+
+## Amendment: resumable transfers (0.4, Phase 18)
+
+`script_timeout` capped one transfer at 60 s, so a slow link could not move
+a firmware image at all. Instead of raising the timeout (which also bounds
+SSE streams), a transfer is now several requests, each sized to take about
+15 s:
+
+- **Uploads** carry `&offset=N&total=T`. The handler appends at `N` to
+  `<path>.part` only when the `.part` file is exactly `N` bytes long (409
+  with its size otherwise); the request at offset 0 starts over (and removes
+  the stored file), the one that reaches `T` renames `.part` into place. The
+  space check covers what is still to come. Whatever arrived before a cut
+  connection stays, and `GET ?name=<upload>&status` (write access) reports
+  `{ part, stored }`, so the client resumes there; `stored = T` after a lost
+  reply to the last chunk means done. Requests without `offset`/`total` are
+  a whole file, as before.
+- **Downloads** honour `Range: bytes=N-[M]` (206, `Content-Range`; 416 past
+  the end). The client fetches the backup in ranges.
+- `@nuci/rpc` sizes each chunk from the previous request's throughput (1 MiB
+  first, at most 4x growth, 64 KiB to 16 MiB), retries a failed request up
+  to five times with backoff and a quarter of the chunk size, and fails
+  right away on 403, 404, 411 and 413.
+- Verified on armsr/armv8: a 13 MB sysupgrade image uploaded at 160 KiB/s
+  (about 80 s, Chromium network throttling) arrives in several requests and
+  validates (`system.spec.ts`).

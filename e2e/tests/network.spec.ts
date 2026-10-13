@@ -420,3 +420,62 @@ test('devices: an unconfirmed VLAN change that cuts off br-lan rolls back', asyn
 	expect(vlans).toEqual([]);
 	expect((await rpc.network.interface('lan'))['ipv4-address']?.[0]?.address).toBe('192.168.1.1');
 });
+
+test('interfaces: a protocol installed later is usable after restarting the network service', async ({
+	page,
+}) => {
+	test.setTimeout(slow(600_000));
+	const rpc = await api();
+	const job = async () => {
+		await expect
+			.poll(async () => (await rpc.nuci.pkg.jobStatus()).running, { timeout: slow(240_000) })
+			.toBe(false);
+		return rpc.nuci.pkg.jobStatus();
+	};
+	// Installed after netifd started (reinstalled if it was there): netifd does not know it yet.
+	if ((await rpc.nuci.pkg.listInstalled()).packages.some((p) => p.name === 'ipip')) {
+		await rpc.nuci.pkg.del(['ipip']);
+		await job();
+	}
+	await rpc.nuci.pkg.update();
+	await job();
+	await rpc.nuci.pkg.add(['ipip']);
+	expect((await job()).rc).toBe(0);
+	expect((await rpc.nuci.network.protocols()).pending).toContain('ipip');
+
+	await login(page, 'network/interfaces');
+	await expect(page.getByTestId('iface-proto-pending')).toContainText('ipip');
+	await page.getByTestId('iface-restart-network').click();
+	await page.getByTestId('iface-restart-go').click();
+	await expect(page.getByTestId('iface-restarting')).toBeVisible();
+	await expect(page.getByText('The network service was restarted.')).toBeVisible({
+		timeout: slow(150_000),
+	});
+	await expect(page.getByTestId('iface-proto-pending')).toHaveCount(0);
+	expect(Object.keys(await rpc.network.protoHandlers())).toContain('ipip');
+
+	await page.getByTestId('iface-add').click();
+	await page.getByTestId('new-iface-name').fill('e2eipip');
+	await page.getByTestId('new-iface-proto').selectOption('ipip');
+	await page.getByTestId('new-iface-create').click();
+	await expect(page).toHaveURL(/#\/network\/interfaces\/e2eipip$/);
+	await page.getByTestId('field-peeraddr').fill('192.0.2.1');
+	await page.getByTestId('field-tunlink').selectOption('wan');
+	await applyWithRollback(page);
+	await expect
+		.poll(async () => (await rpc.network.interface('e2eipip').catch(() => null))?.up, {
+			timeout: slow(60_000),
+		})
+		.toBe(true);
+	expect((await rpc.network.interface('e2eipip')).l3_device).toBe('ipip-e2eipip');
+
+	await page.goto('/nuci/#/network/interfaces');
+	await page.getByTestId('iface-e2eipip').getByRole('button', { name: 'Delete e2eipip' }).click();
+	await page.getByRole('button', { name: 'Delete', exact: true }).click();
+	await applyWithRollback(page);
+	await expect
+		.poll(async () => Object.keys(await rpc.uci.getAll('network')))
+		.not.toContain('e2eipip');
+	await rpc.nuci.pkg.del(['ipip']);
+	await job();
+});
