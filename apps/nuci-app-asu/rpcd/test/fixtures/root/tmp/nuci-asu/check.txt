@@ -1,0 +1,11 @@
+ASU-Server     https://sysupgrade.openwrt.org
+Upstream       https://downloads.openwrt.org
+Target         armsr/armv8
+Profile        generic (qemu-kvm-virtual-machine)
+Package-arch   aarch64_generic
+Version-from   25.12.0 r32713-f919e7899d (kernel 6.12.71)
+Version-to     25.12.5 r33051-f5dae5ece4 (kernel 6.12.94)
+132 packages are out-of-date
+There are 1 missing and 1 modified default packages
+WARNING: There are 1 missing default packages, confirm this is expected before proceeding
+It is safe to proceed with an upgrade (re-run with '--verbose' for details)

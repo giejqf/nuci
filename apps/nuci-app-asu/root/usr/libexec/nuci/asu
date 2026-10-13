@@ -1,0 +1,66 @@
+#!/bin/sh
+# SPDX-License-Identifier: Apache-2.0
+#
+# asu check [VERSION] | asu download VERSION | asu install
+# Attended sysupgrade through owut for nuci.asu (ADR-0007); run as the
+# detached job "asu". NuCI's packages are not on the build service: they
+# are left out of the build (-r) and their upstream dependencies added (-a);
+# asu-pre-install carries NuCI across the flash.
+
+STATE=/tmp/nuci-asu
+IMAGE="$STATE/firmware.bin"
+mkdir -p "$STATE"
+
+action="${1:-}"
+version="${2:-}"
+case "$version" in
+	*[!0-9A-Za-z.-]*) echo "invalid version" >&2; exit 22 ;;
+esac
+
+nuci_packages() {
+	apk info 2>/dev/null | grep -E '^(nuci|nuci-base|rpcd-mod-nuci|nuci-app-[a-z0-9-]+)$' | sort
+}
+
+# Upstream packages NuCI depends on, comma-separated (owut -a).
+nuci_dependencies() {
+	# shellcheck disable=SC2046 # package names are plain words (see the grep above)
+	apk query --format json --installed --fields name,depends $(nuci_packages) 2>/dev/null |
+		ucode -l fs -e '
+			let deps = {};
+			for (let p in json(fs.stdin.read("all") || "[]"))
+				for (let d in p.depends ?? []) {
+					d = split(d, /[<>=~]/)[0];
+					if (!match(d, /^(nuci|nuci-base|rpcd-mod-nuci|nuci-app-.*|libc|so:.*|\/.*)$/))
+						deps[d] = true;
+				}
+			print(join(",", sort(keys(deps))));'
+}
+
+remove="$(nuci_packages | tr '\n' ',' | sed 's/,$//')"
+add="$(nuci_dependencies)"
+
+case "$action" in
+	check)
+		rm -f "$STATE/dump.json" "$STATE/check.txt" "$STATE/check.rc"
+		# -v -v: build and packageDB, without the full list of available packages.
+		owut dump -v -v ${version:+-V "$version"} -r "$remove" -a "$add" \
+			> "$STATE/dump.json.tmp" || exit $?
+		mv "$STATE/dump.json.tmp" "$STATE/dump.json"
+		owut check ${version:+-V "$version"} -r "$remove" -a "$add" > "$STATE/check.txt" 2>&1
+		echo $? > "$STATE/check.rc"
+		cat "$STATE/check.txt"
+		;;
+	download)
+		[ -n "$version" ] || exit 22
+		rm -f "$IMAGE" "$STATE/download.ok"
+		owut download -V "$version" -r "$remove" -a "$add" -i "$IMAGE" || exit $?
+		echo "$version" > "$STATE/download.ok"
+		;;
+	install)
+		[ -s "$IMAGE" ] && [ -f "$STATE/download.ok" ] || exit 2
+		exec owut install -i "$IMAGE" --pre-install /usr/libexec/nuci/asu-pre-install
+		;;
+	*)
+		exit 22
+		;;
+esac

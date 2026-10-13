@@ -1,0 +1,118 @@
+{
+  "version": "owut/2026.08.30~9b51eeec-r1",
+  "device": {
+    "arch": "aarch64_generic",
+    "target": "armsr/armv8",
+    "board": "qemu-kvm-virtual-machine",
+    "platform": "generic",
+    "fstype": "squashfs",
+    "sutype": "combined-efi"
+  },
+  "build": {
+    "from": {
+      "version": "25.12.0",
+      "rev_code": "r32713-f919e7899d",
+      "kernel": "6.12.71"
+    },
+    "to": {
+      "version": "25.12.5",
+      "rev_code": "r33051-f5dae5ece4",
+      "kernel": "6.12.94",
+      "fstype": "squashfs",
+      "img_prefix": "openwrt-25.12.5-armsr-armv8-generic",
+      "img_file": "openwrt-25.12.5-armsr-armv8-generic-squashfs-combined-efi.img.gz",
+      "date": "2026-06-29T12:59:20Z (~106 days ago)",
+      "kernel_release": "1",
+      "kernel_vermagic": "ba5ca7f3e73618aeece9cc1c14e512c2"
+    }
+  },
+  "release": {
+    "branch": "25.12",
+    "dir": "releases/25.12.5",
+    "branches": {
+      "24.10": {
+        "latest": "24.10.8",
+        "versions": [
+          "24.10.0-rc1",
+          "24.10.0-rc2",
+          "24.10.0-rc3",
+          "24.10.0-rc4",
+          "24.10.0-rc5",
+          "24.10.0-rc6",
+          "24.10.0-rc7",
+          "24.10.0",
+          "24.10.1",
+          "24.10.2",
+          "24.10.3",
+          "24.10.4",
+          "24.10.5",
+          "24.10.6",
+          "24.10.7",
+          "24.10.8",
+          "24.10-SNAPSHOT"
+        ]
+      },
+      "25.12": {
+        "latest": "25.12.5",
+        "versions": [
+          "25.12.0-rc1",
+          "25.12.0-rc2",
+          "25.12.0-rc3",
+          "25.12.0-rc4",
+          "25.12.0-rc5",
+          "25.12.0",
+          "25.12.1",
+          "25.12.2",
+          "25.12.3",
+          "25.12.4",
+          "25.12.5",
+          "25.12-SNAPSHOT"
+        ]
+      },
+      "SNAPSHOT": {
+        "latest": "SNAPSHOT",
+        "versions": [
+          "SNAPSHOT"
+        ]
+      }
+    }
+  },
+  "packageDB": {
+    "base-files": {
+      "version": "1693~f919e7899d",
+      "new_version": "1711~f5dae5ece4",
+      "top_level": true,
+      "default": true
+    },
+    "dropbear": {
+      "version": "2025.89-r1",
+      "new_version": "2025.89-r3",
+      "top_level": true,
+      "default": true
+    },
+    "6in4": {
+      "version": "29",
+      "new_version": "29",
+      "top_level": true,
+      "default": false
+    },
+    "uhttpd-mod-ucode": {
+      "version": "2026.08.24~373145f7-r1",
+      "new_version": "2026.08.24~373145f7-r1",
+      "top_level": true,
+      "default": false
+    },
+    "rpcd-mod-ucode": {
+      "version": "2026.10.04~d99f703e-r1",
+      "new_version": "2026.10.04~d99f703e-r1",
+      "top_level": true,
+      "default": false
+    },
+    "example-gone": {
+      "version": "1.0-r1",
+      "new_version": null,
+      "top_level": true,
+      "default": false
+    }
+  }
+}

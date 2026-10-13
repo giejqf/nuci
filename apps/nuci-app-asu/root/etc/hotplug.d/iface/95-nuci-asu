@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# After an attended sysupgrade (ADR-0007): reinstall NuCI from its feed once
+# an interface is up. Does nothing unless asu-pre-install left /etc/nuci-asu.
+
+[ "$ACTION" = ifup ] && [ -s /etc/nuci-asu/packages ] &&
+	/usr/libexec/nuci/asu-reinstall </dev/null >/dev/null 2>&1 &

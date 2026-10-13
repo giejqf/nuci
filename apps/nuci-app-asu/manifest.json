@@ -1,0 +1,12 @@
+{
+	"id": "asu",
+	"title": "Firmware upgrade",
+	"icon": "CloudDownload",
+	"entry": "apps/asu/index.js",
+	"version": "0.4.0",
+	"menu": {
+		"group": "system",
+		"order": 75
+	},
+	"acls": ["nuci-app-asu"]
+}

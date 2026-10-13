@@ -1,0 +1,13 @@
+{
+	"nuci-app-asu": {
+		"description": "NuCI app: attended sysupgrade (build and flash a newer release)",
+		"read": {
+			"ubus": { "nuci.asu": ["status"] },
+			"uci": ["attendedsysupgrade"]
+		},
+		"write": {
+			"ubus": { "nuci.asu": ["check", "download", "install"] },
+			"uci": ["attendedsysupgrade"]
+		}
+	}
+}

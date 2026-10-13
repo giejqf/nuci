@@ -1,6 +1,13 @@
 {
 	"nuci-e2e": {
-		"description": "Test-only (e2e/run.sh installs it on the lab, never packaged): router setup and cleanup for specs",
+		"description": "Test-only (e2e/run.sh installs it on the lab, never packaged): router setup and cleanup for specs, and the installed-package list owut sees (upgrade.spec)",
+		"read": {
+			"ubus": {
+				"rpc-sys": [
+					"packagelist"
+				]
+			}
+		},
 		"write": {
 			"ubus": {
 				"file": [

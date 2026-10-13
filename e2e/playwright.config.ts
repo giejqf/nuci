@@ -17,5 +17,19 @@ export default defineConfig({
 		baseURL: `http://127.0.0.1:${port}`,
 		trace: 'retain-on-failure',
 	},
-	projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+	projects: [
+		{
+			name: 'chromium',
+			use: { ...devices['Desktop Chrome'] },
+			testIgnore: /upgrade\.spec\.ts/,
+		},
+		// Reflashes the router: only after everything else has passed.
+		{
+			name: 'upgrade',
+			use: { ...devices['Desktop Chrome'] },
+			testMatch: /upgrade\.spec\.ts/,
+			dependencies: ['chromium'],
+			retries: 0,
+		},
+	],
 });

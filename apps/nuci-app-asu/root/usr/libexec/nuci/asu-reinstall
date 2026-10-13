@@ -1,0 +1,53 @@
+#!/bin/sh
+# SPDX-License-Identifier: Apache-2.0
+#
+# After an attended sysupgrade (ADR-0007), NuCI runs from files kept across
+# the flash that apk does not know. Once the network is up, install NuCI's
+# packages again from its feed: download first, then move the kept files
+# aside (apk keeps files it does not own), install, and put them back if
+# that fails. Without a feed that carries NuCI the kept files simply stay.
+
+PENDING=/etc/nuci-asu
+LOCK=/tmp/nuci-asu-reinstall.lock
+
+[ -s "$PENDING/packages" ] || exit 0
+mkdir "$LOCK" 2>/dev/null || exit 0
+dl=""
+aside=""
+cleanup() { rm -rf "$dl" "$aside"; rmdir "$LOCK"; }
+trap cleanup EXIT
+
+log() { logger -t nuci-asu "$*"; }
+pkgs="$(cat "$PENDING/packages")"
+
+apk update >/dev/null 2>&1 || exit 0 # no network yet: the next ifup retries
+
+if [ -z "$(apk search -x nuci-base 2>/dev/null)" ]; then
+	log "no package feed carries NuCI; keeping the files from before the upgrade"
+	rm -rf "$PENDING"
+	exit 0
+fi
+
+dl="$(mktemp -d)"
+# shellcheck disable=SC2086 # package names, one word each
+apk fetch -o "$dl" $pkgs >/dev/null 2>&1 || { log "download failed, retrying on the next ifup"; exit 0; }
+
+# Configuration stays where it is (apk keeps it, as it should).
+aside="$(mktemp -d)"
+grep -v '^/etc/config/' "$PENDING/files" | while read -r f; do
+	[ -e "$f" ] || [ -L "$f" ] || continue
+	mkdir -p "$aside${f%/*}"
+	mv "$f" "$aside$f"
+done
+
+if apk add "$dl"/*.apk >/dev/null 2>&1; then
+	rm -rf "$PENDING"
+	/etc/init.d/rpcd reload
+	log "NuCI reinstalled: $(echo $pkgs)"
+else
+	(cd "$aside" && find . -type f -o -type l) | while read -r f; do
+		mkdir -p "$(dirname "/${f#./}")"
+		mv "$aside/${f#./}" "/${f#./}"
+	done
+	log "reinstall failed, the previous files were restored; retrying on the next ifup"
+fi

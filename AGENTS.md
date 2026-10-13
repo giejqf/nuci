@@ -181,6 +181,7 @@ First-party apps ship their own objects (plugin + lib + ACL inside
 | `nuci.ddns` (ddns) | `providers`, `status`, `log`, `update` (job: `/etc/init.d/ddns restart`), `update_status` | `/usr/share/ddns/{default,custom}`, `/var/run/ddns`, `/var/log/ddns` |
 | `nuci.upnp` (upnp) | `status` (procd state, active mappings) | `service list`, miniupnpd lease file |
 | `nuci.sqm` (sqm) | `status` (root qdiscs egress/ingress) | `tc -s qdisc` on the device and `ifb4<dev>` |
+| `nuci.asu` (asu) | `status` (job + summary of the last check), `check`, `download`, `install` (jobs) | `owut dump`/`check`/`download`/`install` via `/usr/libexec/nuci/asu` (ADR-0007) |
 
 Findings that shape the apps (25.12.0): netifd loads protocol handlers
 (`/lib/netifd/proto/*.sh`) only at start, so a protocol installed later is
@@ -752,6 +753,11 @@ next phase's pages before the previous phase's exit criteria are met.
 - **Exit:** e2e: the app finds a "newer" image on the stub, builds,
   downloads, verifies and flashes it; the router comes back with its
   settings and packages.
+- **Status:** done 2026-10-13 (ADR-0007 accepted). `nuci-app-asu` 0.4.0,
+  `upgrade.spec.ts` in its own Playwright project after the rest of the
+  suite (last transport pass only), the build-service image from
+  `NUCI_IB_ASU=1 tools/imagebuilder/build.sh`. Also verified by hand with
+  the public service: 25.12.0 → 25.12.5 on the armsr lab.
 
 ### Phase 17 — Apps round 2 (0.4)
 - `nuci-app-nlbwmon` (`nlbwmon`): traffic per client and protocol over the

@@ -55,13 +55,17 @@ jobs:
         run: |
           tools/imagebuilder/build.sh
           zstd -q -T0 --rm "tools/qemu/images/nuci-$OPENWRT_VERSION-armv8.img"
+          # What the build service would return for an upgrade (upgrade.spec.ts).
+          NUCI_IB_ASU=1 tools/imagebuilder/build.sh
         env:
           NUCI_IB_VERSION: ${{ env.OPENWRT_VERSION }}
 
       - uses: actions/upload-artifact@v4
         with:
           name: lab-image
-          path: tools/qemu/images/nuci-${{ env.OPENWRT_VERSION }}-armv8.img.zst
+          path: |
+            tools/qemu/images/nuci-${{ env.OPENWRT_VERSION }}-armv8.img.zst
+            tools/qemu/images/asu-${{ env.OPENWRT_VERSION }}-armv8.img.gz
           compression-level: 0
           retention-days: 3
       - uses: actions/upload-artifact@v4

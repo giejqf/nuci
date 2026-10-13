@@ -1,0 +1,35 @@
+#!/bin/sh
+# SPDX-License-Identifier: Apache-2.0
+#
+# Run by owut just before sysupgrade (ADR-0007). The new image does not
+# contain NuCI: keep its files, the apk feed list and non-OpenWrt keys
+# across the flash, and leave /etc/nuci-asu for asu-reinstall. The keep.d
+# entry exists only now, so ordinary backups never include NuCI's files.
+
+set -eu
+PENDING=/etc/nuci-asu
+KEEP=/lib/upgrade/keep.d/nuci-asu
+
+mkdir -p "$PENDING"
+apk info 2>/dev/null | grep -E '^(nuci|nuci-base|rpcd-mod-nuci|nuci-app-[a-z0-9-]+)$' | sort \
+	> "$PENDING/packages"
+
+: > "$PENDING/files"
+while read -r pkg; do
+	apk info -L "$pkg" 2>/dev/null | sed -n '2,$ { /^lib\/apk\//d; /^$/d; s|^|/|p; }'
+done < "$PENDING/packages" | sort -u > "$PENDING/files"
+
+{
+	echo "$PENDING/"
+	cat "$PENDING/files"
+	# init scripts enabled by NuCI's packages
+	for link in /etc/rc.d/*; do
+		case "$(readlink "$link")" in *nuci*) echo "$link" ;; esac
+	done
+	[ ! -e /etc/apk/repositories.d/customfeeds.list ] || echo /etc/apk/repositories.d/customfeeds.list
+	for key in /etc/apk/keys/*; do
+		case "${key##*/}" in openwrt-*) ;; *) [ ! -e "$key" ] || echo "$key" ;; esac
+	done
+} > "$KEEP"
+
+echo "keeping NuCI ($(wc -l < "$PENDING/packages") packages, $(wc -l < "$PENDING/files") files) across the upgrade"

@@ -1,0 +1,186 @@
+{
+	"object": "nuci.asu",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8",
+		"server": "https://sysupgrade.openwrt.org"
+	},
+	"signature": {
+		"status": {},
+		"check": {
+			"version": "String"
+		},
+		"download": {
+			"version": "String"
+		},
+		"install": {}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"job": {
+					"name": "asu",
+					"running": false,
+					"command": "/usr/libexec/nuci/asu download 25.12.5",
+					"started": 1791910831,
+					"log": "Status:   done\nProgress: 110s total =   0s in queue + 110s in build\n\nBuild succeeded in 110s total =   0s in queue + 110s to build:\nImage saved : /tmp/nuci-asu/firmware.bin\n",
+					"finished": 1791910945,
+					"rc": 0
+				},
+				"check": {
+					"from": {
+						"version": "25.12.0",
+						"revision": "r32713-f919e7899d",
+						"kernel": "6.12.71"
+					},
+					"to": {
+						"version": "25.12.5",
+						"revision": "r33051-f5dae5ece4",
+						"kernel": "6.12.94"
+					},
+					"device": {
+						"target": "armsr/armv8",
+						"profile": "generic",
+						"board": "qemu-kvm-virtual-machine"
+					},
+					"branches": {
+						"22.03": {
+							"latest": "22.03.7",
+							"versions": [
+								"22.03.0-rc1",
+								"22.03.0-rc4",
+								"22.03.0-rc5",
+								"22.03.0-rc6",
+								"22.03.0",
+								"22.03.1",
+								"22.03.2",
+								"22.03.3",
+								"22.03.4",
+								"22.03.5",
+								"22.03.6",
+								"22.03.7",
+								"22.03-SNAPSHOT"
+							]
+						},
+						"23.05": {
+							"latest": "23.05.6",
+							"versions": [
+								"23.05.0-rc1",
+								"23.05.0-rc2",
+								"23.05.0-rc3",
+								"23.05.0-rc4",
+								"23.05.0",
+								"23.05.2",
+								"23.05.3",
+								"23.05.4",
+								"23.05.5",
+								"23.05.6",
+								"23.05-SNAPSHOT"
+							]
+						},
+						"24.10": {
+							"latest": "24.10.8",
+							"versions": [
+								"24.10.0-rc1",
+								"24.10.0-rc2",
+								"24.10.0-rc3",
+								"24.10.0-rc4",
+								"24.10.0-rc5",
+								"24.10.0-rc6",
+								"24.10.0-rc7",
+								"24.10.0",
+								"24.10.1",
+								"24.10.2",
+								"24.10.3",
+								"24.10.4",
+								"24.10.5",
+								"24.10.6",
+								"24.10.7",
+								"24.10.8",
+								"24.10-SNAPSHOT"
+							]
+						},
+						"25.12": {
+							"latest": "25.12.5",
+							"versions": [
+								"25.12.0-rc1",
+								"25.12.0-rc2",
+								"25.12.0-rc3",
+								"25.12.0-rc4",
+								"25.12.0-rc5",
+								"25.12.0",
+								"25.12.1",
+								"25.12.2",
+								"25.12.3",
+								"25.12.4",
+								"25.12.5",
+								"25.12-SNAPSHOT"
+							]
+						},
+						"SNAPSHOT": {
+							"latest": "SNAPSHOT",
+							"versions": [
+								"SNAPSHOT"
+							]
+						}
+					},
+					"changes": [
+						{
+							"name": "base-files",
+							"from": "1693~f919e7899d",
+							"to": "1711~f5dae5ece4"
+						},
+						{
+							"name": "dropbear",
+							"from": "2025.89-r1",
+							"to": "2025.89-r3"
+						},
+						{
+							"name": "fstools",
+							"from": "2026.02.15~8d377aa6-r1",
+							"to": "2026.05.23~16718b6e-r1"
+						},
+						{
+							"name": "iptables-mod-ipopt",
+							"from": "1.8.10-r2",
+							"to": "1.8.10-r3"
+						},
+						{
+							"name": "iptables-nft",
+							"from": "1.8.10-r2",
+							"to": "1.8.10-r3"
+						}
+					],
+					"missing": [],
+					"errors": [],
+					"warnings": [
+						"There are 1 missing default packages, confirm this is expected before proceeding"
+					],
+					"ok": true
+				},
+				"image": {
+					"version": "25.12.5",
+					"size": 14800420
+				}
+			}
+		},
+		{
+			"method": "download",
+			"args": {
+				"version": "25.12.4"
+			},
+			"status": 2
+		},
+		{
+			"method": "check",
+			"args": {
+				"version": "25.12.5; reboot"
+			},
+			"status": 2
+		}
+	]
+}
