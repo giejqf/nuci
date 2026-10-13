@@ -15,6 +15,7 @@
 		TextField,
 		Toggle,
 		validators,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { sqmApi, type SqmStatus } from './api';
@@ -36,7 +37,6 @@
 
 	onMount(() => {
 		void host.uci.load('sqm');
-		void refresh();
 		void host
 			.call<Record<string, unknown>>('network.device', 'status')
 			.then(
@@ -46,11 +46,7 @@
 						.sort()),
 			)
 			.catch(() => {});
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void refresh(),
-			5000,
-		);
-		return () => clearInterval(timer);
+		return poll(refresh, 5000);
 	});
 
 	const describe = (q?: SqmStatus[string]['egress'][number]) =>

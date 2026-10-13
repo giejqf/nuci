@@ -16,6 +16,7 @@
 		TextField,
 		Toggle,
 		validators,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { upnpApi, type Redirect } from './api';
@@ -39,12 +40,7 @@
 
 	onMount(() => {
 		void host.uci.load('upnpd');
-		void refresh();
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void refresh(),
-			5000,
-		);
-		return () => clearInterval(timer);
+		return poll(refresh, 5000);
 	});
 </script>
 

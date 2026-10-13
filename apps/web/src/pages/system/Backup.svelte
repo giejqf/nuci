@@ -92,8 +92,10 @@
 			}
 			if (s.rc !== 0) throw new Error(s.log || `rc ${s.rc}`);
 			await rpc.system.reboot();
-			const back = await waitForRestart((p) => (restartPhase = p));
+			// A restore reboots into first-boot scripts; give slow devices as long as a flash.
+			const back = await waitForRestart((p) => (restartPhase = p), { upTimeoutMs: 900_000 });
 			if (back) location.reload();
+			else restartPhase = 'timeout';
 		} catch (e) {
 			err(e);
 		} finally {
@@ -151,6 +153,7 @@
 			});
 			const back = await waitForRestart((p) => (restartPhase = p), { upTimeoutMs: 900_000 });
 			if (back) location.reload();
+			else restartPhase = 'timeout';
 		} catch (e) {
 			err(e);
 		}
@@ -161,10 +164,14 @@
 
 <Page title={t('backup.title')} description={t('backup.description')}>
 	{#if restartPhase}
-		<div role="status" aria-live="polite" class="alert alert-info" data-testid="restart-status">
-			<span class="loading loading-spinner" aria-hidden="true"></span>{t(
-				`reboot.phase.${restartPhase}`,
-			)}
+		<div
+			role="status"
+			aria-live="polite"
+			class="alert {restartPhase === 'timeout' ? 'alert-warning' : 'alert-info'}"
+			data-testid="restart-status"
+		>
+			{#if restartPhase !== 'timeout'}<span class="loading loading-spinner" aria-hidden="true"
+				></span>{/if}{t(`reboot.phase.${restartPhase}`)}
 		</div>
 	{/if}
 	<div class="grid gap-4 xl:grid-cols-2">

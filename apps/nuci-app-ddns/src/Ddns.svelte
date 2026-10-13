@@ -18,6 +18,7 @@
 		Toggle,
 		toasts,
 		validators,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { ddnsApi, type Provider, type ServiceStatus } from './api';
@@ -56,12 +57,7 @@
 			.providers()
 			.then((p) => (providers = p))
 			.catch(() => {});
-		void refresh();
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void refresh(),
-			5000,
-		);
-		return () => clearInterval(timer);
+		return poll(refresh, 5000);
 	});
 
 	async function updateNow() {

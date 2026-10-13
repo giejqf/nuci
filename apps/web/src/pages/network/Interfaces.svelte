@@ -4,7 +4,16 @@
 	import { Pencil, Plus, Power, RotateCw, Trash2 } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
 	import { isRpcError, type InterfaceStatus } from '@nuci/rpc';
-	import { formatDuration, Modal, Page, Section, Select, TextField, toasts } from '@nuci/ui';
+	import {
+		formatDuration,
+		Modal,
+		Page,
+		Section,
+		Select,
+		TextField,
+		toasts,
+		poll,
+	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { setZone, zoneOf, zones } from '../../lib/firewall';
 	import { rpc, uci } from '../../lib/services';
@@ -66,16 +75,11 @@
 		uci.load('network', 'firewall', 'dhcp').catch(
 			(e) => (error = isRpcError(e) ? t(e.messageKey) : String(e)),
 		);
-		void refresh();
 		rpc.network
 			.protoHandlers()
 			.then((h) => (handlers = h))
 			.catch(() => {});
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void refresh(),
-			5000,
-		);
-		return () => clearInterval(timer);
+		return poll(refresh, 5000);
 	});
 
 	async function act(name: string, what: 'up' | 'down') {

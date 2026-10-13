@@ -22,7 +22,9 @@ const probeClient = new RpcClient({ storage: null, timeoutMs: 3000 });
  */
 export async function probe(): Promise<boolean> {
 	const ctrl = new AbortController();
-	const timer = setTimeout(() => ctrl.abort(), 3000);
+	// Not shorter: the handler asks netifd, which can take seconds to answer
+	// on a slow or busy router (and a refused connection fails at once anyway).
+	const timer = setTimeout(() => ctrl.abort(), 8000);
 	try {
 		const res = await fetch(new URL('probe', document.baseURI), {
 			cache: 'no-store',

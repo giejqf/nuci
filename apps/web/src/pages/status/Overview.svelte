@@ -23,6 +23,7 @@
 		Page,
 		Section,
 		Stat,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { rpc } from '../../lib/services';
@@ -106,13 +107,10 @@
 	}
 
 	onMount(() => {
-		void refresh();
-		const timer = setInterval(() => {
-			if (document.visibilityState === 'visible') void refresh();
-		}, 15_000);
+		const stop = poll(refresh, 15_000);
 		const off = rpc.events.subscribe('stats', onStats);
 		return () => {
-			clearInterval(timer);
+			stop();
 			off();
 		};
 	});

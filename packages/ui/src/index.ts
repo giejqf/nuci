@@ -18,6 +18,7 @@ export { default as LogView } from './LogView.svelte';
 export { default as Meter } from './Meter.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as Page } from './Page.svelte';
+export { poll } from './poll';
 export { default as Section } from './Section.svelte';
 export { default as SectionList } from './SectionList.svelte';
 export { default as Select } from './Select.svelte';

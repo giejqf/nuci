@@ -15,6 +15,7 @@
 		TextField,
 		Toggle,
 		validators,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { rpc, uci } from '../../lib/services';
@@ -37,12 +38,7 @@
 				.leases()
 				.then((l) => (leases = l))
 				.catch(() => {});
-		void load();
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void load(),
-			10_000,
-		);
-		return () => clearInterval(timer);
+		return poll(load, 10_000);
 	});
 
 	const tabs = $derived([

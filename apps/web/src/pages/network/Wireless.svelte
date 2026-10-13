@@ -16,6 +16,7 @@
 		Toggle,
 		toasts,
 		validators,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { setZone, zoneOf, zones } from '../../lib/firewall';
@@ -95,12 +96,7 @@
 		uci.load('wireless', 'network', 'firewall').catch(
 			(e) => (error = isRpcError(e) ? t(e.messageKey) : String(e)),
 		);
-		void refresh();
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void refresh(),
-			5000,
-		);
-		return () => clearInterval(timer);
+		return poll(refresh, 5000);
 	});
 
 	function addIface(radio: string) {

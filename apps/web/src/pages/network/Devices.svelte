@@ -15,6 +15,7 @@
 		TextField,
 		Toggle,
 		validators,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { rpc, uci } from '../../lib/services';
@@ -76,12 +77,7 @@
 				.devices()
 				.then((d) => (status = d))
 				.catch((e) => (error = isRpcError(e) ? t(e.messageKey) : String(e)));
-		void load();
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void load(),
-			5000,
-		);
-		return () => clearInterval(timer);
+		return poll(load, 5000);
 	});
 </script>
 

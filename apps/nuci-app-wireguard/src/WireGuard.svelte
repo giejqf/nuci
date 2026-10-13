@@ -23,6 +23,7 @@
 		Toggle,
 		toasts,
 		validators,
+		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { endpoint, KEY_RE, networkOf, peerConfig } from './peer-config';
@@ -94,7 +95,6 @@
 
 	onMount(() => {
 		void host.uci.load('network', 'firewall');
-		void refresh();
 		void host
 			.call<Record<string, unknown>>('network', 'get_proto_handlers')
 			.then((h) => (handlerMissing = !('wireguard' in h)))
@@ -110,11 +110,7 @@
 						?.address ?? '';
 			})
 			.catch(() => {});
-		const timer = setInterval(
-			() => document.visibilityState === 'visible' && void refresh(),
-			5000,
-		);
-		return () => clearInterval(timer);
+		return poll(refresh, 5000);
 	});
 
 	function addToZone(zone: string, iface: string) {
