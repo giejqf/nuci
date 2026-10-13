@@ -154,3 +154,55 @@ describe('save', () => {
 		expect(model.get('system', '@system[0]', 'hostname')).toBe('OpenWrt');
 	});
 });
+
+describe('draft sections', () => {
+	it('are editable but not changes until confirmed', async () => {
+		const name = model.add(
+			'network',
+			'route',
+			undefined,
+			{ target: '10.0.0.0/8' },
+			{ draft: true },
+		);
+		model.set('network', name, 'interface', 'lan');
+		expect(model.get('network', name, 'interface')).toBe('lan');
+		expect(model.sections('network', 'route').map((s) => s['.name'])).toContain(name);
+		expect(model.changes()).toEqual([]);
+		expect(model.dirty).toBe(false);
+
+		model.confirmDraft('network', name);
+		expect(model.changes()).toEqual([
+			{
+				kind: 'add',
+				config: 'network',
+				section: name,
+				type: 'route',
+				values: { target: '10.0.0.0/8', interface: 'lan' },
+			},
+		]);
+	});
+
+	it('vanish without a trace when removed', () => {
+		const name = model.add('network', 'route', undefined, {}, { draft: true });
+		model.remove('network', name);
+		expect(model.getSection('network', name)).toBeUndefined();
+		expect(model.changes()).toEqual([]);
+	});
+
+	it('survive a save of other edits and are not sent', async () => {
+		const name = model.add(
+			'network',
+			'route',
+			undefined,
+			{ target: '10.0.0.0/8' },
+			{ draft: true },
+		);
+		model.set('network', 'lan', 'ipaddr', '192.168.2.1');
+		await model.save();
+		expect(rpcd.log.some(([m]) => m === 'add')).toBe(false);
+		expect(model.get('network', name, 'target')).toBe('10.0.0.0/8');
+		expect(model.changes()).toEqual([]);
+		model.confirmDraft('network', name);
+		expect(model.changes().map((c) => c.kind)).toEqual(['add']);
+	});
+});

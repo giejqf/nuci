@@ -6,12 +6,16 @@
 
 'use strict';
 
+import { lsdir, stat } from 'fs';
 import { context } from 'nuci.util';
 import { start, status } from 'nuci.job';
 
 const NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._+-]{0,99}$/;
 const QUERY_RE = /^[A-Za-z0-9._+-]{2,64}$/;
 const MAX_RESULTS = 200;
+// apk keeps downloaded repository indexes here; /var is tmpfs on OpenWrt, so
+// they are gone after every reboot until `apk update` runs again.
+const INDEX_DIR = '/var/cache/apk';
 
 function valid_name(n) {
 	return type(n) == 'string' && match(n, NAME_RE) != null;
@@ -95,6 +99,29 @@ function info(ctx, name) {
 	return p;
 }
 
+// Downloaded package lists: how many indexes, the newest one's mtime (apk
+// update rewrites them even when unchanged) and the router clock to compare.
+function lists(ctx) {
+	let now = ctx?.now; // context() keeps only the standard fields
+	ctx = context(ctx);
+
+	let count = 0, updated = null;
+
+	for (let f in lsdir(ctx.root + INDEX_DIR) ?? []) {
+		if (!match(f, /^APKINDEX\..+\.tar\.gz$/))
+			continue;
+
+		count++;
+
+		let m = stat(`${ctx.root}${INDEX_DIR}/${f}`)?.mtime;
+
+		if (m != null && (updated == null || m > updated))
+			updated = m;
+	}
+
+	return { count, updated, now: now ? now() : time() };
+}
+
 function update(ctx) {
 	return start(ctx, 'pkg', [ 'apk', 'update' ]);
 }
@@ -116,4 +143,4 @@ function job_status(ctx) {
 	return status(ctx, 'pkg');
 }
 
-export { valid_name, list_installed, list_available, search, info, update, change, job_status };
+export { valid_name, list_installed, list_available, search, info, lists, update, change, job_status };

@@ -37,3 +37,48 @@
 	--viz-axis: #444c57;
 	--viz-muted: #9a9a94;
 }
+
+/*
+ * Tables stack on phones (`nuci-stack`): every row becomes a block and every
+ * cell a line led by its column label (`data-label`), so nothing, row
+ * actions included, ends up off-screen in a sideways scroll.
+ */
+@media (max-width: 639.98px) {
+	table.nuci-stack,
+	table.nuci-stack tbody,
+	table.nuci-stack tr,
+	table.nuci-stack td {
+		display: block;
+		width: 100%;
+	}
+	table.nuci-stack thead {
+		display: none;
+	}
+	table.nuci-stack tr {
+		padding-block: 0.375rem;
+		border-bottom: 1px solid var(--color-base-300);
+	}
+	table.nuci-stack td {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 0.75rem;
+		padding: 0.125rem 0.5rem;
+		text-align: right;
+		overflow-wrap: anywhere;
+	}
+	table.nuci-stack td[data-label]::before {
+		content: attr(data-label);
+		flex: none;
+		max-width: 45%;
+		text-align: left;
+		font-weight: 600;
+		color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+	}
+	table.nuci-stack td:not([data-label]) {
+		justify-content: flex-end;
+	}
+	table.nuci-stack td[colspan] {
+		justify-content: center;
+	}
+}

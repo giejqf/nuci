@@ -2,7 +2,8 @@
 'use strict';
 
 import { test, eq, ok, here, done } from 'harness';
-import { list_installed, list_available, search, info, change, update, job_status } from 'nuci.pkg';
+import { list_installed, list_available, search, info, lists, change, update, job_status } from 'nuci.pkg';
+import { stat } from 'fs';
 import { status, start } from 'nuci.job';
 import { backup_status, backup_restore, backup_create } from 'nuci.system';
 
@@ -48,6 +49,15 @@ test('search validates the query and wraps it in a glob', () => {
 test('search ranks exact and name matches before description matches', () => {
 	let c = ctx({ 'apk query --format json --available --match name,description --fields name,version,description *tree*': '[{"name":"augeas","version":"1","description":"a tree"},{"name":"tree","version":"2"},{"name":"treeview","version":"3"}]' });
 	eq(map(search(c, 'tree').packages, p => p.name), [ 'tree', 'treeview', 'augeas' ]);
+});
+
+test('lists counts the cached repository indexes and reports the newest', () => {
+	let dir = here() + '/fixtures/pkglists';
+	let newest = max(stat(dir + '/var/cache/apk/APKINDEX.29e4f88d.tar.gz').mtime,
+		stat(dir + '/var/cache/apk/APKINDEX.4af1e21d.tar.gz').mtime);
+	eq(lists({ root: dir, now: () => 1700000000 }), { count: 2, updated: newest, now: 1700000000 });
+	// After a reboot /var/cache/apk is empty or missing: no lists.
+	eq(lists({ root: here() + '/fixtures/pkglists-none', now: () => 5 }), { count: 0, updated: null, now: 5 });
 });
 
 test('info prefers the installed package and flags it', () => {

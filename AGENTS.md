@@ -166,7 +166,7 @@ when the client disconnects, so it never pins a worker.
 | `nuci.status` | `realtime` (load, mem, per-iface rx/tx counters, conntrack count), `processes`, `kernel_log` (`after` cursor), `conntrack`, `conntrack_summary`, `signal` | `/proc`, `dmesg`, `/proc/net/nf_conntrack`, `kill` |
 | `nuci.system` | `timezones`, `localtime`, `set_localtime`, `leds`, `block_devices`, `mount_points`, `usb_devices`, `backup_create`, `backup_status`, `backup_restore`, `setup_status` | bundled zone table (`tools/gen-zoneinfo.mjs`; 25.12 has no `/usr/share/zoneinfo`), `/sys`, `block info` when block-mount is installed, `df` |
 | `nuci.dhcp` | `leases` (merged dnsmasq `/tmp/dhcp.leases` + odhcpd), `hosts` | files + ubus |
-| `nuci.pkg` | `list_installed`, `list_available`, `search`, `update`, `add`, `del`, `info`, `job_status` | `apk query --format json`; changes run as detached jobs (`run-job`) with a status dir |
+| `nuci.pkg` | `list_installed`, `list_available`, `search`, `lists`, `update`, `add`, `del`, `info`, `job_status` | `apk query --format json`; changes run as detached jobs (`run-job`) with a status dir |
 | `nuci.diag` | `ping`, `traceroute`, `nslookup` (bounded args), `status` (output, polled) | busybox tools as a detached job |
 | `nuci.wifi` | `status` (netifd radio status), `assoc_list_enriched` (iwinfo + hostnames), `scan` wrapper (AP-only radios: `iw … scan ap-force`; idle radios: temporary managed interface) | `iwinfo` via deferred calls, `iw`, `nuci.dhcp` |
 | `nuci.apps` | `list` (installed nuci-app manifests) | `/usr/share/nuci/apps/*.json` |
@@ -729,6 +729,11 @@ next phase's pages before the previous phase's exit criteria are met.
   missing or stale).
 - **Exit:** e2e covers each fix (mobile viewport for the Wireless table);
   the affected screenshots in `docs/design/screenshots/` are refreshed.
+- **Status:** done 2026-10-13. Draft sections in `@nuci/uci` (`add(…,
+  { draft: true })` + `confirmDraft`, `@nuci/app-sdk` 0.3.0) back every add
+  dialog; `<Form>.reveal()` shows all errors on *Done*; tables stack on
+  phones (`nuci-stack` in `@nuci/ui` styles); `nuci.pkg lists` reports the
+  cached indexes (tmpfs, empty after every boot). e2e: `ux.spec.ts`.
 
 ### Phase 16 — Attended sysupgrade (0.4)
 - ADR-0007: the router, not the browser, talks to the build service

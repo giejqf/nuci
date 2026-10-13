@@ -9,9 +9,23 @@ const KEY = Symbol('nuci-form');
 
 export class FormState {
 	errors = $state<Record<string, string>>({});
+	/** Show every field's error, touched or not (after a failed submit). */
+	revealed = $state(false);
 
 	get valid(): boolean {
 		return Object.keys(this.errors).length === 0;
+	}
+
+	/**
+	 * For a confirm button outside the form: reveal all errors and focus the
+	 * first invalid field. Returns whether the form is valid.
+	 */
+	reveal(): boolean {
+		if (this.valid) return true;
+		this.revealed = true;
+		const first = Object.keys(this.errors)[0];
+		if (first && typeof document !== 'undefined') document.getElementById(first)?.focus();
+		return false;
 	}
 
 	/** Called from field effects: must not make them depend on `errors`. */

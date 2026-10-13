@@ -38,6 +38,8 @@
 	let joinNet = $state('wwan');
 	let joinZone = $state('wan');
 	let valid = $state(true);
+	let radioForm = $state<{ reveal(): boolean }>();
+	let ifaceForm = $state<{ reveal(): boolean }>();
 
 	const writable = $derived(session.canWriteUci('wireless'));
 	const radios = $derived(uci.sections('wireless', 'wifi-device'));
@@ -100,20 +102,29 @@
 	});
 
 	function addIface(radio: string) {
-		const name = uci.add('wireless', 'wifi-iface', undefined, {
-			device: radio,
-			mode: 'ap',
-			ssid: 'OpenWrt',
-			network: 'lan',
-			encryption: 'psk2',
-		});
+		const name = uci.add(
+			'wireless',
+			'wifi-iface',
+			undefined,
+			{ device: radio, mode: 'ap', ssid: 'OpenWrt', network: 'lan', encryption: 'psk2' },
+			{ draft: true },
+		);
 		ifaceEdit = { name, isNew: true };
 	}
 
 	function closeIface(cancel: boolean) {
-		if (cancel && ifaceEdit?.isNew) uci.remove('wireless', ifaceEdit.name);
+		if (!cancel && ifaceForm && !ifaceForm.reveal()) return;
+		if (ifaceEdit?.isNew) {
+			if (cancel) uci.remove('wireless', ifaceEdit.name);
+			else uci.confirmDraft('wireless', ifaceEdit.name);
+		}
 		ifaceEdit = null;
 	}
+
+	// Leaving the page with the add dialog open discards the draft.
+	$effect(() => () => {
+		if (ifaceEdit?.isNew) uci.remove('wireless', ifaceEdit.name);
+	});
 
 	async function scan(radio: string) {
 		scanRadio = radio;
@@ -224,7 +235,7 @@
 					>{/if}
 			</div>
 			<div class="overflow-x-auto">
-				<table class="table-sm table" data-testid="radio-{radio}-ifaces">
+				<table class="table-sm nuci-stack table" data-testid="radio-{radio}-ifaces">
 					<thead
 						><tr
 							><th>{t('wireless.ssid')}</th><th>{t('wireless.mode')}</th><th
@@ -237,15 +248,20 @@
 						{#each ifacesOf(radio) as i (i['.name'])}
 							{@const up = ifaceUp(radio, i['.name'])}
 							<tr>
-								<td class="font-medium">{i.ssid}</td>
-								<td>{t(`wireless.modes.${i.mode ?? 'ap'}`)}</td>
-								<td
+								<td class="font-medium" data-label={t('wireless.ssid')}>{i.ssid}</td
+								>
+								<td data-label={t('wireless.mode')}
+									>{t(`wireless.modes.${i.mode ?? 'ap'}`)}</td
+								>
+								<td data-label={t('network.network')}
 									>{Array.isArray(i.network)
 										? i.network.join(' ')
 										: (i.network ?? '—')}</td
 								>
-								<td>{t(`wireless.enc.${i.encryption ?? 'none'}`)}</td>
-								<td>
+								<td data-label={t('wireless.encryption')}
+									>{t(`wireless.enc.${i.encryption ?? 'none'}`)}</td
+								>
+								<td data-label={t('overview.col.status')}>
 									{#if i.disabled === '1'}<span class="badge badge-ghost badge-sm"
 											>{t('wireless.disabled')}</span
 										>
@@ -342,7 +358,7 @@
 >
 	{#if radioEdit}
 		{@const band = String(uci.get('wireless', radioEdit, 'band') ?? '2g')}
-		<Form bind:valid>
+		<Form bind:valid bind:this={radioForm}>
 			<Select
 				label={t('wireless.band')}
 				uci="wireless.{radioEdit}.band"
@@ -386,8 +402,9 @@
 		<button
 			type="button"
 			class="btn btn-primary"
-			disabled={!valid}
-			onclick={() => (radioEdit = null)}>{t('ui.done')}</button
+			onclick={() => {
+				if (!radioForm || radioForm.reveal()) radioEdit = null;
+			}}>{t('ui.done')}</button
 		>
 	{/snippet}
 </Modal>
@@ -401,7 +418,7 @@
 	{#if ifaceEdit}
 		{@const s = ifaceEdit.name}
 		{@const enc = uci.get('wireless', s, 'encryption')}
-		<Form bind:valid>
+		<Form bind:valid bind:this={ifaceForm}>
 			<Select
 				label={t('wireless.mode')}
 				uci="wireless.{s}.mode"
@@ -458,7 +475,6 @@
 		<button
 			type="button"
 			class="btn btn-primary"
-			disabled={!valid}
 			onclick={() => closeIface(false)}
 			data-testid="iface-editor-done">{t('ui.done')}</button
 		>

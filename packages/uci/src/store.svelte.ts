@@ -59,8 +59,18 @@ export class UciStore implements UciView {
 		this.model.set(config, section, option, value);
 	}
 
-	add(config: string, type: string, name?: string, values?: Record<string, UciValue>): string {
-		return this.model.add(config, type, name, values);
+	add(
+		config: string,
+		type: string,
+		name?: string,
+		values?: Record<string, UciValue>,
+		opts?: { draft?: boolean },
+	): string {
+		return this.model.add(config, type, name, values, opts);
+	}
+
+	confirmDraft(config: string, section: string): void {
+		this.model.confirmDraft(config, section);
 	}
 
 	remove(config: string, section: string): void {

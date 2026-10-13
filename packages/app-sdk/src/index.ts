@@ -9,7 +9,7 @@
 // Pages mount into a host-provided element, so an app may bundle any UI
 // runtime without touching the host's.
 
-export const SDK_VERSION = '0.2.0';
+export const SDK_VERSION = '0.3.0';
 
 export type MenuGroup = 'status' | 'system' | 'network' | 'firewall' | 'services';
 
@@ -55,8 +55,20 @@ export interface HostUci {
 	/** Resolve "config.section" incl. "@type[n]" selectors. */
 	resolve(ref: string): { config: string; section: string; option?: string } | undefined;
 	set(config: string, section: string, option: string, value: UciValue | null | undefined): void;
-	/** Stage a new section; returns its (temporary) name. */
-	add(config: string, type: string, name?: string, values?: Record<string, UciValue>): string;
+	/**
+	 * Stage a new section; returns its (temporary) name. With `draft` (since
+	 * 0.3.0) the section can be edited but is not a change until
+	 * confirmDraft(); remove() discards it. Older hosts ignore the flag.
+	 */
+	add(
+		config: string,
+		type: string,
+		name?: string,
+		values?: Record<string, UciValue>,
+		opts?: { draft?: boolean },
+	): string;
+	/** Turn a draft section into a staged change (since 0.3.0; absent before). */
+	confirmDraft?(config: string, section: string): void;
 	remove(config: string, section: string): void;
 	order(config: string, sections: string[]): void;
 	/** Whether the session may write this config. */

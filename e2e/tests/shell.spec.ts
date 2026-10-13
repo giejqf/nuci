@@ -36,7 +36,8 @@ test('overview shows live data from the router', async ({ page }) => {
 		timeout: slow(20_000),
 	});
 	await expect(page.getByTestId('overview-memory')).toContainText('MiB');
-	await expect(page.getByTestId('overview-wireless')).toContainText('No wireless devices.');
+	// The lab's radios exist with their networks disabled (Phase 15: listed, not "no devices").
+	await expect(page.getByTestId('overview-wireless')).toContainText('radio0');
 	await expect(page.getByTestId('overview-leases')).toBeVisible();
 });
 
@@ -68,7 +69,7 @@ test('an installed nuci-app registers a page through @nuci/app-sdk', async ({ pa
 	await link.click();
 	await expect(page).toHaveURL(/#\/services\/hello$/);
 	await expect(page.getByTestId('hello-greeting')).toHaveText(/^Hello from \S+/);
-	await expect(page.getByTestId('hello-sdk')).toHaveText('sdk 0.2.0');
+	await expect(page.getByTestId('hello-sdk')).toHaveText('sdk 0.3.0');
 });
 
 test('a nuci-app edits uci through the host: change review and apply with rollback', async ({

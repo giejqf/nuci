@@ -22,6 +22,7 @@ import type {
 	MountPoint,
 	NuciUser,
 	PackageInfo,
+	PackageLists,
 	PackagePage,
 	ProcessList,
 	RealtimeStats,
@@ -363,6 +364,7 @@ export function createApi(client: RpcClient) {
 					(await call<{ packages: PackageInfo[] }>('nuci.pkg', 'search', { query }))
 						.packages,
 				info: (name: string) => call<PackageInfo>('nuci.pkg', 'info', { name }),
+				lists: () => call<PackageLists>('nuci.pkg', 'lists'),
 				update: () => call<JobStatus>('nuci.pkg', 'update'),
 				add: (packages: string[], upgrade = false) =>
 					call<JobStatus>(

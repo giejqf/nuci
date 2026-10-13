@@ -5,7 +5,7 @@
 'use strict';
 
 import { methods } from 'nuci.rpc';
-import { list_installed, list_available, search, info, update, change, job_status } from 'nuci.pkg';
+import { list_installed, list_available, search, info, lists, update, change, job_status } from 'nuci.pkg';
 
 return {
 	'nuci.pkg': methods({
@@ -16,6 +16,7 @@ return {
 		},
 		search: { args: { query: 'query' }, call: (args) => search(null, args.query) },
 		info: { args: { name: 'name' }, call: (args) => info(null, args.name) },
+		lists: { call: () => lists() },
 		update: { call: () => update() },
 		add: {
 			args: { packages: [], upgrade: true },

@@ -8,8 +8,18 @@
 		type InstalledPackages,
 		type JobStatus,
 		type PackageInfo,
+		type PackageLists,
 	} from '@nuci/rpc';
-	import { DataTable, formatBytes, Modal, Page, Section, Tabs, toasts } from '@nuci/ui';
+	import {
+		DataTable,
+		formatBytes,
+		formatDuration,
+		Modal,
+		Page,
+		Section,
+		Tabs,
+		toasts,
+	} from '@nuci/ui';
 	import { onMount } from 'svelte';
 	import { rpc } from '../../lib/services';
 	import { session } from '../../lib/session.svelte';
@@ -24,10 +34,33 @@
 	let confirm = $state<{ action: 'add' | 'del' | 'upgrade'; packages: string[] } | null>(null);
 	let confirmOpen = $state(false);
 	let error = $state('');
+	let lists = $state<PackageLists | null>(null);
 
 	const canWrite = $derived(session.acl.canCall('nuci.pkg', 'add'));
 	const installedNames = $derived(new Set(installed.packages.map((p) => p.name)));
 	const busy = $derived(job?.running ?? false);
+	// Lists live in tmpfs: gone after every reboot until `apk update` runs.
+	const STALE_AFTER = 86_400;
+	const listsAge = $derived(lists?.updated != null ? lists.now - lists.updated : null);
+	const listsState = $derived(
+		!lists
+			? 'unknown'
+			: lists.count === 0
+				? 'missing'
+				: (listsAge ?? 0) > STALE_AFTER
+					? 'stale'
+					: 'ok',
+	);
+
+	async function loadLists() {
+		try {
+			lists = await rpc.nuci.pkg.lists();
+		} catch {
+			lists = null; // older rpcd-mod-nuci: no hint, search as before
+		}
+	}
+
+	const updateLists = () => runJob(() => rpc.nuci.pkg.update(), t('software.lists_updated'));
 
 	async function loadInstalled() {
 		try {
@@ -55,6 +88,7 @@
 			if (job.rc === 0) toasts.success(done);
 			else toasts.error(t('software.job_failed', { rc: job.rc ?? '?' }));
 			await loadInstalled();
+			await loadLists();
 			if (results && query) await search();
 		} catch (e) {
 			toasts.error(isRpcError(e) ? t(e.messageKey) : String(e));
@@ -66,6 +100,16 @@
 		if (query.trim().length < 2) return;
 		searching = true;
 		try {
+			// Nothing to search without lists: download them first.
+			if (listsState === 'missing' && canWrite && !busy) {
+				job = await rpc.nuci.pkg.update();
+				await pollJob();
+				await loadLists();
+				if (job.rc !== 0) {
+					toasts.error(t('software.job_failed', { rc: job.rc ?? '?' }));
+					return;
+				}
+			}
 			results = await rpc.nuci.pkg.search(query.trim());
 		} catch (err) {
 			toasts.error(isRpcError(err) ? t(err.messageKey) : String(err));
@@ -98,6 +142,7 @@
 
 	onMount(() => {
 		void loadInstalled();
+		void loadLists();
 		void pollJob().catch(() => {});
 	});
 
@@ -118,7 +163,7 @@
 				type="button"
 				class="btn btn-sm"
 				disabled={busy}
-				onclick={() => runJob(() => rpc.nuci.pkg.update(), t('software.lists_updated'))}
+				onclick={updateLists}
 				data-testid="pkg-update"
 			>
 				<RefreshCw size={16} aria-hidden="true" />{t('software.update_lists')}
@@ -151,6 +196,20 @@
 	{/if}
 
 	{#if error}<div role="alert" class="alert alert-error">{error}</div>{/if}
+	{#if listsState === 'missing' || listsState === 'stale'}
+		<div role="status" class="alert alert-info" data-testid="pkg-lists-{listsState}">
+			<span
+				>{listsState === 'missing'
+					? t(canWrite ? 'software.lists_missing' : 'software.lists_missing_ro')
+					: t('software.lists_stale', { age: formatDuration(listsAge) })}</span
+			>
+			{#if canWrite}
+				<button type="button" class="btn btn-sm" disabled={busy} onclick={updateLists}
+					><RefreshCw size={16} aria-hidden="true" />{t('software.update_lists')}</button
+				>
+			{/if}
+		</div>
+	{/if}
 
 	<Tabs {tabs} bind:active={tab}>
 		{#snippet children(active)}

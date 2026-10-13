@@ -20,6 +20,10 @@
 	]}
 >
 	{#snippet editor(name)}
-		<TextField label="Name" uci="dhcp.{name}.name" />
+		<TextField
+			label="Name"
+			uci="dhcp.{name}.name"
+			validate={(v) => (v === '' ? 'ui.required' : null)}
+		/>
 	{/snippet}
 </SectionList>

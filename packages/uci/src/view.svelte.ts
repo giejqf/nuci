@@ -21,7 +21,19 @@ export interface UciView {
 	sections(config: string, type?: string): Section[];
 	resolve(ref: string): ResolvedRef | undefined;
 	set(config: string, section: string, option: string, value: UciValue | null | undefined): void;
-	add(config: string, type: string, name?: string, values?: Record<string, UciValue>): string;
+	/**
+	 * `draft`: the section is editable but not a change until confirmDraft()
+	 * (an "add" dialog); remove() discards it. Hosts without drafts stage it
+	 * right away.
+	 */
+	add(
+		config: string,
+		type: string,
+		name?: string,
+		values?: Record<string, UciValue>,
+		opts?: { draft?: boolean },
+	): string;
+	confirmDraft?(config: string, section: string): void;
 	remove(config: string, section: string): void;
 	order(config: string, sections: string[]): void;
 	/** True while an apply is in progress (fields lock). */
@@ -85,8 +97,18 @@ export class HostUciStore implements UciView {
 	set(config: string, section: string, option: string, value: UciValue | null | undefined): void {
 		this.host.set(config, section, option, value);
 	}
-	add(config: string, type: string, name?: string, values?: Record<string, UciValue>): string {
-		return this.host.add(config, type, name, values);
+	add(
+		config: string,
+		type: string,
+		name?: string,
+		values?: Record<string, UciValue>,
+		opts?: { draft?: boolean },
+	): string {
+		return this.host.add(config, type, name, values, opts);
+	}
+	confirmDraft(config: string, section: string): void {
+		// Hosts before app-sdk 0.3 have no drafts: their add() staged already.
+		this.host.confirmDraft?.(config, section);
 	}
 	remove(config: string, section: string): void {
 		this.host.remove(config, section);

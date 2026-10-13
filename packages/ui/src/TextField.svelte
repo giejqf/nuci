@@ -41,6 +41,8 @@
 	let touched = $state(false);
 
 	const current = $derived(binding && uci ? asString(binding.value) : value);
+	// Errors show once the field was used, has a value, or the form asked.
+	const shown = $derived(touched || current !== '' || !!form?.revealed);
 	const error = $derived(validate ? validate(current) : null);
 	const locked = $derived(
 		readonly || (binding && uci ? !binding.writable || !binding.ready : false),
@@ -59,11 +61,11 @@
 	}
 </script>
 
-<Field {id} {label} {description} error={touched || current !== '' ? error : null}>
+<Field {id} {label} {description} error={shown ? error : null}>
 	<input
 		{id}
 		class="input w-full"
-		class:input-error={!!error && (touched || current !== '')}
+		class:input-error={!!error && shown}
 		{type}
 		{placeholder}
 		{autocomplete}

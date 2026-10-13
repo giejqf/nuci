@@ -93,7 +93,7 @@
 		/>
 	{/if}
 	<div class="overflow-x-auto">
-		<table class="table-zebra table-sm table">
+		<table class="table-zebra table-sm nuci-stack table">
 			{#if caption}<caption class="sr-only">{caption}</caption>{/if}
 			<thead>
 				<tr>
@@ -140,6 +140,7 @@
 								class="{c.align === 'right'
 									? 'text-right tabular-nums'
 									: ''} {c.class ?? ''}"
+								data-label={c.label || undefined}
 							>
 								{#if cell}{@render cell(row, c)}{:else}{valueOf(row, c)}{/if}
 							</td>

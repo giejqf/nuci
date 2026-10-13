@@ -173,6 +173,7 @@ The host rejects paths outside the group and duplicate paths.
 | `sdkVersion` | The host's SDK version |
 | `uci` (0.2) | The host's staging model: `load`, `isLoaded`, `get`, `getBase`, `getSection`, `sections`, `resolve`, `set`, `add`, `remove`, `order`, `canWrite`, `busy`, `subscribe` |
 | `notify(kind, message)` (0.2) | Toast in the host's toaster |
+| `uci.add(…, { draft: true })`, `uci.confirmDraft` (0.3) | A new section for an "add" dialog: editable, but not a change until `confirmDraft(config, section)`; `remove` discards it. `@nuci/ui`'s `SectionList` uses it; older hosts ignore the flag and stage at once |
 | `locale` (0.2) | Active UI language, e.g. `en` |
 
 Apps must never call `uci.commit`, `uci.apply` or `uci.set` through `call()`.
@@ -267,5 +268,6 @@ integer (apk version rules).
 `@nuci/app-sdk` follows semver from 0.1: new optional fields and HostContext
 members are minor releases; removals or behavior changes are major releases.
 Check `host.sdkVersion` if you depend on newer members: 0.2.0 added `uci`,
-`notify` and `locale`. An app that needs them should declare a dependency
+`notify` and `locale`; 0.3.0 added draft sections (`uci.add` option `draft`,
+`uci.confirmDraft`). An app that needs them should declare a dependency
 on `nuci-base (>= 0.2.0)` in its package.

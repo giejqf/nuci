@@ -158,7 +158,9 @@ add your own. Several are cross-cutting and listed once in 4.0.
    - During apply, progress is a small spinner, a one-line text and a
      narrow progress bar; there is no explanation of the safety timer or
      of what the user should do (normally: nothing, wait).
-3. **Add dialogs create the entry immediately.** Opening *Add port
+3. *(Fixed in 0.4: the entry is staged only on* Done*, and* Done *on an
+   incomplete form marks what is missing; screenshot 53 is updated.)*
+   **Add dialogs create the entry immediately.** Opening *Add port
    forward* already stages an empty rule (the counter jumps to 1 behind the
    open dialog, 53); *Cancel* removes it again. Confusing, and the validation
    state (disabled *Done*) gives no hint about what is missing.
@@ -169,7 +171,10 @@ add your own. Several are cross-cutting and listed once in 4.0.
 5. **List fields** (several addresses, DNS servers, NTP servers, 31, 20)
    use a pattern of filled rows with ✕ and a last empty row with a ＋ button;
    typing in the last row without pressing ＋ is easy to get wrong.
-6. **Tables do not adapt to phones.** Columns are cut off and scroll
+6. *(Partly fixed in 0.4: on phones, table rows stack as label/value lines,
+   so actions stay on screen; 81–87 are updated. Paging, grouping and a
+   phone-first table design are still open.)*
+   **Tables do not adapt to phones.** Columns are cut off and scroll
    sideways; row actions (edit, delete) end up off-screen (85, 86); the
    "No entries" text is off-centre inside a scrolled table.
 7. **Long lists without paging or grouping.** Processes (~75 rows on a bare router, 13),
@@ -193,7 +198,7 @@ add your own. Several are cross-cutting and listed once in 4.0.
 
 | Page | Purpose and main tasks | Data shown | Actions | Observed problems |
 |---|---|---|---|---|
-| **Overview** (10, 81, 90, 96) | Landing page after login. "Is everything OK?" | System facts (hostname, model, firmware, kernel, local time, uptime, load); resources (CPU, memory, storage, connections) as bars; wireless networks; interfaces table (status, addresses, traffic, uptime); DHCP leases. Live, updates every ~2 s. | Refresh | No single answer to "am I online?"; a home user cannot tell if the internet works. Facts are dense key/value lists of equal weight. The Wireless card says "No wireless devices" although the router has two radios (their networks are disabled), which is misleading. Interfaces table duplicates the Interfaces page. No entry points to common tasks. |
+| **Overview** (10, 81, 90, 96) | Landing page after login. "Is everything OK?" | System facts (hostname, model, firmware, kernel, local time, uptime, load); resources (CPU, memory, storage, connections) as bars; wireless networks; interfaces table (status, addresses, traffic, uptime); DHCP leases. Live, updates every ~2 s. | Refresh | No single answer to "am I online?"; a home user cannot tell if the internet works. Facts are dense key/value lists of equal weight. The Wireless card said "No wireless devices" although the router has two radios with disabled networks (fixed in 0.4: such radios are listed as "No network enabled"). Interfaces table duplicates the Interfaces page. No entry points to common tasks. |
 | **System log** (11) | Troubleshooting. | Live log lines: time, level, source, message. | Filter text, minimum level, follow (auto-scroll), download | Monospace wall of text; long lines wrap awkwardly; level badges dominate. |
 | **Kernel log** (12) | Troubleshooting (hardware/driver messages). | Same as system log. | Same | Same. |
 | **Processes** (13, 13b, 87) | Find and stop a misbehaving program. | 70–150 processes: PID, user, state, CPU, memory, command. | Filter, sort, send signal (HUP / TERM / KILL) with confirmation | Three cryptic signal buttons per row; kernel threads clutter the list; very long on mobile. |
@@ -206,7 +211,7 @@ add your own. Several are cross-cutting and listed once in 4.0.
 | **General** (20, 70) | Name the router, set time zone and time sync, logging. | Hostname, description, clock, time zone, NTP on/off and servers, log buffer size, remote log server/port, console and cron log level. | Edit, sync clock with browser | Basic (hostname, time zone) and expert (log levels) options have equal weight. |
 | **Administration** (21) | Change the router password, SSH access, SSH keys, web server options. | Forms. | Set password (immediate), edit SSH settings (staged), save keys (immediate), regenerate HTTPS certificate | Mixed save semantics on one page: some cards act immediately, others go through the apply bar; users cannot tell which. |
 | **Users** (22, 23) | Give someone a limited login. | Users with role. Root is shown as "built-in administrator". | Add user (name, password, role or custom permissions), change permissions, change password, delete | The custom role shows two grids of raw permission group ids ("May view", "May change"); roles are only explained in small help text. |
-| **Software** (24, 25) | Install, remove and update packages (including NuCI apps). | Installed (236), Available (search), Updates. | Update lists, search, install, remove, upgrade all; long-running job output | Installed tab is an unpaged list of 236 rows with a delete icon on each, including essential packages. Search shows "No packages found" until lists are updated (25), and the hint is easy to miss. Apps are not distinguished from system packages. |
+| **Software** (24, 25) | Install, remove and update packages (including NuCI apps). | Installed (236), Available (search), Updates. | Update lists, search, install, remove, upgrade all; long-running job output | Installed tab is an unpaged list of 236 rows with a delete icon on each, including essential packages. Search showed "No packages found" until lists were updated (fixed in 0.4: the page says when lists are missing or stale, and searching downloads them first). Apps are not distinguished from system packages. |
 | **Startup** (26) | Enable/disable services at boot, start/stop them; edit a startup script. | ~25–40 services: order, name, at boot, status. | Disable/Enable, Start, Restart, Stop per row; edit `rc.local` script | Four small text buttons per row; very dense; the script editor is at the bottom of a long page. |
 | **Backup / Flash firmware** (27) | Download a configuration backup; restore one; upgrade the router's firmware. | Three cards. | Generate and download backup; choose file and restore (router reboots); choose firmware, upload and verify, then flash with "keep settings" and (dangerous) "force" options | Native file inputs; the firmware flow has several states (upload progress, verified/invalid, options, confirmation, waiting for reboot) that are not visible up front; high-risk actions look like ordinary buttons. |
 | **Reboot** (28) | Restart the router. | — | Reboot now (with confirmation), then waiting/back states | A full page for a single button; could be an action elsewhere. Waiting state needs to be reassuring. |

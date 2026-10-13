@@ -17,6 +17,7 @@
 		"info": {
 			"name": "String"
 		},
+		"lists": {},
 		"update": {},
 		"add": {
 			"packages": "Array",
@@ -1570,6 +1571,26 @@
 				"log": "(1/1) Purging tree (2.2.1-r2)\n  Executing tree-2.2.1-r2.pre-deinstall\nOK: 23.9 MiB in 223 packages\n",
 				"finished": 1791800677,
 				"rc": 0
+			}
+		},
+		{
+			"method": "lists",
+			"args": {},
+			"status": 0,
+			"result": {
+				"count": 8,
+				"updated": 1791894966,
+				"now": 1791895011
+			}
+		},
+		{
+			"method": "lists",
+			"args": {},
+			"status": 0,
+			"result": {
+				"count": 0,
+				"updated": null,
+				"now": 1791895011
 			}
 		}
 	]

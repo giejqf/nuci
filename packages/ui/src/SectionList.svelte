@@ -53,15 +53,28 @@
 	let isNew = $state(false);
 	let open = $state(false);
 	let valid = $state(true);
+	let form = $state<{ reveal(): boolean }>();
 
 	const writable = $derived(ctx.canWrite?.(config) ?? true);
 	const rows = $derived(uci.sections(config, type).filter((s) => !filter || filter(s['.name'])));
 
+	// A new entry is a draft until Done: the dialog stages nothing before.
 	function add() {
-		editing = uci.add(config, type, undefined, defaults ?? {});
+		editing = uci.add(config, type, undefined, defaults ?? {}, { draft: true });
 		isNew = true;
 		open = true;
 	}
+
+	function done() {
+		if (form && !form.reveal()) return;
+		if (isNew && editing) uci.confirmDraft?.(config, editing);
+		close();
+	}
+
+	// Leaving the page with the dialog open discards the draft.
+	$effect(() => () => {
+		if (isNew && editing) uci.remove(config, editing);
+	});
 
 	function edit(name: string) {
 		editing = name;
@@ -88,7 +101,7 @@
 
 <div class="flex flex-col gap-2" data-testid={testid}>
 	<div class="overflow-x-auto">
-		<table class="table-sm table">
+		<table class="table-sm nuci-stack table">
 			<thead>
 				<tr>
 					{#each columns as c (c.option)}<th>{c.label}</th>{/each}
@@ -98,8 +111,9 @@
 			<tbody>
 				{#each rows as s (s['.name'])}
 					<tr data-section={s['.name']}>
-						{#each columns as c (c.option)}<td class="font-mono text-xs"
-								>{cell(c, s['.name'])}</td
+						{#each columns as c (c.option)}<td
+								class="font-mono text-xs"
+								data-label={c.label}>{cell(c, s['.name'])}</td
 							>{/each}
 						<td class="text-right whitespace-nowrap">
 							<button
@@ -162,7 +176,7 @@
 	testid={testid ? `${testid}-editor` : undefined}
 >
 	{#if editing}
-		<Form bind:valid>
+		<Form bind:valid bind:this={form}>
 			{@render editor(editing)}
 		</Form>
 	{/if}
@@ -173,8 +187,7 @@
 		<button
 			type="button"
 			class="btn btn-primary"
-			disabled={!valid}
-			onclick={close}
+			onclick={done}
 			data-testid={testid ? `${testid}-done` : undefined}>{t('ui.done')}</button
 		>
 	{/snippet}

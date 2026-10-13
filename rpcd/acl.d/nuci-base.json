@@ -308,6 +308,7 @@
 					"list_available",
 					"search",
 					"info",
+					"lists",
 					"job_status"
 				]
 			}

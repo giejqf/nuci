@@ -6,6 +6,9 @@
 //            session's saved-but-unapplied delta)
 //   ops      local edits, replayed over base to give the staged view
 //   pending  the session's saved-but-unapplied changes (`uci changes`)
+//   drafts   sections added for an open "add" dialog: part of the view (so
+//            fields can edit them) but not of changes()/save() until
+//            confirmDraft(); remove() drops them without a trace
 //
 // save() turns the diff between view and base into uci add/set/delete/order
 // calls, then reloads base. Framework-free; see store.svelte.ts for runes.
@@ -91,6 +94,13 @@ function options(s: Section): Record<string, UciValue> {
 	return out;
 }
 
+const draftKey = (config: string, section: string) => `${config}\0${section}`;
+
+/** Whether an op edits `section` (adds, sets or removes it). */
+function opTouches(o: Op, config: string, section: string): boolean {
+	return o.config === config && 'section' in o && o.section === section;
+}
+
 function sorted(sections: Record<string, Section>): Section[] {
 	return Object.values(sections).sort((a, b) => (a['.index'] ?? 0) - (b['.index'] ?? 0));
 }
@@ -102,6 +112,7 @@ export class UciModel {
 	#ops: Op[] = [];
 	#views = new Map<string, Record<string, Section>>();
 	#pending: Record<string, [string, ...string[]][]> = {};
+	#drafts = new Set<string>();
 	#nextId = 0;
 	#listeners = new Set<() => void>();
 
@@ -249,12 +260,17 @@ export class UciModel {
 		this.#emit();
 	}
 
-	/** Stage a new section; returns its name (a `_newN` placeholder when anonymous). */
+	/**
+	 * Stage a new section; returns its name (a `_newN` placeholder when
+	 * anonymous). A `draft` section is editable but not a change until
+	 * confirmDraft().
+	 */
 	add(
 		config: string,
 		type: string,
 		name?: string,
 		values: Record<string, UciValue> = {},
+		opts: { draft?: boolean } = {},
 	): string {
 		if (!isValidType(type)) throw new Error(`invalid section type ${type}`);
 		if (name !== undefined && (!isValidName(name) || this.#view(config)[name]))
@@ -263,14 +279,28 @@ export class UciModel {
 		this.#ops.push({ op: 'add', config, section, type, anonymous: name === undefined });
 		for (const [option, value] of Object.entries(values))
 			this.#ops.push({ op: 'set', config, section, option, value });
+		if (opts.draft) this.#drafts.add(draftKey(config, section));
 		this.#emit();
 		return section;
+	}
+
+	isDraft(config: string, section: string): boolean {
+		return this.#drafts.has(draftKey(config, section));
+	}
+
+	/** Turn a draft section into a staged change. */
+	confirmDraft(config: string, section: string): void {
+		if (this.#drafts.delete(draftKey(config, section))) this.#emit();
 	}
 
 	remove(config: string, section: string): void {
 		const name = this.resolveSection(config, section);
 		if (!name) return;
-		this.#ops.push({ op: 'remove', config, section: name });
+		if (this.#drafts.delete(draftKey(config, name))) {
+			this.#ops = this.#ops.filter((o) => !opTouches(o, config, name));
+		} else {
+			this.#ops.push({ op: 'remove', config, section: name });
+		}
 		this.#emit();
 	}
 
@@ -289,6 +319,8 @@ export class UciModel {
 	/** Drop local edits (of one config, or all). */
 	revertLocal(config?: string): void {
 		this.#ops = config ? this.#ops.filter((o) => o.config !== config) : [];
+		for (const k of [...this.#drafts])
+			if (!config || k.startsWith(`${config}\0`)) this.#drafts.delete(k);
 		this.#emit();
 	}
 
@@ -337,7 +369,7 @@ export class UciModel {
 				}
 			}
 			for (const v of sorted(view)) {
-				if (!base[v['.name']])
+				if (!base[v['.name']] && !this.isDraft(c, v['.name']))
 					out.push({
 						kind: 'add',
 						config: c,
@@ -356,7 +388,9 @@ export class UciModel {
 				out.push({
 					kind: 'order',
 					config: c,
-					sections: sorted(view).map((s) => s['.name']),
+					sections: sorted(view)
+						.map((s) => s['.name'])
+						.filter((n) => !this.isDraft(c, n)),
 				});
 		}
 		return out;
@@ -396,7 +430,12 @@ export class UciModel {
 				),
 			),
 		);
-		this.#ops = this.#ops.filter((o) => !configs.includes(o.config));
+		// Drafts (an add dialog still open) survive a save untouched.
+		this.#ops = this.#ops.filter(
+			(o) =>
+				!configs.includes(o.config) ||
+				('section' in o && this.isDraft(o.config, o.section)),
+		);
 		await this.reload(configs);
 		await this.refreshPending();
 	}

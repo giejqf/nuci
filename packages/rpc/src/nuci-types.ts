@@ -205,6 +205,16 @@ export interface PackagePage {
 	packages: PackageInfo[];
 }
 
+/** Downloaded package lists (`nuci.pkg lists`); gone after every reboot. */
+export interface PackageLists {
+	/** Cached repository indexes; 0 means `apk update` has not run since boot. */
+	count: number;
+	/** Newest index mtime (epoch seconds), null without lists. */
+	updated: number | null;
+	/** Router clock, to compare with `updated`. */
+	now: number;
+}
+
 export interface JobStatus {
 	/** Job name, e.g. "pkg" or "backup". */
 	name: string;

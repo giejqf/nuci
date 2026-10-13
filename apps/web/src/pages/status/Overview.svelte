@@ -171,6 +171,16 @@
 			})),
 		),
 	);
+	// Radios without an active network still exist; say so instead of "no devices".
+	const idle = $derived(
+		Object.entries(radios)
+			.filter(([, r]) => !r.interfaces?.length)
+			.map(([radio, r]) => ({
+				radio,
+				band: String(r.config?.band ?? ''),
+				disabled: r.disabled,
+			})),
+	);
 
 	const pct = (used: number, total: number) => (total > 0 ? used / total : 0);
 </script>
@@ -288,7 +298,7 @@
 			<Section title={t('overview.wireless')} testid="overview-wireless">
 				{#if errors.wireless}
 					<p role="alert" class="text-error text-sm">{errors.wireless}</p>
-				{:else if !wifi.length}
+				{:else if !wifi.length && !idle.length}
 					<p class="text-base-content/60 text-sm">{t('overview.no_wireless')}</p>
 				{:else}
 					<ul class="flex flex-col gap-1 text-sm">
@@ -298,6 +308,25 @@
 								<span
 									class="badge badge-sm {w.up ? 'badge-success' : 'badge-ghost'}"
 									>{w.radio} · {w.mode}</span
+								>
+							</li>
+						{/each}
+						{#each idle as r (r.radio)}
+							<li
+								class="flex justify-between gap-2"
+								data-testid="overview-radio-idle"
+							>
+								<a class="link" href="#/network/wireless"
+									>{r.band
+										? `${r.radio} · ${t(`wireless.bands.${r.band}`)}`
+										: r.radio}</a
+								>
+								<span class="badge badge-sm badge-ghost"
+									>{t(
+										r.disabled
+											? 'overview.radio_disabled'
+											: 'overview.radio_no_networks',
+									)}</span
 								>
 							</li>
 						{/each}
