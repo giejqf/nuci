@@ -3,7 +3,7 @@
 
 import { test, eq, ok, done } from 'harness';
 import { run_stub, uci_stub, ubus_stub } from 'stubs';
-import { parse_ip_addr, normalize_addr, address_present, address_planned } from 'nuci.net';
+import { parse_ip_addr, normalize_addr, address_present, address_planned, listener_planned } from 'nuci.net';
 
 const IP = `1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever
 1: lo    inet6 ::1/128 scope host \\       valid_lft forever preferred_lft forever
@@ -50,6 +50,23 @@ test('address_planned leaves dynamic and unknown addresses to the live check', (
 	ok(address_planned(c, '10.0.2.15'), 'dhcp-assigned wan');
 	ok(address_planned(c, '203.0.113.1'), 'not a live address');
 	ok(address_planned(planned({ '.type': 'interface', proto: 'static', ipaddr: '192.168.1.1/24' }), 'fd00::1'), 'derived v6');
+});
+
+test('listener_planned: the committed uhttpd listeners still cover the connection', () => {
+	let main = (o) => ({ uci: uci_stub({ uhttpd: { main: { '.type': 'uhttpd', ...o } } }) });
+	let stock = main({ listen_http: [ '0.0.0.0:80', '[::]:80' ], listen_https: [ '0.0.0.0:443', '[::]:443' ] });
+
+	ok(listener_planned(stock, '192.168.1.1', '80', false));
+	ok(listener_planned(stock, 'fd00::1', '80', false));
+	ok(listener_planned(stock, '192.168.1.1', '443', true));
+	ok(!listener_planned(stock, '192.168.1.1', '8080', false), 'other port');
+	ok(!listener_planned(main({ listen_http: [ '[::]:80' ] }), '192.168.1.1', '80', false), 'v6 wildcard only');
+	ok(listener_planned(main({ listen_http: '192.168.1.1:80' }), '192.168.1.1', '80', false));
+	ok(!listener_planned(main({ listen_http: '10.0.0.1:80' }), '192.168.1.1', '80', false), 'other address');
+	ok(listener_planned(main({ listen_http: '80' }), '192.168.1.1', '80', false), 'port only');
+	ok(!listener_planned(main({ listen_http: '0.0.0.0:80', enabled: '0' }), '192.168.1.1', '80', false), 'disabled');
+	ok(!listener_planned(main({ listen_http: '0.0.0.0:80' }), '192.168.1.1', '443', true), 'https gone');
+	ok(listener_planned({ uci: uci_stub({}) }, '192.168.1.1', '80', false), 'no uhttpd config');
 });
 
 done();

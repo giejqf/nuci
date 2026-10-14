@@ -91,6 +91,14 @@ commits before services reload, so a change that removes the browser's
 address makes the probe fail immediately. The settle window stays as the
 safety margin for changes the probe cannot reason about (firewall, wireless).
 
+Amendment (0.5, `nuci-app-uhttpd`): uhttpd's own listeners are a change of the
+same kind. The probe also checks `listener_planned`: an enabled `uhttpd`
+section of the committed config still lists a listener (`listen_http`, or
+`listen_https` on a TLS connection) for the connection's local address and
+port, wildcards included. `uhttpd` joins the configs with the 10 s settle
+window. A listener change that cuts the browser off therefore fails the
+probe at once and is rolled back.
+
 ## Consequences
 
 - AGENTS.md §3.2/§3.3 describe this protocol.

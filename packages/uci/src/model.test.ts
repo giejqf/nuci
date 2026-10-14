@@ -29,6 +29,19 @@ describe('references', () => {
 			config: 'firewall',
 			section: '@zone[-1]',
 		});
+		// Config names and section types may contain '-', section and option names not.
+		expect(parseRef('https-dns-proxy.config.force_dns')).toEqual({
+			config: 'https-dns-proxy',
+			section: 'config',
+			option: 'force_dns',
+		});
+		expect(parseRef('wireless.@wifi-iface[0].ssid')).toEqual({
+			config: 'wireless',
+			section: '@wifi-iface[0]',
+			option: 'ssid',
+		});
+		expect(() => parseRef('network.lan-x.ipaddr')).toThrow();
+		expect(() => parseRef('network.lan.ip-addr')).toThrow();
 		expect(() => parseRef('network.lan.ip addr')).toThrow();
 		expect(() => parseRef('a')).toThrow();
 	});

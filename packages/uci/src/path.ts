@@ -11,9 +11,11 @@ export interface UciRef {
 }
 
 const NAME = '[A-Za-z0-9_]+';
-const SELECTOR = `@${NAME}\\[-?[0-9]+\\]`;
-const REF_RE = new RegExp(`^(${NAME})\\.(${NAME}|${SELECTOR})(?:\\.(${NAME}))?$`);
-const SELECTOR_RE = /^@([A-Za-z0-9_]+)\[(-?[0-9]+)\]$/;
+// Config names and section types may contain '-' (https-dns-proxy, wifi-iface).
+const CONFIG = '[A-Za-z0-9_-]+';
+const SELECTOR = `@[A-Za-z0-9_-]+\\[-?[0-9]+\\]`;
+const REF_RE = new RegExp(`^(${CONFIG})\\.(${NAME}|${SELECTOR})(?:\\.(${NAME}))?$`);
+const SELECTOR_RE = /^@([A-Za-z0-9_-]+)\[(-?[0-9]+)\]$/;
 
 export function parseRef(ref: string): UciRef {
 	const m = REF_RE.exec(ref);

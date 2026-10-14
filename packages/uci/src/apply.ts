@@ -29,7 +29,7 @@ export interface ApplyOptions {
 	/**
 	 * How long the probe must keep succeeding before we confirm. Any failure
 	 * restarts the window. Default: 10 s when network/wireless/firewall/dhcp
-	 * changed (their reload can take seconds to start), else 2 s.
+	 * or uhttpd changed (their reload can take seconds to start), else 2 s.
 	 */
 	settleMs?: number;
 	/** How long to wait for the router after a rollback (default 60 000 ms). */
@@ -48,8 +48,8 @@ export interface ApplyOptions {
 
 const NO_DATA = 5;
 
-/** Configs whose reload can cut connectivity. */
-export const NETWORK_CONFIGS = new Set(['network', 'wireless', 'firewall', 'dhcp']);
+/** Configs whose reload can cut connectivity (uhttpd: the listeners the UI is served on). */
+export const NETWORK_CONFIGS = new Set(['network', 'wireless', 'firewall', 'dhcp', 'uhttpd']);
 
 function ubusCode(e: unknown): number | undefined {
 	return e instanceof RpcError && e.kind === 'ubus' ? e.code : undefined;

@@ -16,6 +16,8 @@
 
 	interface Column {
 		option: string;
+		/** Unique key when two columns read the same option. */
+		key?: string;
 		label: string;
 		format?: (value: UciValue | undefined, section: string) => string;
 	}
@@ -25,6 +27,8 @@
 		type: string;
 		columns: Column[];
 		editor: Snippet<[string]>;
+		/** Extra buttons per row (before edit and delete). */
+		rowActions?: Snippet<[string]>;
 		/** Values for a new section (e.g. defaults). */
 		defaults?: Record<string, UciValue>;
 		addLabel?: string;
@@ -39,6 +43,7 @@
 		type,
 		columns,
 		editor,
+		rowActions,
 		defaults,
 		addLabel,
 		editTitle,
@@ -104,18 +109,19 @@
 		<table class="table-sm nuci-stack table">
 			<thead>
 				<tr>
-					{#each columns as c (c.option)}<th>{c.label}</th>{/each}
+					{#each columns as c (c.key ?? c.option)}<th>{c.label}</th>{/each}
 					<th class="text-right"><span class="sr-only">{t('ui.actions')}</span></th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each rows as s (s['.name'])}
 					<tr data-section={s['.name']}>
-						{#each columns as c (c.option)}<td
+						{#each columns as c (c.key ?? c.option)}<td
 								class="font-mono text-xs"
 								data-label={c.label}>{cell(c, s['.name'])}</td
 							>{/each}
 						<td class="text-right whitespace-nowrap">
+							{@render rowActions?.(s['.name'])}
 							<button
 								type="button"
 								class="btn btn-ghost btn-xs"

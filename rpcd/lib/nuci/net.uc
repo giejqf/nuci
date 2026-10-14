@@ -85,4 +85,40 @@ function address_planned(ctx, server_addr) {
 	return a in map(as_list(ctx.uci.get('network', sec, 'ipaddr')), strip_prefix);
 }
 
-export { parse_ip_addr, local_addresses, normalize_addr, address_present, address_planned };
+// Whether the committed uhttpd config still serves this connection (its
+// local address and port, HTTP or HTTPS). Like address_planned(): after
+// `uci apply` the config is already the new one while uhttpd restarts
+// later, and a kept-alive connection may outlive a listener that is gone.
+// Without a readable uhttpd config there is nothing to check.
+function listener_planned(ctx, server_addr, server_port, tls) {
+	ctx = context(ctx);
+
+	let a = normalize_addr(server_addr);
+	let v6 = index(a, ':') >= 0;
+	let seen = false;
+	let found = false;
+
+	ctx.uci?.foreach('uhttpd', 'uhttpd', s => {
+		seen = true;
+
+		if (s.enabled == '0')
+			return;
+
+		for (let l in as_list(tls ? s.listen_https : s.listen_http)) {
+			// "port", "addr:port" or "[v6addr]:port"
+			let m = match(l, /^(\[([0-9A-Fa-f:.]+)\]:|([0-9.]+):)?([0-9]{1,5})$/);
+
+			if (!m || m[4] != `${server_port}`)
+				continue;
+
+			let la = normalize_addr(m[2] ?? m[3]);
+
+			if (la == '' || la == a || (la == '0.0.0.0' && !v6) || (la == '::' && v6))
+				found = true;
+		}
+	});
+
+	return !seen || found;
+}
+
+export { parse_ip_addr, local_addresses, normalize_addr, address_present, address_planned, listener_planned };

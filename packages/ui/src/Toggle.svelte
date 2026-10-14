@@ -17,6 +17,7 @@
 		readonly?: boolean;
 		id?: string;
 		testid?: string;
+		onchange?: (checked: boolean) => void;
 	}
 	let {
 		label,
@@ -29,6 +30,7 @@
 		readonly = false,
 		id = uid('toggle'),
 		testid,
+		onchange,
 	}: Props = $props();
 
 	const binding = bindUci(() => uci);
@@ -51,6 +53,7 @@
 		} else {
 			checked = next;
 		}
+		onchange?.(next);
 	}
 </script>
 
