@@ -1,12 +1,15 @@
 {
 	"nuci-e2e": {
-		"description": "Test-only (e2e/run.sh installs it on the lab, never packaged): router setup and cleanup for specs, and the installed-package list owut sees (upgrade.spec)",
+		"description": "Test-only (e2e/run.sh installs it on the lab, never packaged): router setup and cleanup for specs (incl. the frp server the frpc spec connects to), and the installed-package list owut sees (upgrade.spec)",
 		"read": {
 			"ubus": {
 				"rpc-sys": [
 					"packagelist"
 				]
-			}
+			},
+			"uci": [
+				"frps"
+			]
 		},
 		"write": {
 			"ubus": {
@@ -29,8 +32,32 @@
 				],
 				"/etc/init.d/system": [
 					"exec"
+				],
+				"/usr/sbin/nft": [
+					"exec"
+				],
+				"/tmp/nuci-e2e-ca.pem": [
+					"write"
+				],
+				"/bin/chmod": [
+					"exec"
+				],
+				"/etc/init.d/frps": [
+					"exec"
+				],
+				"/bin/uclient-fetch": [
+					"exec"
+				],
+				"/bin/mkdir": [
+					"exec"
+				],
+				"/tmp/nuci-e2e-media/*": [
+					"write"
 				]
-			}
+			},
+			"uci": [
+				"frps"
+			]
 		}
 	}
 }

@@ -1,0 +1,13 @@
+{
+	"nuci-app-uhttpd": {
+		"description": "NuCI app: web server (uhttpd)",
+		"read": {
+			"ubus": { "nuci.uhttpd": ["status"] },
+			"uci": ["uhttpd"]
+		},
+		"write": {
+			"ubus": { "nuci.uhttpd": ["regenerate"] },
+			"uci": ["uhttpd"]
+		}
+	}
+}

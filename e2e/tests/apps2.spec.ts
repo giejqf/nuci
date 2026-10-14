@@ -5,6 +5,7 @@
 import { get as httpGet } from 'node:http';
 import { expect, test, type Page } from '@playwright/test';
 import { createRpc } from '../../packages/rpc/src/index.ts';
+import { lookup as dnsLookup } from '../lib/dns';
 import { rootPassword } from '../lib/router';
 import { slow } from '../lib/timing';
 import { login } from '../lib/ui';
@@ -91,14 +92,7 @@ test('nlbwmon: a transfer from the lab client shows up per client and protocol',
 });
 
 /** nslookup on the router (nuci.diag, answered by dnsmasq); the finished job's output. */
-async function lookup(host: string): Promise<string> {
-	const rpc = await api();
-	await rpc.nuci.diag.nslookup(host);
-	await expect
-		.poll(async () => (await rpc.nuci.diag.status()).running, { timeout: slow(60_000) })
-		.toBe(false);
-	return (await rpc.nuci.diag.status()).log ?? '';
-}
+const lookup = async (host: string) => dnsLookup(await api(), host);
 
 /** Download a file over a new connection each time (no keep-alive reuse). */
 function get(url: string): Promise<number> {

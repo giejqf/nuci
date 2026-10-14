@@ -1,0 +1,57 @@
+{
+	"object": "nuci.uhttpd",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"status": {},
+		"regenerate": {}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"running": true,
+				"instances": [
+					{
+						"name": "instance1",
+						"running": true,
+						"http": [
+							"0.0.0.0:80",
+							"[::]:80"
+						],
+						"https": [
+							"0.0.0.0:443",
+							"[::]:443"
+						]
+					}
+				],
+				"cert": {
+					"path": "/etc/uhttpd.crt",
+					"format": "der",
+					"serial": "7eae35923aa0dcf5",
+					"subject": "C=ZZ, ST=Somewhere, L=Unknown, O=OpenWrta285bfab, CN=OpenWrt",
+					"issuer": "C=ZZ, ST=Somewhere, L=Unknown, O=OpenWrta285bfab, CN=OpenWrt",
+					"self_signed": true,
+					"not_before": 1791940946,
+					"not_after": 1826241746,
+					"key": "EC P-256"
+				},
+				"generator": "px5g",
+				"job": {
+					"name": "uhttpd",
+					"running": false,
+					"command": "/bin/sh -c sleep 1; rm -f \"$1\" \"$2\"; exec \"$0\" restart /etc/init.d/uhttpd /etc/uhttpd.crt /etc/uhttpd.key",
+					"started": 1791940945,
+					"log": "4+0 records in\n4+0 records out\nGenerating EC private key\nGenerating selfsigned certificate with subject 'C=ZZ,ST=Somewhere,L=Unknown,O=OpenWrta285bfab,CN=OpenWrt,' and validity 20261014012226-20271115012226\n",
+					"finished": 1791940947,
+					"rc": 0
+				}
+			}
+		}
+	]
+}

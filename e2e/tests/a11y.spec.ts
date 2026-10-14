@@ -39,6 +39,11 @@ const ROUTES = [
 	'services/upnp',
 	'services/adblock',
 	'status/traffic',
+	'services/https-dns-proxy',
+	'services/wol',
+	'services/frpc',
+	'services/minidlna',
+	'system/uhttpd',
 ];
 
 for (const scheme of ['light', 'dark'] as const) {

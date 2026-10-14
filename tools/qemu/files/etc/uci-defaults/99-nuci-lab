@@ -1,6 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
-# Lab image (tools/imagebuilder/build.sh): adblock is installed for its app's
-# e2e but stays off, so a boot does not download blocklists from the internet.
+# Lab image (tools/imagebuilder/build.sh; provision.sh runs it too): the apps'
+# backends are installed for their e2e but stay off, so a boot neither
+# downloads blocklists nor sends DNS or tunnels to the internet. The specs
+# start what they test.
 uci -q set adblock.global.adb_enabled='0'
 uci -q commit adblock
+for s in https-dns-proxy frpc frps; do
+	[ -x "/etc/init.d/$s" ] || continue
+	"/etc/init.d/$s" disable
+	"/etc/init.d/$s" stop >/dev/null 2>&1
+done
 exit 0

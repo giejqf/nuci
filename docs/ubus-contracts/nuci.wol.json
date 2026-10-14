@@ -1,0 +1,50 @@
+{
+	"object": "nuci.wol",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"interfaces": {},
+		"wake": {
+			"mac": "String",
+			"interface": "String",
+			"broadcast": "Boolean",
+			"password": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "interfaces",
+			"args": {},
+			"status": 0,
+			"result": {
+				"program": "/usr/bin/etherwake",
+				"interfaces": [
+					{
+						"name": "br-lan",
+						"mac": "52:54:00:12:34:56",
+						"up": true,
+						"bridge": true,
+						"master": null
+					},
+					{
+						"name": "eth0",
+						"mac": "52:54:00:12:34:56",
+						"up": true,
+						"bridge": false,
+						"master": "br-lan"
+					},
+					{
+						"name": "eth1",
+						"mac": "52:54:00:12:34:57",
+						"up": true,
+						"bridge": false,
+						"master": null
+					}
+				]
+			}
+		}
+	]
+}

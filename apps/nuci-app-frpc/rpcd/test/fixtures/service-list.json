@@ -1,0 +1,21 @@
+{
+	"frpc": {
+		"instances": {
+			"instance1": {
+				"running": true,
+				"pid": 29371,
+				"command": [
+					"/usr/bin/frpc",
+					"-c",
+					"/var/etc/frpc.ini"
+				],
+				"term_timeout": 5,
+				"respawn": {
+					"threshold": 3600,
+					"timeout": 5,
+					"retry": 5
+				}
+			}
+		}
+	}
+}

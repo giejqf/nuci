@@ -1,0 +1,6 @@
+Wed Oct 14 00:56:04 2026 daemon.info frpc[29371]: [0m[1;34m2026-10-14 00:56:04.241 [I] [proxy/proxy_manager.go:180] [80a6e2ddeb0c9bb6] proxy added: [ssh]
+Wed Oct 14 00:56:04 2026 daemon.info frpc[29371]: [0m[1;34m2026-10-14 00:56:04.249 [I] [client/control.go:172] [80a6e2ddeb0c9bb6] [ssh] start proxy success
+Wed Oct 14 00:56:16 2026 daemon.info frpc[29371]: [0m[1;34m2026-10-14 00:56:16.604 [I] [client/admin_api.go:168] http request [/api/status]
+Wed Oct 14 00:56:16 2026 daemon.info frpc[29371]: [0m[1;34m2026-10-14 00:56:16.604 [I] [client/admin_api.go:170] http response [/api/status]
+Wed Oct 14 00:59:22 2026 daemon.info frpc[29371]: [0m[1;34m2026-10-14 00:59:22.204 [I] [client/admin_api.go:168] http request [/api/status]
+Wed Oct 14 00:59:22 2026 daemon.info frpc[29371]: [0m[1;34m2026-10-14 00:59:22.205 [I] [client/admin_api.go:170] http response [/api/status]

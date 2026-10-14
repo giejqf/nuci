@@ -1,0 +1,43 @@
+{
+	"object": "nuci.https-dns-proxy",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"status": {},
+		"service": {
+			"action": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"enabled": true,
+				"running": false,
+				"instances": [],
+				"force_dns": false,
+				"dnsmasq": [
+					{
+						"section": "cfg01411c",
+						"doh_servers": [],
+						"noresolv": false
+					}
+				],
+				"job": {
+					"name": "https-dns-proxy",
+					"running": false,
+					"command": "/etc/init.d/https-dns-proxy stop",
+					"started": 1791939291,
+					"log": "",
+					"finished": 1791939292,
+					"rc": 0
+				}
+			}
+		}
+	]
+}

@@ -29,6 +29,11 @@ const ROUTES = [
 	'services/upnp',
 	'services/adblock',
 	'status/traffic',
+	'services/https-dns-proxy',
+	'services/wol',
+	'services/frpc',
+	'services/minidlna',
+	'system/uhttpd',
 ];
 
 /** Visible texts and accessible names that are raw catalog keys (= missing translations). */

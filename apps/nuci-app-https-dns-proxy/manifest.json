@@ -1,0 +1,12 @@
+{
+	"id": "https-dns-proxy",
+	"title": "DNS over HTTPS",
+	"icon": "ShieldCheck",
+	"entry": "apps/https-dns-proxy/index.js",
+	"version": "0.5.0",
+	"menu": {
+		"group": "services",
+		"order": 45
+	},
+	"acls": ["nuci-app-https-dns-proxy"]
+}

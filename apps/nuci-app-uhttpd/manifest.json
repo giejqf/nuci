@@ -1,0 +1,12 @@
+{
+	"id": "uhttpd",
+	"title": "Web server",
+	"icon": "Server",
+	"entry": "apps/uhttpd/index.js",
+	"version": "0.5.0",
+	"menu": {
+		"group": "system",
+		"order": 35
+	},
+	"acls": ["nuci-app-uhttpd"]
+}

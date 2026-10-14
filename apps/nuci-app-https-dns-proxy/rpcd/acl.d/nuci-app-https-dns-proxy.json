@@ -1,0 +1,13 @@
+{
+	"nuci-app-https-dns-proxy": {
+		"description": "NuCI app: DNS over HTTPS (https-dns-proxy)",
+		"read": {
+			"ubus": { "nuci.https-dns-proxy": ["status"] },
+			"uci": ["https-dns-proxy", "dhcp", "network"]
+		},
+		"write": {
+			"ubus": { "nuci.https-dns-proxy": ["service"] },
+			"uci": ["https-dns-proxy"]
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"nuci-app-frpc": {
+		"description": "NuCI app: frp client (frpc)",
+		"read": {
+			"ubus": { "nuci.frpc": ["status"] },
+			"uci": ["frpc"]
+		},
+		"write": {
+			"ubus": { "nuci.frpc": ["service"] },
+			"uci": ["frpc"]
+		}
+	}
+}

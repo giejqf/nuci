@@ -1,0 +1,65 @@
+{
+	"uhttpd": {
+		"instances": {
+			"instance1": {
+				"running": true,
+				"pid": 2913,
+				"command": [
+					"/usr/sbin/uhttpd",
+					"-f",
+					"-h",
+					"/www",
+					"-r",
+					"OpenWrt",
+					"-x",
+					"/cgi-bin",
+					"-u",
+					"/ubus",
+					"-o",
+					"/nuci/events",
+					"-O",
+					"/usr/share/nuci/events.uc",
+					"-o",
+					"/nuci/probe",
+					"-O",
+					"/usr/share/nuci/probe.uc",
+					"-o",
+					"/nuci/transfer",
+					"-O",
+					"/usr/share/nuci/transfer.uc",
+					"-t",
+					"60",
+					"-T",
+					"30",
+					"-k",
+					"20",
+					"-A",
+					"1",
+					"-n",
+					"6",
+					"-N",
+					"100",
+					"-R",
+					"-p",
+					"0.0.0.0:80",
+					"-p",
+					"[::]:80",
+					"-C",
+					"/etc/uhttpd.crt",
+					"-K",
+					"/etc/uhttpd.key",
+					"-s",
+					"0.0.0.0:443",
+					"-s",
+					"[::]:443"
+				],
+				"term_timeout": 5,
+				"respawn": {
+					"threshold": 3600,
+					"timeout": 5,
+					"retry": 5
+				}
+			}
+		}
+	}
+}

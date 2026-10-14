@@ -1,0 +1,12 @@
+{
+	"id": "minidlna",
+	"title": "Media server",
+	"icon": "Tv",
+	"entry": "apps/minidlna/index.js",
+	"version": "0.5.0",
+	"menu": {
+		"group": "services",
+		"order": 70
+	},
+	"acls": ["nuci-app-minidlna"]
+}

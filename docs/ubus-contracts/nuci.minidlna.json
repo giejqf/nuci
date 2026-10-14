@@ -1,0 +1,39 @@
+{
+	"object": "nuci.minidlna",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"status": {},
+		"rescan": {}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"running": true,
+				"port": 8200,
+				"library": {
+					"version": "1.3.3",
+					"audio": 0,
+					"video": 0,
+					"image": 0,
+					"clients": []
+				},
+				"job": {
+					"name": "minidlna",
+					"running": false,
+					"command": "/bin/sh -c \"$0\" stop; rm -f \"$1/files.db\"; \"$0\" start /etc/init.d/minidlna /var/run/minidlna",
+					"started": 1791940363,
+					"log": "",
+					"finished": 1791940364,
+					"rc": 0
+				}
+			}
+		}
+	]
+}

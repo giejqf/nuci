@@ -1,0 +1,13 @@
+{
+	"nuci-app-minidlna": {
+		"description": "NuCI app: DLNA media server (minidlna)",
+		"read": {
+			"ubus": { "nuci.minidlna": ["status"] },
+			"uci": ["minidlna"]
+		},
+		"write": {
+			"ubus": { "nuci.minidlna": ["rescan"] },
+			"uci": ["minidlna"]
+		}
+	}
+}

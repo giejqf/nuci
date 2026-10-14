@@ -28,3 +28,10 @@ sqm-scripts
 kmod-sched-cake
 nlbwmon
 adblock
+https-dns-proxy
+etherwake
+frpc
+minidlna
+px5g-mbedtls
+# Test-only: the frp server the frpc spec connects to.
+frps

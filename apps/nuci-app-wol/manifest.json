@@ -1,0 +1,12 @@
+{
+	"id": "wol",
+	"title": "Wake on LAN",
+	"icon": "Power",
+	"entry": "apps/wol/index.js",
+	"version": "0.5.0",
+	"menu": {
+		"group": "services",
+		"order": 50
+	},
+	"acls": ["nuci-app-wol"]
+}

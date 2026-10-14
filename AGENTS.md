@@ -195,6 +195,11 @@ First-party apps ship their own objects (plugin + lib + ACL inside
 | `nuci.asu` (asu) | `status` (job + summary of the last check), `check`, `download`, `install` (jobs) | `owut dump`/`check`/`download`/`install` via `/usr/libexec/nuci/asu` (ADR-0007) |
 | `nuci.nlbwmon` (nlbwmon) | `periods`, `data` (per client by MAC with host names, per protocol; optional `period`) | `nlbw -c list`, `nlbw -c json -g mac,ip,layer7`, `nuci.dhcp` hosts |
 | `nuci.adblock` (adblock) | `status`, `feeds`, `lists`, `set_list` (allow/block list, then reload), `run` (reload/restart/suspend/resume), `search` (jobs) | `/var/run/adblock/adblock.runtime.json`, `/etc/adblock/*`, `/etc/init.d/adblock` |
+| `nuci.https-dns-proxy` (https-dns-proxy) | `status` (instances from procd, dnsmasq servers), `service` (start/stop/restart/enable/disable, job) | `service list`, uci `dhcp`, `/etc/init.d/https-dns-proxy` |
+| `nuci.wol` (wol) | `interfaces` (Ethernet-type devices), `wake` (MAC, interface, broadcast, SecureOn password) | `/sys/class/net`, `etherwake` |
+| `nuci.frpc` (frpc) | `status` (procd, proxies from frpc's admin API, log), `service` (job) | `service list`, `http://127.0.0.1:<admin_port>/api/status`, `logread`, `/etc/init.d/frpc` |
+| `nuci.minidlna` (minidlna) | `status` (library counts, players), `rescan` (job: stop, drop the database, start) | minidlna's status page, `/etc/init.d/minidlna` |
+| `nuci.uhttpd` (uhttpd) | `status` (listeners from procd, certificate details, generator), `regenerate` (job) | `service list`, X.509 reader over `/etc/uhttpd.crt`, `/etc/init.d/uhttpd` |
 
 Findings that shape the apps (25.12.0): netifd loads protocol handlers
 (`/lib/netifd/proto/*.sh`) only at start, so a protocol installed later is
@@ -211,7 +216,18 @@ router itself); adblock has no reload trigger for its own config, so
 `nuci-app-adblock` ships a procd service (`nuci-adblock`) that reloads it
 after an apply; dnsmasq host and `address=` records win over adblock's
 `local=` entries for the same name (a more specific subdomain is blocked).
-Adblock's own lists are files, saved directly (not staged).
+Adblock's own lists are files, saved directly (not staged). dnsmasq answers
+`.test`, `.lan`, `.local` and similar names itself and drops answers in
+private and TEST-NET ranges (rebind protection), so DNS tests use other
+names and addresses. https-dns-proxy rewrites dnsmasq's `server` list in
+uci while it runs and restores it on stop; frpc's init script writes INI
+(deprecated by frp, still accepted in 0.66); minidlna indexes JPEG pictures
+only; procd keeps a disabled service's reload trigger only from boot (a
+manual `stop` removes it, so an apply no longer starts it). rpcd runs with
+`-t 30`: a `file exec` call is killed after 30 s, so anything slow runs as a
+job (see ADR-0007 for owut). The probe also checks uhttpd's committed
+listeners (ADR-0002 amendment), so `uhttpd` changes get the rollback
+protocol's full protection.
 | `nuci.firewall` | `preview` (`fw4 -q print` of the saved config), `ruleset` (`nft list ruleset`); output bounded to 512 KiB with a `truncated` flag | `fw4`, `nft` |
 
 Rules for ucode plugins:
@@ -256,7 +272,7 @@ apps/nuci-app-<id>            first-party apps (UI, manifest, optional rpcd plug
   (ADR-0002): *Save* pushes staged edits into the session's uci delta
   (`uci.set/add/delete/...`), then `uci.apply {rollback: true, timeout: 90}`
   (which snapshots and commits that delta) → hold-off → probe until it has
-  stayed good for a settle window (10 s for network/wireless/firewall/dhcp) →
+  stayed good for a settle window (10 s for network/wireless/firewall/dhcp/uhttpd) →
   `uci.confirm`; without a confirm the router rolls back automatically. Never
   call `uci.commit` first: it would leave nothing to roll back. Svelte 5 stores
   (`$state`) wrap this for the UI.
@@ -839,6 +855,8 @@ next phase's pages before the previous phase's exit criteria are met.
   its own servers when the proxy is disabled; a magic packet for a target's
   MAC leaves the chosen interface (counted by an nftables `netdev` egress
   rule).
+- **Status:** done 2026-10-14 (`apps3.spec.ts`; the DoH stub is
+  `e2e/lib/doh-stub.ts` with a CA made by openssl per run).
 
 ### Phase 21 — frp client and miniDLNA (0.5)
 - `nuci-app-frpc` (`frpc`): server connection (address, port, token),
@@ -850,6 +868,9 @@ next phase's pages before the previous phase's exit criteria are met.
 - **Exit:** e2e: frpc connects to an `frps` on the lab itself, a tcp proxy
   is shown as running and its remote port reaches the local service;
   miniDLNA indexes a folder with a test picture and the page counts it.
+- **Status:** done 2026-10-14 (`apps3.spec.ts`; `frps` is in the lab image
+  for the test only, disabled like https-dns-proxy and frpc by
+  `99-nuci-lab`).
 
 ### Phase 22 — uHTTPd (0.5)
 - `nuci-app-uhttpd` (`uhttpd`): listeners (HTTP, HTTPS, redirect to HTTPS),
@@ -861,6 +882,9 @@ next phase's pages before the previous phase's exit criteria are met.
 - **Exit:** e2e: a keep-alive and a listener change apply and confirm; an
   unconfirmed change that drops the browser's listener rolls back; a new
   certificate replaces the old one (validity and serial shown).
+- **Status:** done 2026-10-14 (System → Web server; depends on
+  `px5g-mbedtls`, so the lab now serves HTTPS too; `/nuci/probe` checks the
+  committed listeners, ADR-0002 amended).
 
 ### Phase 23 — 0.5 release
 - Release notes, perf and accessibility checks for the new pages, signed

@@ -1,0 +1,127 @@
+{
+	"object": "nuci.frpc",
+	"recorded": {
+		"release": "25.12.0",
+		"revision": "r32713-f919e7899d",
+		"target": "armsr/armv8"
+	},
+	"signature": {
+		"status": {},
+		"service": {
+			"action": "String"
+		}
+	},
+	"calls": [
+		{
+			"method": "status",
+			"args": {},
+			"status": 0,
+			"result": {
+				"enabled": true,
+				"running": true,
+				"admin": true,
+				"proxies": [
+					{
+						"name": "ssh",
+						"type": "tcp",
+						"status": "running",
+						"error": "",
+						"local_addr": "127.0.0.1:80",
+						"remote_addr": "127.0.0.1:6080"
+					}
+				],
+				"log": [
+					{
+						"time": null,
+						"level": null,
+						"text": "WARNING: ini format is deprecated and the support will be removed in the future, please use yaml/json/toml format instead!"
+					},
+					{
+						"time": "2026-10-14 01:35:04",
+						"level": "I",
+						"text": "start frpc service for config file [/var/etc/frpc.ini]"
+					},
+					{
+						"time": "2026-10-14 01:35:04",
+						"level": "I",
+						"text": "try to connect to server..."
+					},
+					{
+						"time": "2026-10-14 01:35:04",
+						"level": "I",
+						"text": "admin server listen on 127.0.0.1:7400"
+					},
+					{
+						"time": "2026-10-14 01:35:04",
+						"level": "W",
+						"text": "connect to server error: dial tcp 127.0.0.1:7000: connect: connection refused"
+					},
+					{
+						"time": "2026-10-14 01:35:04",
+						"level": "I",
+						"text": "frpc service for config file [/var/etc/frpc.ini] stopped"
+					},
+					{
+						"time": null,
+						"level": null,
+						"text": "login to the server failed: dial tcp 127.0.0.1:7000: connect: connection refused. With loginFailExit enabled, no additional retries will be attempted"
+					},
+					{
+						"time": null,
+						"level": null,
+						"text": "WARNING: ini format is deprecated and the support will be removed in the future, please use yaml/json/toml format instead!"
+					},
+					{
+						"time": "2026-10-14 01:35:09",
+						"level": "I",
+						"text": "start frpc service for config file [/var/etc/frpc.ini]"
+					},
+					{
+						"time": "2026-10-14 01:35:09",
+						"level": "I",
+						"text": "try to connect to server..."
+					},
+					{
+						"time": "2026-10-14 01:35:09",
+						"level": "I",
+						"text": "admin server listen on 127.0.0.1:7400"
+					},
+					{
+						"time": "2026-10-14 01:35:09",
+						"level": "I",
+						"text": "[c941f78ff028c9c9] login to server success, get run id [c941f78ff028c9c9]"
+					},
+					{
+						"time": "2026-10-14 01:35:09",
+						"level": "I",
+						"text": "[c941f78ff028c9c9] proxy added: [ssh]"
+					},
+					{
+						"time": "2026-10-14 01:35:09",
+						"level": "I",
+						"text": "[c941f78ff028c9c9] [ssh] start proxy success"
+					},
+					{
+						"time": "2026-10-14 01:35:11",
+						"level": "I",
+						"text": "http request [/api/status]"
+					},
+					{
+						"time": "2026-10-14 01:35:11",
+						"level": "I",
+						"text": "http response [/api/status]"
+					}
+				],
+				"job": {
+					"name": "frpc",
+					"running": false,
+					"command": "/etc/init.d/frpc stop",
+					"started": 1791939965,
+					"log": "",
+					"finished": 1791939965,
+					"rc": 0
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,94 @@
+{
+	"https-dns-proxy": {
+		"instances": {
+			"instance1": {
+				"running": true,
+				"pid": 11942,
+				"command": [
+					"/usr/sbin/https-dns-proxy",
+					"-r",
+					"https://cloudflare-dns.com/dns-query",
+					"-p",
+					"5053",
+					"-b",
+					"1.1.1.1,1.0.0.1,2606:4700:4700::1111,2606:4700:4700::1001",
+					"-u",
+					"nobody",
+					"-g",
+					"nogroup"
+				],
+				"term_timeout": 5,
+				"data": {
+					"firewall": [
+						{
+							"type": "redirect",
+							"target": "DNAT",
+							"src": "lan",
+							"proto": "tcp udp",
+							"src_dport": "53",
+							"dest_port": "53",
+							"family": "any",
+							"reflection": false
+						},
+						{
+							"type": "rule",
+							"src": "lan",
+							"dest": "*",
+							"proto": "tcp udp",
+							"dest_port": "853",
+							"target": "REJECT"
+						}
+					],
+					"mdns": {
+						"https-dns-proxy_5053": {
+							"service": "_https-dns-proxy._udp.local",
+							"port": 5053,
+							"txt": [
+								"DNS over HTTPS proxy"
+							]
+						}
+					}
+				},
+				"respawn": {
+					"threshold": 3600,
+					"timeout": 5,
+					"retry": 5
+				}
+			},
+			"instance2": {
+				"running": true,
+				"pid": 11943,
+				"command": [
+					"/usr/sbin/https-dns-proxy",
+					"-r",
+					"https://dns.google/dns-query",
+					"-p",
+					"5054",
+					"-b",
+					"8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844",
+					"-u",
+					"nobody",
+					"-g",
+					"nogroup"
+				],
+				"term_timeout": 5,
+				"data": {
+					"mdns": {
+						"https-dns-proxy_5054": {
+							"service": "_https-dns-proxy._udp.local",
+							"port": 5054,
+							"txt": [
+								"DNS over HTTPS proxy"
+							]
+						}
+					}
+				},
+				"respawn": {
+					"threshold": 3600,
+					"timeout": 5,
+					"retry": 5
+				}
+			}
+		}
+	}
+}

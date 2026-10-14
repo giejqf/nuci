@@ -1,0 +1,22 @@
+{
+	"minidlna": {
+		"instances": {
+			"instance1": {
+				"running": true,
+				"pid": 32683,
+				"command": [
+					"/usr/sbin/minidlnad",
+					"-S",
+					"-f",
+					"/var/etc/minidlna.conf"
+				],
+				"term_timeout": 5,
+				"respawn": {
+					"threshold": 3600,
+					"timeout": 5,
+					"retry": 5
+				}
+			}
+		}
+	}
+}

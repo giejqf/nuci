@@ -1,0 +1,13 @@
+{
+	"nuci-app-wol": {
+		"description": "NuCI app: Wake on LAN (etherwake)",
+		"read": {
+			"ubus": { "nuci.wol": ["interfaces"], "nuci.dhcp": ["hosts"] },
+			"uci": ["etherwake"]
+		},
+		"write": {
+			"ubus": { "nuci.wol": ["wake"] },
+			"uci": ["etherwake"]
+		}
+	}
+}

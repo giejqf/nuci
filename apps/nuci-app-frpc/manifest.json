@@ -1,0 +1,12 @@
+{
+	"id": "frpc",
+	"title": "frp client",
+	"icon": "Waypoints",
+	"entry": "apps/frpc/index.js",
+	"version": "0.5.0",
+	"menu": {
+		"group": "services",
+		"order": 60
+	},
+	"acls": ["nuci-app-frpc"]
+}
