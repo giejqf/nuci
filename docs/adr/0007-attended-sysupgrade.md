@@ -57,7 +57,10 @@ installed packages. 25.12 ships `owut` (ucode) as its client; `auc` is gone.
    `file exec`, which rpcd kills after its exec timeout (`rpcd -t`, 30 s)
    — on a slow router (QEMU under TCG) before sysupgrade has handed over
    to procd, so nothing is flashed. The job runs the same two steps
-   itself. Arguments are fixed argv arrays; the only
+   itself. `owut download` checks the image the same way (sha256sum, then
+   `sysupgrade --test`, ~25 s under TCG): it runs with `-k`, and when only
+   the `sysupgrade --test` call timed out after the sha256 matched, the job
+   repeats that test itself without the limit. Arguments are fixed argv arrays; the only
    user inputs (target version, extra packages to add or remove) are
    validated against the versions and package names owut reported.
 3. NuCI survives the upgrade on three legs:

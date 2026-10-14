@@ -53,7 +53,22 @@ case "$action" in
 	download)
 		[ -n "$version" ] || exit 22
 		rm -f "$IMAGE" "$STATE/download.ok"
-		owut download -V "$version" -r "$remove" -a "$add" -i "$IMAGE" || exit $?
+		# owut checks the image with sha256sum and `sysupgrade --test`, both
+		# through rpcd's file exec (30 s limit, see install). On a slow router
+		# the second can time out after the sha256 matched: then the image
+		# is kept (-k) and checked again here, without the limit.
+		{
+			owut download -v -k -V "$version" -r "$remove" -a "$add" -i "$IMAGE"
+			echo $? > "$STATE/download.rc"
+		} 2>&1 | tee "$STATE/download.log"
+		rc="$(cat "$STATE/download.rc")"
+		if [ "$rc" -ne 0 ]; then
+			grep -q 'Saved sha256 matches' "$STATE/download.log" &&
+				grep -q 'Request timed out' "$STATE/download.log" &&
+				grep -qF '"command": "sysupgrade", "params": [ "--test"' "$STATE/download.log" || exit "$rc"
+			echo "Checking the image again without a time limit..."
+			sysupgrade --test "$IMAGE" || { rm -f "$IMAGE"; exit 1; }
+		fi
 		echo "$version" > "$STATE/download.ok"
 		;;
 	install)
