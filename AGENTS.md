@@ -65,6 +65,16 @@ maintainer goes on to 0.4 first; plan in §9 Phases 15–19):
 **Non-goals for 0.4:** the designer's changes (a later phase once the results
 are in), further apps (banip, mwan3, acme, statistics), native arm64 builds.
 
+**0.5 scope** (scheduled 2026-10-13 after the secret for the 0.4 release was
+added; plan in §9 Phases 20–23):
+
+| Area | Content |
+|------|---------|
+| Apps | `nuci-app-https-dns-proxy` (DNS over HTTPS), `nuci-app-wol` (Wake on LAN with `etherwake`), `nuci-app-frpc` (frp client), `nuci-app-minidlna` (DLNA media server), `nuci-app-uhttpd` (web server settings and its certificate). Dynamic DNS is `nuci-app-ddns` since 0.2 |
+
+**Non-goals for 0.5:** the designer's changes, further apps (frps, banip,
+mwan3, acme, statistics), native arm64 builds.
+
 **Hard rule:** no LuCI runtime dependency. Not `luci-base`, not `rpcd-mod-luci`,
 not the `luci` ubus object, not LuCI's JS. Reading LuCI source to learn ubus/uci
 semantics is fine; copying code is not.
@@ -816,6 +826,50 @@ next phase's pages before the previous phase's exit criteria are met.
 
 ---
 
+### Phase 20 — DNS over HTTPS and Wake on LAN (0.5)
+- `nuci-app-https-dns-proxy` (`https-dns-proxy`): resolver instances
+  (provider presets or a custom RFC 8484 URL, bootstrap servers, listen
+  port), which dnsmasq instances use them, forced LAN DNS, canary domains;
+  status of the running instances through a narrow `nuci.https_dns_proxy`.
+- `nuci-app-wol` (`etherwake`): saved targets (`etherwake` config), wake a
+  target or a known host (DHCP leases, static hosts) through `nuci.wol wake`
+  (MAC, interface and password validated; argv only).
+- **Exit:** e2e: an instance pointed at a local DoH stub (test CA through
+  `ca_certs_file`) answers a lookup through dnsmasq, and dnsmasq returns to
+  its own servers when the proxy is disabled; a magic packet for a target's
+  MAC leaves the chosen interface (counted by an nftables `netdev` egress
+  rule).
+
+### Phase 21 — frp client and miniDLNA (0.5)
+- `nuci-app-frpc` (`frpc`): server connection (address, port, token),
+  proxies (tcp, udp, http, https, stcp, xtcp) as `conf` sections, the local
+  admin API for status; `nuci.frpc status` reads the proxies' state from it.
+- `nuci-app-minidlna` (`minidlna`): enable, interface, port, name, media
+  folders (typed: audio, video, pictures), rescan as a job; `nuci.minidlna
+  status` reads the file counts from minidlna's status page.
+- **Exit:** e2e: frpc connects to an `frps` on the lab itself, a tcp proxy
+  is shown as running and its remote port reaches the local service;
+  miniDLNA indexes a folder with a test picture and the page counts it.
+
+### Phase 22 — uHTTPd (0.5)
+- `nuci-app-uhttpd` (`uhttpd`): listeners (HTTP, HTTPS, redirect to HTTPS),
+  limits and timeouts, RFC 1918 filter, certificate details and
+  regeneration (job) from the `cert` defaults. NuCI's own handler entries
+  (`ubus_prefix`, `ucode_prefix`) are not editable here and
+  `max_requests` stays at least 6 (§3.1). Changes apply with the rollback
+  protocol, so a listener change that cuts off the browser rolls back.
+- **Exit:** e2e: a keep-alive and a listener change apply and confirm; an
+  unconfirmed change that drops the browser's listener rolls back; a new
+  certificate replaces the old one (validity and serial shown).
+
+### Phase 23 — 0.5 release
+- Release notes, perf and accessibility checks for the new pages, signed
+  feed from the tag.
+- **Exit:** tagged `v0.5.0` (pushed with the maintainer's go-ahead); the
+  feed installs `nuci` and every app on a stock 25.12 armsr image.
+
+---
+
 ## 10. Rules for agents working in this repo
 
 1. **Verify on the target, not from memory.** ubus method names, ACL semantics,
@@ -850,7 +904,7 @@ next phase's pages before the previous phase's exit criteria are met.
 
 ## 11. Open questions (answer and move to §2)
 
-- **After 0.4** (not scheduled): further apps (banip, mwan3, acme,
+- **After 0.5** (not scheduled): further apps (frps, banip, mwan3, acme,
   statistics/collectd); native arm64 builds via the buildroot; UI changes
   from the design request.
 - (Non-root users: decided in ADR-0006, D17.)
