@@ -58,7 +58,13 @@ case "$action" in
 		;;
 	install)
 		[ -s "$IMAGE" ] && [ -f "$STATE/download.ok" ] || exit 2
-		exec owut install -i "$IMAGE" --pre-install /usr/libexec/nuci/asu-pre-install
+		# What `owut install` does, but not through it: owut starts sysupgrade
+		# via rpcd's file exec, which rpcd kills after its exec timeout (30 s),
+		# before a slow router has handed over to procd. The image was verified
+		# by `owut download` (sha256 and sysupgrade --test).
+		/usr/libexec/nuci/asu-pre-install || exit $?
+		echo "Installing $IMAGE and rebooting..."
+		exec sysupgrade "$IMAGE"
 		;;
 	*)
 		exit 22

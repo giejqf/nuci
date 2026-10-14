@@ -99,7 +99,22 @@
 			}
 		};
 		const until = Date.now() + 20 * 60_000;
-		while (Date.now() < until && (await up())) await new Promise((r) => setTimeout(r, 3000));
+		// sysupgrade never returns: an install job that ended with an error
+		// while the router still answers (twice, 10 s apart, so the shutdown
+		// for the flash does not count) did not flash; show why.
+		let failedAt = 0;
+		while (Date.now() < until && (await up())) {
+			const s = await api.status().catch(() => null);
+			if (s && !s.job.running && s.job.rc != null && s.job.rc !== 0) {
+				failedAt ||= Date.now();
+				if (Date.now() - failedAt >= 10_000) {
+					st = s;
+					phase = 'idle';
+					return;
+				}
+			} else failedAt = 0;
+			await new Promise((r) => setTimeout(r, 3000));
+		}
 		phase = 'restarting';
 		while (Date.now() < until) {
 			if (await up()) return location.reload();
@@ -159,7 +174,10 @@
 </Section>
 
 {#if running || failed}
-	<Section title={running ? t('asu.job_running') : t('asu.job_failed')} testid="asu-job">
+	<Section
+		title={running ? t('asu.job_running') : t('asu.job_failed')}
+		testid={running ? 'asu-job' : 'asu-job-failed'}
+	>
 		{#if running}<span class="loading loading-dots loading-sm" aria-hidden="true"></span>{/if}
 		<!-- Scrollable region: focusable so keyboard users can scroll it. -->
 		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->

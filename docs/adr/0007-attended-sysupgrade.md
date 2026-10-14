@@ -29,7 +29,8 @@ installed packages. 25.12 ships `owut` (ucode) as its client; `auc` is gone.
   `/lib/upgrade/keep.d/*` (passed unquoted to `find`: directories recurse,
   globs expand). The same list feeds `sysupgrade -b` (configuration
   backups).
-- `owut --pre-install SCRIPT` runs just before the final sysupgrade;
+- `owut --pre-install SCRIPT` runs just before the final sysupgrade
+  (owut starts both through rpcd's `file exec`);
   `-I SCRIPT` embeds a uci-defaults script (≤ 40 KiB, server limit) that
   runs on the first boot of the new image. `install` runs plain
   `sysupgrade <image>` (settings kept).
@@ -51,7 +52,12 @@ installed packages. 25.12 ships `owut` (ucode) as its client; `auc` is gone.
 2. `nuci.asu` runs owut as detached jobs (`nuci.job`): `check` (owut
    `dump`, parsed into a summary: current and target version, package
    changes, blockers), `download` (build, download, verify), `install`
-   (sysupgrade, keep settings). Arguments are fixed argv arrays; the only
+   (the pre-install hook, then sysupgrade with settings kept). `install`
+   does not use `owut install`: owut starts sysupgrade through rpcd's
+   `file exec`, which rpcd kills after its exec timeout (`rpcd -t`, 30 s)
+   — on a slow router (QEMU under TCG) before sysupgrade has handed over
+   to procd, so nothing is flashed. The job runs the same two steps
+   itself. Arguments are fixed argv arrays; the only
    user inputs (target version, extra packages to add or remove) are
    validated against the versions and package names owut reported.
 3. NuCI survives the upgrade on three legs:

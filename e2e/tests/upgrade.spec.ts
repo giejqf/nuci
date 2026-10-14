@@ -87,8 +87,14 @@ test('attended sysupgrade: build, flash, and NuCI and the settings survive', asy
 		await page.getByTestId('asu-install').click();
 		await page.getByTestId('asu-confirm-go').click();
 		await expect(page.getByTestId('asu-phase')).toBeVisible();
-		// Flash, reboot, then the page reloads into the login form.
-		await expect(page.getByLabel('Password')).toBeVisible({ timeout: slow(900_000) });
+		// Flash, reboot, then the page reloads into the login form; an install
+		// job that fails instead shows its log.
+		const failed = page.getByTestId('asu-job-failed');
+		await expect(page.getByLabel('Password').or(failed)).toBeVisible({
+			timeout: slow(900_000),
+		});
+		if (await failed.isVisible())
+			throw new Error(`install failed: ${await failed.innerText()}`);
 	} finally {
 		await stub.close();
 	}
