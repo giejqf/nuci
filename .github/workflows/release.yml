@@ -6,6 +6,7 @@ name: release
 on:
   push:
     tags: ['v*']
+  workflow_dispatch: # builds and signs the feed without publishing
 
 permissions:
   contents: write
@@ -46,12 +47,12 @@ jobs:
         env:
           FEED_KEY: ${{ secrets.NUCI_FEED_KEY }}
         run: |
-          umask 077
-          printf '%s\n' "$FEED_KEY" > "$RUNNER_TEMP/feed.key.pem"
+          (umask 077; printf '%s\n' "$FEED_KEY" > "$RUNNER_TEMP/feed.key.pem")
           NUCI_FEED_KEY="$RUNNER_TEMP/feed.key.pem" tools/release.sh
           rm -f "$RUNNER_TEMP/feed.key.pem"
 
       - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
