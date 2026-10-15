@@ -47,11 +47,13 @@ jobs:
         env:
           FEED_KEY: ${{ secrets.NUCI_FEED_KEY }}
         run: |
-          (umask 077; printf '%s\n' "$FEED_KEY" > "$RUNNER_TEMP/feed.key.pem")
-          # Say what is wrong with the secret without printing it.
-          if ! openssl ec -in "$RUNNER_TEMP/feed.key.pem" -noout 2>/dev/null; then
-            echo "::error::NUCI_FEED_KEY is not a PEM EC private key (header: $(head -n1 "$RUNNER_TEMP/feed.key.pem" | cut -c1-40), $(wc -l < "$RUNNER_TEMP/feed.key.pem") lines)"
-            rm -f "$RUNNER_TEMP/feed.key.pem"; exit 1
+          # The secret is a PEM EC key, or any passphrase the key is derived from.
+          (umask 077; printf '%s\n' "$FEED_KEY" > "$RUNNER_TEMP/secret.txt")
+          if openssl ec -in "$RUNNER_TEMP/secret.txt" -noout 2>/dev/null; then
+            mv "$RUNNER_TEMP/secret.txt" "$RUNNER_TEMP/feed.key.pem"
+          else
+            NUCI_FEED_SECRET="$FEED_KEY" tools/derive-feed-key.sh "$RUNNER_TEMP/feed.key.pem"
+            rm -f "$RUNNER_TEMP/secret.txt"
           fi
           NUCI_FEED_KEY="$RUNNER_TEMP/feed.key.pem" tools/release.sh
           rm -f "$RUNNER_TEMP/feed.key.pem"
