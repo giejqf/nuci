@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 NUCI_APP_ID:=nlbwmon
 NUCI_APP_TITLE:=NuCI app: traffic usage per client (nlbwmon)
 NUCI_APP_DEPENDS:=+nlbwmon
-PKG_VERSION:=0.4.0
+PKG_VERSION:=0.5.0
 PKG_RELEASE:=1
 
 include ../nuci-app.mk

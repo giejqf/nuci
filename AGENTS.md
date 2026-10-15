@@ -891,6 +891,10 @@ next phase's pages before the previous phase's exit criteria are met.
   feed from the tag.
 - **Exit:** tagged `v0.5.0` (pushed with the maintainer's go-ahead); the
   feed installs `nuci` and every app on a stock 25.12 armsr image.
+- **Status:** notes in `docs/releases/v0.5.0.md`; 0.4.0 was never published
+  (Actions billing), so 0.5.0 is the next release and carries 0.4. The feed
+  key is derived from the `NUCI_FEED_KEY` passphrase secret
+  (`tools/derive-feed-key.sh`).
 
 ---
 

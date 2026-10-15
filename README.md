@@ -4,7 +4,7 @@ A fast, modern web interface for OpenWrt 25.12. It is a new frontend, not
 built on LuCI: a Svelte 5 single-page app that talks to the router through
 stock `rpcd`/`ubus` and a few small ucode plugins.
 
-> Status: 0.4.0 tagged, 0.5 in development. All v1 page groups (Status,
+> Status: 0.5. All v1 page groups (Status,
 > System, Network, Firewall), a first-run setup wizard, non-root users,
 > German and Simplified Chinese, and twelve apps are implemented and tested
 > end to end on OpenWrt 25.12 armsr/armv8 (QEMU). See
@@ -56,7 +56,7 @@ From a release (OpenWrt 25.12, any architecture; the packages are
 architecture independent):
 
 ```sh
-BASE=https://github.com/giejqf/nuci/releases/download/v0.4.0   # or the latest release
+BASE=https://github.com/giejqf/nuci/releases/download/v0.5.0
 wget -O /etc/apk/keys/nuci-feed.pem "$BASE/nuci-feed.pem"
 echo "$BASE/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 apk update && apk add nuci
