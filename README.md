@@ -4,21 +4,24 @@ A fast, modern web interface for OpenWrt 25.12. It is a new frontend, not
 built on LuCI: a Svelte 5 single-page app that talks to the router through
 stock `rpcd`/`ubus` and a few small ucode plugins.
 
-> Status: 0.4. All v1 page groups (Status, System, Network, Firewall), a
-> first-run setup wizard, non-root users, German and Simplified Chinese, and
-> seven apps (WireGuard, Dynamic DNS, UPnP, SQM, firmware upgrade through the
-> OpenWrt build service, traffic usage, Adblock) are implemented and tested
-> end to end on OpenWrt 25.12 armsr/armv8 (QEMU, on every change in GitHub
-> Actions); see [docs/releases](docs/releases). See [AGENTS.md](AGENTS.md) for the
-> architecture, the locked decisions and the plan, and [docs/adr](docs/adr)
-> for decisions made along the way.
+> Status: 0.4.0 tagged, 0.5 in development. All v1 page groups (Status,
+> System, Network, Firewall), a first-run setup wizard, non-root users,
+> German and Simplified Chinese, and twelve apps are implemented and tested
+> end to end on OpenWrt 25.12 armsr/armv8 (QEMU). See
+> [docs/releases](docs/releases) for release notes, [AGENTS.md](AGENTS.md) for
+> the architecture, the locked decisions and the plan, and
+> [docs/adr](docs/adr) for decisions made along the way.
+
+Apps: WireGuard, Dynamic DNS, UPnP, SQM, firmware upgrade (ASU), traffic usage
+(nlbwmon), Adblock, DNS over HTTPS, Wake on LAN, frp client, media server
+(miniDLNA) and web server (uHTTPd).
 
 ## Layout
 
 | Path | What |
 |------|------|
 | `apps/web` | The SPA (Vite + Svelte 5 + Tailwind v4 + DaisyUI v5) → `/www/nuci/` |
-| `apps/nuci-app-*` | First-party apps: WireGuard, Dynamic DNS, UPnP, SQM, firmware upgrade (ASU), traffic usage (nlbwmon), Adblock |
+| `apps/nuci-app-*` | First-party apps, one package each (see above) |
 | `packages/*` | `@nuci/rpc`, `@nuci/uci`, `@nuci/ui`, `@nuci/i18n`, `@nuci/app-sdk`, `@nuci/app-kit` |
 | `rpcd/` | ucode plugins (`nuci.*` ubus objects), shared libs, ACLs, host tests |
 | `server/*.uc` | `uhttpd-mod-ucode` handlers: events (SSE), apply probe, transfers |
@@ -53,12 +56,12 @@ From a release (OpenWrt 25.12, any architecture; the packages are
 architecture independent):
 
 ```sh
-BASE=https://github.com/giejqf/nuci/releases/download/v0.4.0
+BASE=https://github.com/giejqf/nuci/releases/download/v0.4.0   # or the latest release
 wget -O /etc/apk/keys/nuci-feed.pem "$BASE/nuci-feed.pem"
 echo "$BASE/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 apk update && apk add nuci
-# optional apps: nuci-app-wireguard nuci-app-ddns nuci-app-upnp nuci-app-sqm
-#                nuci-app-asu nuci-app-nlbwmon nuci-app-adblock
+# optional apps (nuci-app-<name>): wireguard ddns upnp sqm asu nlbwmon adblock
+#                                  https-dns-proxy wol frpc minidlna uhttpd
 ```
 
 From source: `pnpm build && tools/sdk/build.sh`, copy `dist/feed/*.apk` to
