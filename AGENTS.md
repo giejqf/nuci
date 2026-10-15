@@ -99,7 +99,7 @@ semantics is fine; copying code is not.
 | D12 | i18n | Key-based from day one (`t('network.interfaces.title')`), English is the source | Retrofitting i18n is expensive |
 | D13 | License | **Apache-2.0** (SPDX header in every source file) | Permissive for nuci-app-* authors; same as LuCI |
 | D14 | Hosting/CI | **GitHub + GitHub Actions**; e2e on hosted runners with TCG, self-hosted KVM runner optional later | |
-| D15 | Theme | **Stock DaisyUI** `light`/`dark`, follows system preference, user override persisted in `localStorage`; no custom palette in v1 | |
+| D15 | Theme | DaisyUI themes named `light`/`dark` carrying the NuCI palette (ADR-0008; stock DaisyUI colours before that), follow system preference, user override persisted in `localStorage` | |
 | D16 | `/` takeover | **Yes.** `nuci-base` installs `/www/index.html` redirecting to `/nuci/` when no LuCI is detected, guarded by `uci nuci.main.root_redirect` (default `1`) | |
 | D17 | Users | **Root plus optional limited users** (amended by ADR-0006 for 0.2): System → Users manages NuCI logins (system account without shell + rpcd login with ACL groups) through `nuci.users`; root is never modified there. 0.1 was root only | |
 | D18 | Realtime transport | **Server-Sent Events** from a ucode handler at `/nuci/events` (`uhttpd-mod-ucode`), with automatic fallback to ubus polling when `EventSource` fails | Live graphs/logs without per-request overhead; polling stays as the safety net. Viability confirmed by ADR-0001 (bounded streams) |

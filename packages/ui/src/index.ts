@@ -23,6 +23,7 @@ export { default as Section } from './Section.svelte';
 export { default as SectionList } from './SectionList.svelte';
 export { default as Select } from './Select.svelte';
 export { default as Stat } from './Stat.svelte';
+export { default as StatTile } from './StatTile.svelte';
 export { default as Tabs } from './Tabs.svelte';
 export { default as TextField } from './TextField.svelte';
 export { default as ThemeToggle } from './ThemeToggle.svelte';

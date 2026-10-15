@@ -189,8 +189,12 @@
 							: t('software.failed', { rc: job.rc ?? '?' })}</span
 					>{/if}
 			</p>
+			<!-- Scrollable region: focusable so keyboard users can scroll it. -->
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 			<pre
 				class="bg-base-200 rounded-box max-h-48 overflow-auto p-2 text-xs"
+				tabindex="0"
+				aria-label={t('software.log')}
 				data-testid="pkg-job-log">{job.log}</pre>
 		</Section>
 	{/if}
@@ -333,7 +337,7 @@
 						{/snippet}
 					</DataTable>
 				{:else}
-					<p class="text-base-content/60 text-sm">{t('software.search_hint')}</p>
+					<p class="text-base-content/70 text-sm">{t('software.search_hint')}</p>
 				{/if}
 			{:else}
 				{#if installed.upgradable.length}
@@ -352,7 +356,7 @@
 							</li>{/each}
 					</ul>
 				{:else}
-					<p class="text-base-content/60 text-sm">{t('software.no_updates')}</p>
+					<p class="text-base-content/70 text-sm">{t('software.no_updates')}</p>
 				{/if}
 			{/if}
 		{/snippet}

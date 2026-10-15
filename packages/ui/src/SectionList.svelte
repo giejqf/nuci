@@ -153,7 +153,7 @@
 					<tr
 						><td
 							colspan={columns.length + 1}
-							class="text-base-content/60 py-4 text-center"
+							class="text-base-content/70 py-4 text-center"
 							>{empty ?? t('ui.table.empty')}</td
 						></tr
 					>

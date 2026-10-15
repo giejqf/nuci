@@ -78,6 +78,6 @@
 		</div>
 	{/if}
 	{#if !changes.length && !pendingRows.length}
-		<p class="text-base-content/60">{t('ui.changes.none')}</p>
+		<p class="text-base-content/70">{t('ui.changes.none')}</p>
 	{/if}
 </div>

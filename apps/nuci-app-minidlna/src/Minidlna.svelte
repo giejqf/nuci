@@ -142,7 +142,7 @@
 					</table>
 				</div>
 			{:else}
-				<p class="text-base-content/60 text-sm">{t('dlna.no_clients')}</p>
+				<p class="text-base-content/70 text-sm">{t('dlna.no_clients')}</p>
 			{/if}
 		{/if}
 		{#if canWrite && st.running}
@@ -250,7 +250,7 @@
 					{/if}
 				</div>
 			{:else}
-				<p class="text-base-content/60 text-sm">{t('dlna.no_folders')}</p>
+				<p class="text-base-content/70 text-sm">{t('dlna.no_folders')}</p>
 			{/each}
 			{#if canWrite}
 				<div>

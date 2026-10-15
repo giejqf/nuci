@@ -1,9 +1,79 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 @import 'tailwindcss';
 @plugin 'daisyui' {
-	themes:
-		light --default,
-		dark --prefersdark;
+	themes: false;
+}
+/*
+ * The two DaisyUI themes carry the NuCI palette (docs/design): quiet
+ * neutral surfaces, one blue accent, status colours kept for state only.
+ * Theme names stay `light`/`dark`, so `data-theme` and the stored
+ * preference work unchanged (D15).
+ */
+@plugin 'daisyui/theme' {
+	name: 'light';
+	default: true;
+	color-scheme: light;
+	--color-base-100: #ffffff;
+	--color-base-200: #f4f5f7;
+	--color-base-300: #e2e4e8;
+	--color-base-content: #1f2328;
+	--color-primary: #3353c9;
+	--color-primary-content: #ffffff;
+	--color-secondary: #0f766e;
+	--color-secondary-content: #ffffff;
+	--color-accent: #7c3aed;
+	--color-accent-content: #ffffff;
+	--color-neutral: #3d444d;
+	--color-neutral-content: #ffffff;
+	--color-info: #1f6fb2;
+	--color-info-content: #ffffff;
+	--color-success: #15803d;
+	--color-success-content: #ffffff;
+	--color-warning: #a35a06;
+	--color-warning-content: #ffffff;
+	--color-error: #c62828;
+	--color-error-content: #ffffff;
+	--radius-selector: 0.5rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.75rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+@plugin 'daisyui/theme' {
+	name: 'dark';
+	prefersdark: true;
+	color-scheme: dark;
+	--color-base-100: #1d232a;
+	--color-base-200: #191e24;
+	--color-base-300: #2b333c;
+	--color-base-content: #e3e7ec;
+	--color-primary: #8da2ff;
+	--color-primary-content: #0f1420;
+	--color-secondary: #4fd1c5;
+	--color-secondary-content: #06201d;
+	--color-accent: #b79cff;
+	--color-accent-content: #140c26;
+	--color-neutral: #3a434d;
+	--color-neutral-content: #e3e7ec;
+	--color-info: #66b8ff;
+	--color-info-content: #06192b;
+	--color-success: #4fd083;
+	--color-success-content: #05200f;
+	--color-warning: #f3b14a;
+	--color-warning-content: #2a1700;
+	--color-error: #f47c7c;
+	--color-error-content: #2e0808;
+	--radius-selector: 0.5rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.75rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
 }
 @source '../../../packages/ui/src';
 @import '@nuci/ui/styles.css';

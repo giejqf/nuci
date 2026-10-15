@@ -256,7 +256,7 @@
 				role="status"
 				data-testid="{testid}-tooltip"
 			>
-				<div class="text-base-content/60 mb-1">{timeLabel(times[active]!)}</div>
+				<div class="text-base-content/70 mb-1">{timeLabel(times[active]!)}</div>
 				{#each series as s (s.id)}
 					<div class="flex items-center gap-2">
 						<svg width="12" height="6" aria-hidden="true"
@@ -272,7 +272,7 @@
 						<span class="font-semibold tabular-nums"
 							>{s.values[active] == null ? '—' : format(s.values[active]!)}</span
 						>
-						<span class="text-base-content/60">{s.label}</span>
+						<span class="text-base-content/70">{s.label}</span>
 					</div>
 				{/each}
 			</div>
@@ -280,7 +280,7 @@
 		<span id="{id}-hint" class="sr-only">{t('chart.hint')}</span>
 	</div>
 	<details class="text-sm">
-		<summary class="text-base-content/60 cursor-pointer">{t('chart.table')}</summary>
+		<summary class="text-base-content/70 cursor-pointer">{t('chart.table')}</summary>
 		<div class="max-h-60 overflow-auto">
 			<table class="table-xs table">
 				<caption class="sr-only">{title}</caption>

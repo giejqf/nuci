@@ -95,7 +95,7 @@
 		<button type="button" class="btn btn-ghost btn-sm" onclick={download}>
 			<Download size={16} aria-hidden="true" />{t('log.download')}
 		</button>
-		<span class="text-base-content/60 ml-auto text-sm" data-testid="{testid}-count"
+		<span class="text-base-content/70 ml-auto text-sm" data-testid="{testid}-count"
 			>{t('log.count', { shown: visible.length, total: lines.length })}</span
 		>
 	</div>
@@ -111,7 +111,7 @@
 	>
 		{#each visible as l (l.key)}
 			<div class="flex gap-2 py-0.5" data-testid="{testid}-line">
-				<span class="text-base-content/60 shrink-0 tabular-nums">{l.time}</span>
+				<span class="text-base-content/70 shrink-0 tabular-nums">{l.time}</span>
 				<span class="badge badge-xs {badge(l.level)} mt-0.5 w-14 shrink-0"
 					>{LEVELS[l.level] ?? l.level}</span
 				>
@@ -119,7 +119,7 @@
 				<span class="min-w-0 break-words whitespace-pre-wrap">{l.msg}</span>
 			</div>
 		{:else}
-			<p class="text-base-content/60 p-4 text-center font-sans">{t('log.empty')}</p>
+			<p class="text-base-content/70 p-4 text-center font-sans">{t('log.empty')}</p>
 		{/each}
 	</div>
 </div>

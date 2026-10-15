@@ -807,5 +807,21 @@
 	"proto.ipip": "IPv4-in-IPv4 隧道（IPIP）",
 	"proto.remote_ipv4": "远端地址（IPv4）",
 	"proto.local_ipv4": "本地 IPv4 地址",
-	"proto.local_ipv4_help": "留空：使用隧道链路的地址。"
+	"proto.local_ipv4_help": "留空：使用隧道链路的地址。",
+	"nav.search": "搜索设置…",
+	"nav.no_results": "没有与“{query}”匹配的设置。",
+	"nav.breadcrumb": "面包屑导航",
+	"login.show": "显示",
+	"login.hide": "隐藏",
+	"login.local_note": "登录信息仅保存在此路由器上，不会发送到互联网。",
+	"overview.internet_up": "互联网连接正常",
+	"overview.internet_down": "没有互联网连接",
+	"overview.internet_via": "通过 {name}（{proto}）连接",
+	"overview.internet_addr": "公网地址",
+	"overview.internet_online": "已在线 {duration}",
+	"overview.download": "下载",
+	"overview.upload": "上传",
+	"overview.devices": "已连接设备",
+	"overview.devices_caption": "来自 DHCP 租约",
+	"software.log": "操作输出"
 }

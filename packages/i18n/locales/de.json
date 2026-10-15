@@ -807,5 +807,21 @@
 	"proto.ipip": "IPv4-in-IPv4-Tunnel (IPIP)",
 	"proto.remote_ipv4": "Gegenstelle (IPv4)",
 	"proto.local_ipv4": "Lokale IPv4-Adresse",
-	"proto.local_ipv4_help": "Leer: die Adresse der Tunnelverbindung."
+	"proto.local_ipv4_help": "Leer: die Adresse der Tunnelverbindung.",
+	"nav.search": "Einstellungen suchen…",
+	"nav.no_results": "Keine Einstellung passt zu „{query}“.",
+	"nav.breadcrumb": "Brotkrumen-Navigation",
+	"login.show": "Anzeigen",
+	"login.hide": "Verbergen",
+	"login.local_note": "Ihre Anmeldung bleibt auf diesem Router. Es wird nichts ins Internet gesendet.",
+	"overview.internet_up": "Internet funktioniert",
+	"overview.internet_down": "Keine Internetverbindung",
+	"overview.internet_via": "Verbunden über {name} ({proto})",
+	"overview.internet_addr": "öffentliche Adresse",
+	"overview.internet_online": "online seit {duration}",
+	"overview.download": "Download",
+	"overview.upload": "Upload",
+	"overview.devices": "Verbundene Geräte",
+	"overview.devices_caption": "aus DHCP-Leases",
+	"software.log": "Ausgabe des Vorgangs"
 }

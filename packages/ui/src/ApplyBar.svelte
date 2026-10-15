@@ -4,7 +4,7 @@
 	Apply runs the rollback protocol (ADR-0002) and announces progress.
 -->
 <script lang="ts">
-	import { CircleCheck, Undo2, ListChecks, Save, LoaderCircle } from '@lucide/svelte';
+	import { CircleCheck, Clock, Undo2, ListChecks, Save, LoaderCircle } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
 	import { applyStaged } from './apply';
 	import ChangeList from './ChangeList.svelte';
@@ -77,18 +77,21 @@
 
 {#if visible}
 	<div
-		class="bg-base-100 border-base-300 sticky bottom-0 z-30 flex flex-wrap items-center gap-2 border-t px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]"
+		class="bg-base-100 border-base-300 sticky bottom-0 z-30 flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-4 py-3 lg:px-6"
 		data-testid="apply-bar"
 	>
-		<div class="flex-1" aria-live="polite" aria-atomic="true" data-testid="apply-status">
+		<div
+			class="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1"
+			aria-live="polite"
+			aria-atomic="true"
+			data-testid="apply-status"
+		>
 			{#if busy}
-				<span class="inline-flex items-center gap-2">
-					<LoaderCircle size={16} class="animate-spin" aria-hidden="true" />
-					{status}
-				</span>
+				<LoaderCircle size={18} class="text-primary animate-spin" aria-hidden="true" />
+				<span class="text-sm font-medium">{status}</span>
 				{#if phase === 'confirming' && uci.apply.remaining}
 					<progress
-						class="progress progress-warning ml-2 w-32 align-middle"
+						class="progress progress-primary w-40"
 						value={uci.apply.remaining}
 						max={ctx.apply?.timeout ?? 90}
 					></progress>
@@ -96,49 +99,46 @@
 			{:else}
 				<button
 					type="button"
-					class="link"
+					class="badge badge-warning badge-soft h-6 gap-1 px-2 font-semibold"
 					data-testid="apply-review"
 					onclick={() => (reviewing = true)}
 				>
-					{t('ui.apply.count', { count })}
+					<Clock size={12} aria-hidden="true" />{t('ui.apply.count', { count })}
 				</button>
 			{/if}
 		</div>
-		<button
-			type="button"
-			class="btn btn-ghost btn-sm"
-			disabled={busy}
-			onclick={() => (reviewing = true)}
-		>
-			<ListChecks size={16} aria-hidden="true" />{t('ui.apply.review')}
-		</button>
-		<button
-			type="button"
-			class="btn btn-ghost btn-sm"
-			disabled={busy}
-			data-testid="apply-revert"
-			onclick={revert}
-		>
-			<Undo2 size={16} aria-hidden="true" />{t('ui.apply.revert')}
-		</button>
-		<button
-			type="button"
-			class="btn btn-sm"
-			disabled={!canSave || !uci.dirty}
-			data-testid="apply-save"
-			onclick={save}
-		>
-			<Save size={16} aria-hidden="true" />{t('ui.apply.save')}
-		</button>
-		<button
-			type="button"
-			class="btn btn-primary btn-sm"
-			disabled={!canSave || !ctx.apply}
-			data-testid="apply-apply"
-			onclick={() => apply(true)}
-		>
-			<CircleCheck size={16} aria-hidden="true" />{t('ui.apply.apply')}
-		</button>
+		<div class="flex flex-wrap items-center gap-2">
+			<button
+				type="button"
+				class="btn btn-ghost"
+				disabled={busy}
+				data-testid="apply-revert"
+				onclick={revert}
+			>
+				<Undo2 size={16} aria-hidden="true" />{t('ui.apply.revert')}
+			</button>
+			<button type="button" class="btn" disabled={busy} onclick={() => (reviewing = true)}>
+				<ListChecks size={16} aria-hidden="true" />{t('ui.apply.review')}
+			</button>
+			<button
+				type="button"
+				class="btn"
+				disabled={!canSave || !uci.dirty}
+				data-testid="apply-save"
+				onclick={save}
+			>
+				<Save size={16} aria-hidden="true" />{t('ui.apply.save')}
+			</button>
+			<button
+				type="button"
+				class="btn btn-primary"
+				disabled={!canSave || !ctx.apply}
+				data-testid="apply-apply"
+				onclick={() => apply(true)}
+			>
+				<CircleCheck size={16} aria-hidden="true" />{t('ui.apply.apply')}
+			</button>
+		</div>
 	</div>
 {/if}
 

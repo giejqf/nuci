@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- Status → Overview: system, memory, storage, interfaces, wireless, DHCP leases. -->
 <script lang="ts">
-	import { RefreshCw } from '@lucide/svelte';
+	import { CircleCheck, CircleAlert, RefreshCw } from '@lucide/svelte';
 	import { t } from '@nuci/i18n';
 	import {
 		isRpcError,
@@ -23,6 +23,7 @@
 		Page,
 		Section,
 		Stat,
+		StatTile,
 		poll,
 	} from '@nuci/ui';
 	import { onMount } from 'svelte';
@@ -182,6 +183,16 @@
 			})),
 	);
 
+	// The internet connection: the "wan" interface (or the first with a default route).
+	const wan = $derived(
+		ifaces.find((i) => i.interface === 'wan') ??
+			ifaces.find((i) => i.route?.some((r) => r.target === '0.0.0.0')),
+	);
+	const wanRate = $derived(wan ? rates[wan.l3_device ?? ''] : undefined);
+	const wanAddr = $derived(
+		wan?.['ipv4-address']?.[0]?.address ?? wan?.['ipv6-address']?.[0]?.address,
+	);
+
 	const pct = (used: number, total: number) => (total > 0 ? used / total : 0);
 </script>
 
@@ -202,6 +213,93 @@
 			<span class="loading loading-spinner" role="img" aria-label={t('ui.loading')}></span>
 		</div>
 	{:else}
+		{#if wan}
+			<div
+				class="card bg-base-100 border-base-300 flex-row flex-wrap items-center gap-x-6 gap-y-4 border p-5"
+				data-testid="overview-internet"
+			>
+				<span
+					class="flex size-14 flex-none items-center justify-center rounded-full {wan.up
+						? 'bg-success/15 text-success'
+						: 'bg-error/15 text-error'}"
+				>
+					{#if wan.up}<CircleCheck size={28} aria-hidden="true" />{:else}<CircleAlert
+							size={28}
+							aria-hidden="true"
+						/>{/if}
+				</span>
+				<div class="min-w-56 flex-1">
+					<h2 class="text-2xl font-medium">
+						{wan.up ? t('overview.internet_up') : t('overview.internet_down')}
+					</h2>
+					<p class="text-base-content/70 text-sm">
+						{[
+							t('overview.internet_via', {
+								name: wan.interface.toUpperCase(),
+								proto: wan.proto,
+							}),
+							wanAddr ? `${t('overview.internet_addr')} ${wanAddr}` : '',
+							wan.up && wan.uptime
+								? t('overview.internet_online', {
+										duration: formatDuration(wan.uptime),
+									})
+								: '',
+						]
+							.filter(Boolean)
+							.join(' · ')}
+					</p>
+				</div>
+				<dl class="flex gap-8">
+					<div>
+						<dt class="text-base-content/70 text-xs tracking-wide uppercase">
+							{t('overview.download')}
+						</dt>
+						<dd class="text-2xl font-medium tabular-nums">
+							{formatRate(wanRate?.rx ?? null)}
+						</dd>
+					</div>
+					<div>
+						<dt class="text-base-content/70 text-xs tracking-wide uppercase">
+							{t('overview.upload')}
+						</dt>
+						<dd class="text-2xl font-medium tabular-nums">
+							{formatRate(wanRate?.tx ?? null)}
+						</dd>
+					</div>
+				</dl>
+			</div>
+		{/if}
+
+		<div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+			<StatTile
+				label={t('overview.devices')}
+				value={String(leases.length)}
+				caption={t('overview.devices_caption')}
+			/>
+			<StatTile
+				label={t('overview.cpu')}
+				value={cpu === null ? '—' : formatPercent(cpu)}
+				bar={cpu}
+				testid="overview-cpu"
+			/>
+			{#if memory}
+				<StatTile
+					label={t('overview.memory')}
+					value={formatPercent(pct(memory.total - memory.available, memory.total))}
+					bar={pct(memory.total - memory.available, memory.total)}
+					caption="{formatBytes(memory.total - memory.available)} / {formatBytes(
+						memory.total,
+					)}"
+					testid="overview-memory"
+				/>
+			{/if}
+			<StatTile
+				label={t('overview.uptime')}
+				value={formatDuration(uptime)}
+				caption={board?.release.description}
+			/>
+		</div>
+
 		<div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
 			<Section title={t('overview.system')} testid="overview-system">
 				{#if errors.board}<p role="alert" class="text-error text-sm">{errors.board}</p>{/if}
@@ -242,23 +340,6 @@
 
 			<Section title={t('overview.resources')} testid="overview-resources">
 				<dl>
-					<Meter
-						label={t('overview.cpu')}
-						value={cpu}
-						text={cpu === null ? null : formatPercent(cpu)}
-						testid="overview-cpu"
-					/>
-					{#if memory}
-						<Meter
-							label={t('overview.memory')}
-							value={pct(memory.total - memory.available, memory.total)}
-							text="{formatBytes(memory.total - memory.available)} / {formatBytes(
-								memory.total,
-							)}"
-							tone="secondary"
-							testid="overview-memory"
-						/>
-					{/if}
 					{#if info?.root}
 						<Meter
 							label={t('overview.storage_root')}
@@ -299,7 +380,7 @@
 				{#if errors.wireless}
 					<p role="alert" class="text-error text-sm">{errors.wireless}</p>
 				{:else if !wifi.length && !idle.length}
-					<p class="text-base-content/60 text-sm">{t('overview.no_wireless')}</p>
+					<p class="text-base-content/70 text-sm">{t('overview.no_wireless')}</p>
 				{:else}
 					<ul class="flex flex-col gap-1 text-sm">
 						{#each wifi as w (w.radio + w.ifname)}

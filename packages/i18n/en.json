@@ -807,5 +807,21 @@
 	"proto.ipip": "IPv4-in-IPv4 tunnel (IPIP)",
 	"proto.remote_ipv4": "Remote endpoint (IPv4)",
 	"proto.local_ipv4": "Local IPv4 address",
-	"proto.local_ipv4_help": "Empty: the address of the tunnel link."
+	"proto.local_ipv4_help": "Empty: the address of the tunnel link.",
+	"nav.search": "Search settings…",
+	"nav.no_results": "No settings match “{query}”.",
+	"nav.breadcrumb": "Breadcrumb",
+	"login.show": "Show",
+	"login.hide": "Hide",
+	"login.local_note": "Your login stays on this router. Nothing is sent to the internet.",
+	"overview.internet_up": "Internet is working",
+	"overview.internet_down": "No internet connection",
+	"overview.internet_via": "Connected through {name} ({proto})",
+	"overview.internet_addr": "public address",
+	"overview.internet_online": "online for {duration}",
+	"overview.download": "Download",
+	"overview.upload": "Upload",
+	"overview.devices": "Connected devices",
+	"overview.devices_caption": "from DHCP leases",
+	"software.log": "Operation output"
 }

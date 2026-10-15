@@ -82,3 +82,64 @@
 		justify-content: center;
 	}
 }
+
+/*
+ * Page look (docs/design): system font, a tinted page behind white cards,
+ * flat surfaces (no shadows), quiet uppercase table headings.
+ */
+html {
+	background: var(--color-base-200);
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		'Segoe UI',
+		Helvetica,
+		Arial,
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+.table :where(thead th) {
+	font-size: 0.75rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	font-weight: 600;
+	color: color-mix(in oklab, var(--color-base-content) 75%, transparent);
+}
+.table :where(th, td) {
+	padding-block: 0.75rem;
+}
+
+/* Status badges are quiet tints of the status colour, not solid fills. */
+.badge:is(.badge-success, .badge-error, .badge-warning, .badge-info):not(.badge-outline) {
+	border-color: transparent;
+}
+.badge-success:not(.badge-outline, .badge-soft) {
+	background: color-mix(in oklab, var(--color-success) 14%, var(--color-base-100));
+	color: color-mix(in oklab, var(--color-success) 70%, var(--color-base-content));
+}
+.badge-error:not(.badge-outline, .badge-soft) {
+	background: color-mix(in oklab, var(--color-error) 14%, var(--color-base-100));
+	color: color-mix(in oklab, var(--color-error) 70%, var(--color-base-content));
+}
+.badge-warning:not(.badge-outline, .badge-soft) {
+	background: color-mix(in oklab, var(--color-warning) 14%, var(--color-base-100));
+	color: color-mix(in oklab, var(--color-warning) 70%, var(--color-base-content));
+}
+.badge-info:not(.badge-outline, .badge-soft) {
+	background: color-mix(in oklab, var(--color-info) 14%, var(--color-base-100));
+	color: color-mix(in oklab, var(--color-info) 70%, var(--color-base-content));
+}
+
+/* Switches: a filled track in the accent colour with a light knob when on. */
+.toggle:checked,
+.toggle[aria-checked='true'] {
+	background-color: var(--color-primary);
+	border-color: var(--color-primary);
+	--input-color: var(--color-primary-content);
+}
+
+/* Field hints: DaisyUI's 60 % label tint is too faint on white cards. */
+.fieldset .label:not(.text-error) {
+	color: color-mix(in oklab, var(--color-base-content) 72%, transparent);
+}

@@ -148,7 +148,7 @@
 					</tr>
 				{:else}
 					<tr>
-						<td colspan={columns.length} class="text-base-content/60 py-6 text-center">
+						<td colspan={columns.length} class="text-base-content/70 py-6 text-center">
 							{empty ?? t('ui.table.empty')}
 						</td>
 					</tr>

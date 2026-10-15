@@ -280,7 +280,7 @@
 			{:else if active === 'wireless'}
 				{#if !radios.length}
 					<Section
-						><p class="text-base-content/60" data-testid="wireless-empty">
+						><p class="text-base-content/70" data-testid="wireless-empty">
 							{t('overview.no_wireless')}
 						</p></Section
 					>
@@ -296,7 +296,7 @@
 											: ''}</option
 									>{/each}
 							</select>
-							<span class="text-base-content/60"
+							<span class="text-base-content/70"
 								>{t('realtime.stations', {
 									count: latestWifi[radio]?.stations ?? 0,
 								})}</span

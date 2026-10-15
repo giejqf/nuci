@@ -34,9 +34,10 @@ async function denied(p: Promise<unknown>) {
 const WRITE_BUTTON =
 	/^(add|delete|save|save & apply|apply|install|remove|update lists|run|restart|stop|start|enable|disable|upload|flash|reboot|scan|join|hup|term|kill|create|regenerate.*|restore.*|generate.*)$/i;
 
+// Column sort buttons in table headings are not write controls (e.g. "Upload").
 async function enabledWriteControls(page: Page): Promise<string[]> {
 	const found: string[] = [];
-	for (const b of await page.locator('main button:visible').all()) {
+	for (const b of await page.locator('main button:visible:not(th button)').all()) {
 		const name = ((await b.getAttribute('aria-label')) ?? (await b.innerText())).trim();
 		if (WRITE_BUTTON.test(name) && (await b.isEnabled())) found.push(`button "${name}"`);
 		if (/^(delete|edit) /i.test(name) && (await b.isEnabled())) found.push(`button "${name}"`);

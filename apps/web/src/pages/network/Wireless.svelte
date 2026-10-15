@@ -184,7 +184,7 @@
 	{#if error}<div role="alert" class="alert alert-error">{error}</div>{/if}
 	{#if uci.isLoaded('wireless') && !radios.length}
 		<Section
-			><p class="text-base-content/60" data-testid="no-radios">
+			><p class="text-base-content/70" data-testid="no-radios">
 				{t('overview.no_wireless')}
 			</p></Section
 		>
@@ -306,7 +306,7 @@
 							</tr>
 						{:else}
 							<tr
-								><td colspan="6" class="text-base-content/60 text-center"
+								><td colspan="6" class="text-base-content/70 text-center"
 									>{t('wireless.no_networks')}</td
 								></tr
 							>
@@ -493,7 +493,7 @@
 			></span>
 		</div>
 	{:else if !results.length}
-		<p class="text-base-content/60">{t('wireless.scan_empty')}</p>
+		<p class="text-base-content/70">{t('wireless.scan_empty')}</p>
 	{:else}
 		<table class="table-sm table" data-testid="scan-results">
 			<thead
@@ -508,7 +508,7 @@
 					<tr>
 						<td class="font-medium"
 							>{r.ssid || t('wireless.hidden_ssid')}
-							<div class="text-base-content/60 font-mono text-xs">{r.bssid}</div></td
+							<div class="text-base-content/70 font-mono text-xs">{r.bssid}</div></td
 						>
 						<td>{r.channel ?? '—'}</td>
 						<td>{signal(r.signal)}</td>

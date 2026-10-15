@@ -110,7 +110,7 @@
 	<input id="nuci-drawer" type="checkbox" class="drawer-toggle" bind:checked={drawer} />
 	<div class="drawer-content flex min-h-screen flex-col">
 		<Topbar />
-		<main class="flex-1 p-4 lg:p-6" id="main">
+		<main class="flex-1 p-4 lg:px-8 lg:py-8" id="main">
 			{#if match}
 				{#key match.route.path}
 					<RouteView route={match.route} params={match.params} />

@@ -174,7 +174,7 @@
 								data-testid="nlbw-client">{name(c)}</button
 							>
 							{#if c.hostname || c.ips.length > 1}
-								<div class="text-base-content/60 font-mono text-xs">
+								<div class="text-base-content/70 font-mono text-xs">
 									{c.ips.join(', ')}
 								</div>
 							{/if}
