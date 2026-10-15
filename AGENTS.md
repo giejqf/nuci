@@ -894,7 +894,11 @@ next phase's pages before the previous phase's exit criteria are met.
 - **Status:** notes in `docs/releases/v0.5.0.md`; 0.4.0 was never published
   (Actions billing), so 0.5.0 is the next release and carries 0.4. The feed
   key is derived from the `NUCI_FEED_KEY` passphrase secret
-  (`tools/derive-feed-key.sh`).
+  (`tools/derive-feed-key.sh`). Validated 2026-10-15: on a stock 25.12.0
+  armsr/armv8 image `apk add nuci` and all twelve apps install from the
+  published, signed feed without `--allow-untrusted`; the interface is
+  served and 22 `nuci.*` ubus objects appear. This also closes the Phase 19
+  install check.
 
 ---
 
