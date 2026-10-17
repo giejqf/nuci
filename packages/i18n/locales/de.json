@@ -12,6 +12,7 @@
 	"ui.list.new": "Neuer Eintrag für {label}",
 	"ui.list.remove": "{item} entfernen",
 	"ui.table.filter": "Filter",
+	"ui.table.region": "Tabelle, scrollbar",
 	"ui.table.empty": "Keine Einträge",
 	"ui.changes.title": "Ungespeicherte Änderungen",
 	"ui.changes.local": "Auf dieser Seite bearbeitet",

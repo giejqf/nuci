@@ -12,6 +12,7 @@
 	"ui.list.new": "{label} 的新条目",
 	"ui.list.remove": "移除 {item}",
 	"ui.table.filter": "筛选",
+	"ui.table.region": "表格,可滚动",
 	"ui.table.empty": "无条目",
 	"ui.changes.title": "未保存的更改",
 	"ui.changes.local": "已在此页面编辑",

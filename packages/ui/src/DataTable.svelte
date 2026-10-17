@@ -92,7 +92,9 @@
 			bind:value={query}
 		/>
 	{/if}
-	<div class="overflow-x-auto">
+	<!-- Scrollable region: focusable so keyboard users can scroll it. -->
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<div class="overflow-x-auto" role="region" tabindex="0" aria-label={t('ui.table.region')}>
 		<table class="table-zebra table-sm nuci-stack table">
 			{#if caption}<caption class="sr-only">{caption}</caption>{/if}
 			<thead>

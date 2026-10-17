@@ -234,7 +234,14 @@
 						><Plus size={14} aria-hidden="true" />{t('wireless.add_network')}</button
 					>{/if}
 			</div>
-			<div class="overflow-x-auto">
+			<!-- Scrollable region: focusable so keyboard users can scroll it. -->
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+			<div
+				class="overflow-x-auto"
+				role="region"
+				tabindex="0"
+				aria-label={t('ui.table.region')}
+			>
 				<table class="table-sm nuci-stack table" data-testid="radio-{radio}-ifaces">
 					<thead
 						><tr
