@@ -186,6 +186,7 @@
 				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 				<pre
 					class="max-h-48 overflow-auto text-xs whitespace-pre-wrap"
+					role="region"
 					tabindex="0"
 					aria-label={t('doh.log')}>{st.job.log}</pre>
 			</div>

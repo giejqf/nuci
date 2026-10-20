@@ -193,6 +193,7 @@
 			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 			<pre
 				class="bg-base-200 rounded-box max-h-48 overflow-auto p-2 text-xs"
+				role="region"
 				tabindex="0"
 				aria-label={t('software.log')}
 				data-testid="pkg-job-log">{job.log}</pre>

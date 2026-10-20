@@ -331,6 +331,7 @@
 			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 			<pre
 				class="bg-base-200 max-h-64 overflow-auto rounded p-2 text-xs whitespace-pre-wrap"
+				role="region"
 				tabindex="0"
 				aria-label={t('adblock.lookup')}
 				data-testid="adblock-lookup-result">{st.search.log ?? ''}</pre>

@@ -144,6 +144,7 @@
 				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 				<pre
 					class="bg-base-200 mt-2 max-h-64 overflow-auto rounded p-2 text-xs whitespace-pre-wrap"
+					role="region"
 					tabindex="0"
 					aria-label={t('frpc.log')}
 					data-testid="frpc-log">{st.log
