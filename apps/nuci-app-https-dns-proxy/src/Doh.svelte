@@ -192,7 +192,7 @@
 			</div>
 		{/if}
 	{:else}
-		<span class="loading loading-spinner" aria-label={t('doh.loading')}></span>
+		<span class="loading loading-spinner" role="status" aria-label={t('doh.loading')}></span>
 	{/if}
 </Section>
 

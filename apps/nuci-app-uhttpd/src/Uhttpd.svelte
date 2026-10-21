@@ -95,7 +95,7 @@
 			</dl>
 		{/each}
 	{:else}
-		<span class="loading loading-spinner" aria-label={t('uhttpd.loading')}></span>
+		<span class="loading loading-spinner" role="status" aria-label={t('uhttpd.loading')}></span>
 	{/if}
 </Section>
 

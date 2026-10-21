@@ -65,7 +65,7 @@ for (const scheme of ['light', 'dark'] as const) {
 					if (v.impact === 'serious' || v.impact === 'critical')
 						problems.push(
 							`${route}: ${v.id} (${v.impact}) ${v.nodes
-								.map((n) => n.target.join(' '))
+								.map((n) => `${n.target.join(' ')} ${n.html.slice(0, 120)}`)
 								.slice(0, 3)
 								.join(' | ')}`,
 						);
